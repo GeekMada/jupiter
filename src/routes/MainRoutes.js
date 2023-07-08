@@ -9,6 +9,7 @@ import Historique from 'views/Historique/Historique';
 import Tarif from 'views/Tarif/Tarif';
 import Securité from 'views/Securité/Securité';
 import UserInfoScreen from 'views/Profil/Profil';
+import Transfert from 'views/Transfert/Transfert';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -16,11 +17,11 @@ const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')))
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
-  path: '/',
+  path: '/pages',
   element: <MainLayout />,
   children: [
     {
-      path: '/',
+      path: '/pages',
       element: <DashboardDefault />
     },
     {
@@ -33,23 +34,27 @@ const MainRoutes = {
       ]
     },
     {
-      path: '/Recharge',
+      path: '/pages/Recharge',
       element: <Recharge />
     },
     {
-      path: '/Historique',
+      path: '/pages/Transfert',
+      element: <Transfert />
+    },
+    {
+      path: '/pages/Historique',
       element: <Historique />
     },
     {
-      path: '/Tarif',
+      path: '/pages/Tarif',
       element: <Tarif />
     },
     {
-      path: '/Security',
+      path: '/pages/Security',
       element: <Securité />
     },
     {
-      path: '/Profil',
+      path: '/pages/Profil',
       element: <UserInfoScreen />
     }
   ]

@@ -153,8 +153,8 @@ const ProfileSection = () => {
                   <Box sx={{ p: 2 }}>
                     <Stack>
                       <Stack direction="row" spacing={0.5} alignItems="center">
-                        <Typography variant="h4">Bonjour,</Typography>
-                        <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
+                        <Typography variant="h3">Bonjour,</Typography>
+                        <Typography component="span" variant="h3" sx={{ fontWeight: 400 }}>
                           Rakoto Solofo
                         </Typography>
                       </Stack>
@@ -182,7 +182,7 @@ const ProfileSection = () => {
                           sx={{ borderRadius: `${customization.borderRadius}px` }}
                           selected={selectedIndex === 0}
                           onClick={(event) => handleListItemClick(event, 0, '#')}
-                          to="/Profil"
+                          to="/pages/Profil"
                           LinkComponent={Link}
                         >
                           <ListItemIcon>
@@ -194,6 +194,8 @@ const ProfileSection = () => {
                           sx={{ borderRadius: `${customization.borderRadius}px` }}
                           selected={selectedIndex === 4}
                           onClick={handleLogout}
+                          LinkComponent={Link}
+                          to="/"
                         >
                           <ListItemIcon>
                             <IconLogout stroke={1.5} size="1.3rem" />

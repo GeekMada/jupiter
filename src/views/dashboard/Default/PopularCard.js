@@ -32,7 +32,7 @@ const PopularCard = ({ isLoading }) => {
         <SkeletonPopularCard />
       ) : (
         <MainCard content={false}>
-          <CardContent>
+          <CardContent sx={{width:'100%'}}>
             <Grid container spacing={gridSpacing}>
               <Grid item xs={12}>
                 <Grid container alignContent="center" justifyContent="space-between">

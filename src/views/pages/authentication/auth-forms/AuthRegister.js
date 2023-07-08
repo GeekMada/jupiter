@@ -15,6 +15,7 @@ import {
   InputAdornment,
   InputLabel,
   OutlinedInput,
+  // Slide,
   TextField,
   Typography,
   useMediaQuery
@@ -34,7 +35,98 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 // ===========================|| FIREBASE - REGISTER ||=========================== //
+// const AuthConfirmationCode = ({ onNext }) => {
+//   const [codeSent, setCodeSent] = useState(false);
 
+//   const handleSubmit = async (values, {  setStatus, setSubmitting }) => {
+//     try {
+//       // Envoyer le code de confirmation ici
+//       console.log(values);
+
+//       // Simulation d'un code envoyé avec succès
+//       setCodeSent(true);
+//       setStatus({ success: true });
+//       setSubmitting(false);
+//       onNext(); // Passer à l'étape suivante (écran de confirmation du code)
+//     } catch (err) {
+//       console.error(err);
+//       setStatus({ success: false });
+//       setSubmitting(false);
+//     }
+//   };
+
+//   return (
+//     <>
+//       <Slide direction="left" in={!codeSent} mountOnEnter unmountOnExit>
+//         <Box>
+//           <Typography variant="h2" gutterBottom>
+//             Confirmer le code
+//           </Typography>
+//           <Typography variant="caption" fontSize="16px" textAlign="center">
+//             Entrez le code de confirmation envoyé à votre adresse e-mail.
+//           </Typography>
+//           <Formik
+//             initialValues={{
+//               code: '',
+//             }}
+//             validationSchema={Yup.object().shape({
+//               code: Yup.string().required('Code de confirmation requis'),
+//             })}
+//             onSubmit={handleSubmit}
+//           >
+//             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
+//               <form onSubmit={handleSubmit}>
+//                 <Grid container spacing={2}>
+//                   <Grid item xs={12}>
+//                     <FormControl fullWidth error={Boolean(touched.code && errors.code)}>
+//                       <TextField
+//                         fullWidth
+//                         label="Code de confirmation"
+//                         margin="normal"
+//                         name="code"
+//                         type="text"
+//                         value={values.code}
+//                         onBlur={handleBlur}
+//                         onChange={handleChange}
+//                       />
+//                       {touched.code && errors.code && (
+//                         <FormHelperText error>{errors.code}</FormHelperText>
+//                       )}
+//                     </FormControl>
+//                   </Grid>
+//                 </Grid>
+//                 <Box sx={{ mt: 2 }}>
+//                   <Button
+//                     disableElevation
+//                     disabled={isSubmitting}
+//                     fullWidth
+//                     size="large"
+//                     type="submit"
+//                     variant="contained"
+//                     color="secondary"
+//                   >
+//                     Confirmer
+//                   </Button>
+//                 </Box>
+//               </form>
+//             )}
+//           </Formik>
+//         </Box>
+//       </Slide>
+
+//       <Slide direction="left" in={codeSent} mountOnEnter unmountOnExit>
+//         <Box>
+//           <Typography variant="h2" gutterBottom>
+//             Code envoyé
+//           </Typography>
+//           <Typography variant="caption" fontSize="16px" textAlign="center">
+//             Veuillez vérifier votre boîte de réception pour le code de confirmation.
+//           </Typography>
+//         </Box>
+//       </Slide>
+//     </>
+//   );
+// };
 const FirebaseRegister = ({ ...others }) => {
   const theme = useTheme();
   const scriptedRef = useScriptRef();
