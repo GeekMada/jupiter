@@ -100,7 +100,7 @@ const SecurityScreen = () => {
 
   return (
     <div>
-      <Typography variant="h6" component="h2" gutterBottom>
+      <Typography variant="h4" gutterBottom>
         Écran de sécurité
       </Typography>
       <Typography variant="caption" color="textSecondary">

@@ -46,7 +46,7 @@ const Tarifs = () => {
 
   return (
     <div>
-      <Typography variant="h6" component="h2" gutterBottom>
+      <Typography variant="h4" gutterBottom>
         Tarifs
       </Typography>
       <FormControl variant="outlined" sx={{ marginBottom: '1rem' }}>

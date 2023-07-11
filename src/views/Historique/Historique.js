@@ -208,7 +208,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
   return (
     <div>
-      <Typography variant="h6" component="h2" gutterBottom>
+      <Typography variant="h4" gutterBottom>
         Historique des Transactions
       </Typography>
       <div style={{ gap: '10px', display: 'flex', justifyContent: 'space-around', alignItems: 'center', flexWrap: 'wrap' }}>
