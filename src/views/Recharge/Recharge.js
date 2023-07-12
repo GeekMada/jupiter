@@ -94,16 +94,19 @@ function Recharge() {
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '1rem', justifyContent: 'center', alignItems: 'center' }}>
           <Typography>Recharge de {amount} € pour le compte principal</Typography>
           <Typography>Méthode de paiement : {rechargeType}</Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <Button
             variant="contained"
             disableElevation
             color="primary"
             style={{ width: '100%' }}
-            onClick={handleRecharge}
+            onClick={handleRecharge}  
             sx={{ marginBottom: '0.5rem' }}
           >
             Recharger
           </Button>
+         </Box>
+         
         </div>
       )
     }

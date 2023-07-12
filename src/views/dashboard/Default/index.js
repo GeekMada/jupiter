@@ -32,13 +32,7 @@ const Dashboard = () => {
             <TotalIncomeLightCard isLoading={isLoading} />
           </Grid>
         </Grid>
-      </Grid>
-      <Grid item xs={12}>
-        <Grid container spacing={gridSpacing} justifyContent="center">
-          <Grid item xs={12} md={4}>
-            <PopularCard isLoading={isLoading} />
-          </Grid>
-        </Grid>
+        <PopularCard isLoading={isLoading} />
       </Grid>
     </Grid>
   );

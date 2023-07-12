@@ -1,6 +1,9 @@
 // material-ui
 // import { useTheme } from '@mui/material/styles';
-import logo from 'assets/images/Logo Jupiter 1.png';
+// import logo from 'assets/images/Logo.png';
+import { Avatar } from '@mui/material';
+import logo from '../assets/images/avec jupiter.svg'
+
 /**
  * if you want to use image instead of <svg> uncomment following.
  *
@@ -62,7 +65,8 @@ const Logo = () => {
     //     fill={theme.palette.primary.main}
     //   />
     // </svg>
-    <img src={logo} alt="Jupiter" width="60" />
+    <Avatar src={logo} sx={{backgroundColor:'transparent',width: '195px', height: '55px' }}   />
+    // <img src={logo} alt="Jupiter" style={{backgroundColor:'red'}}  />
   );
 };
 

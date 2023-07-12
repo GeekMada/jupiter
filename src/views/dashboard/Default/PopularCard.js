@@ -31,7 +31,7 @@ const PopularCard = ({ isLoading }) => {
       {isLoading ? (
         <SkeletonPopularCard />
       ) : (
-        <MainCard content={false}>
+        <MainCard content={false} style={{marginTop:'10px'}}>
           <CardContent sx={{width:'100%'}}>
             <Grid container spacing={gridSpacing}>
               <Grid item xs={12}>
@@ -102,7 +102,7 @@ const PopularCard = ({ isLoading }) => {
             </Grid>
           </CardContent>
           <CardActions sx={{ p: 1.25, pt: 0, justifyContent: 'center' }}>
-            <Button size="small" disableElevation to="/Historique" LinkComponent={Link}>
+            <Button size="small" disableElevation to="/pages/Historique" LinkComponent={Link}>
               Voir Tout
               <ChevronRightOutlinedIcon />
             </Button>

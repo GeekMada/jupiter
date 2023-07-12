@@ -6,7 +6,7 @@ import Loadable from 'ui-component/Loadable';
 // import Login from 'views/pages/authentication/authentication3/Login3';
 import Recharge from 'views/Recharge/Recharge';
 import Historique from 'views/Historique/Historique';
-import Tarif from 'views/Tarif/Tarif';
+import Alouer from 'views/Alouer/Alouer'; 
 import Securité from 'views/Securité/Securité';
 import UserInfoScreen from 'views/Profil/Profil';
 import Transfert from 'views/Transfert/Transfert';
@@ -47,7 +47,7 @@ const MainRoutes = {
     },
     {
       path: '/pages/Tarif',
-      element: <Tarif />
+      element: <Alouer />
     },
     {
       path: '/pages/Security',

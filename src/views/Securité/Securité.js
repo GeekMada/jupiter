@@ -18,6 +18,7 @@ import {
   StepLabel
 } from '@mui/material';
 import { AddCircleOutline, Delete, Lock, LockOpen } from '@mui/icons-material';
+import { Box } from '@mui/system';
 
 const SecurityScreen = () => {
   const [ipList, setIpList] = useState([
@@ -135,9 +136,11 @@ const SecurityScreen = () => {
             </ListItem>
           ))}
         </List>
-        <Button variant="contained" onClick={handleOpenDialog} startIcon={<AddCircleOutline />} color="primary">
-          Ajouter
-        </Button>
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Button variant="contained" onClick={handleOpenDialog} startIcon={<AddCircleOutline />} color="primary">
+            Ajouter
+          </Button>
+        </Box>
       </Paper>
 
       <Dialog open={openDialog} onClose={handleCloseDialog}>
@@ -197,7 +200,7 @@ const SecurityScreen = () => {
           )}
 
           {activeStep === 1 && (
-            <Button onClick={handleAddIpAddress} color="primary">
+            <Button onClick={handleAddIpAddress} color="primary" style={{ width: '100%' }}>
               Ajouter
             </Button>
           )}

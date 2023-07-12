@@ -187,9 +187,12 @@ const TransferScreen = () => {
         }
       />
       {activeStep === maxSteps - 1 && (
-        <Button variant="contained" onClick={handleTransfer} color="primary" sx={{ marginTop: '1rem' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+       <Button variant="contained" onClick={handleTransfer} color="primary" sx={{ marginTop: '1rem' }}>
           Envoyer
         </Button>
+       </Box>
+        
       )}
     </Box>
   );

@@ -15,6 +15,7 @@ import {
   CircularProgress
 } from '@mui/material';
 import { Edit, PhotoCamera, Save } from '@mui/icons-material';
+import { Box } from '@mui/system';
 
 const UserInfoScreen = () => {
   const [userInfo, setUserInfo] = useState({
@@ -158,15 +159,17 @@ const UserInfoScreen = () => {
             />
           </Grid>
         </Grid>
-          <Button
+         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+         <Button
             variant="outlined"
             onClick={editMode?handleOpenDialog:handleToggleEditMode}
             startIcon={editMode?<Save />:<Edit />}
             disabled={loading}
-            sx={{ mb: 2,width: '100%' }}
+            sx={{ mb: 2 }}
           >
-            {editMode?'Enregistrer les modifications':'Modifier'}
+            {editMode?'Enregistrer':'Modifier'}
           </Button>
+         </Box>
       </Paper>
 
       <Dialog open={openDialog} onClose={handleCloseDialog}>

@@ -44,8 +44,8 @@ const dashboard = {
       breadcrumbs: false
     },
     {
-      id: 'tarif',
-      title: 'Tarif',
+      id: 'alouer',
+      title: 'Alouer',
       type: 'item',
       url: '/pages/tarif',
       icon: icons.IconTag,
