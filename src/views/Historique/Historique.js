@@ -214,7 +214,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
       <div style={{ gap: '10px', display: 'flex', justifyContent: 'space-around', alignItems: 'center', flexWrap: 'wrap' }}>
         <FormControl variant="outlined" sx={{ marginBottom: '1rem' }}>
           <Select value={filterByType} onChange={handleTypeFilterChange}>
-            <MenuItem value="all">Tous les types</MenuItem>
+            <MenuItem value="all">Toutes</MenuItem>
             <MenuItem value="Envoi">Envoi</MenuItem>
             <MenuItem value="Recharge">Recharge</MenuItem>
             {/* Ajoutez d'autres types de transactions ici */}
@@ -247,7 +247,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
           <TableHead>
             <TableRow>
               {/* <TableCell>ID</TableCell> */}
-              <StyledTableCell>Type</StyledTableCell>
+              <StyledTableCell>Transaction</StyledTableCell>
               <StyledTableCell>Date</StyledTableCell>
               <StyledTableCell>Montant</StyledTableCell>
               {/* <StyledTableCell>Pays</StyledTableCell> */}
@@ -321,7 +321,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
               <Typography variant="h4" component="h2" gutterBottom>
                 Détails de la transaction
               </Typography>
-              <Typography variant="body1">Type : {selectedTransaction.type}</Typography>
+              <Typography variant="body1">Type de transaction: {selectedTransaction.type}</Typography>
               <Typography variant="body1">ID : {selectedTransaction.id}</Typography>
               <Typography variant="body1">Date : {selectedTransaction.date}</Typography>
               <Typography variant="body1">Montant : {selectedTransaction.amount}€</Typography>

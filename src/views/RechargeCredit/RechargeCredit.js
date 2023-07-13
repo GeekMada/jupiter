@@ -18,6 +18,7 @@ import {
   Box
 } from '@mui/material';
 import { ExpandMore, MonetizationOn } from '@mui/icons-material';
+import { ToastContainer } from 'react-toastify';
 
 const countries = [
   {
@@ -26,7 +27,8 @@ const countries = [
     operators: [
       { id: 1, name: 'Orange', logo: 'orange.png', tariff: '0.15', balance: 10 },
       { id: 2, name: 'SFR', logo: 'sfr.png', tariff: '0.18', balance: 5 }
-    ]
+    ],
+    currency:'€'
   },
   {
     id: 2,
@@ -34,7 +36,8 @@ const countries = [
     operators: [
       { id: 3, name: 'AT&T', logo: 'att.png', tariff: '0.12', balance: 20 },
       { id: 4, name: 'Verizon', logo: 'verizon.png', tariff: '0.14', balance: 15 }
-    ]
+    ],
+    currency:'$'
   }
 ];
 
@@ -136,7 +139,7 @@ const OperatorsScreen = () => {
                                   <Button
                                     variant="outlined"
                                     color="primary"
-                                    onClick={() => handleReloadBalance(operator, country.name)}
+                                    onClick={() => handleReloadBalance(operator, country)}
                                     startIcon={<MonetizationOn />}
                                   >
                                     Recharger
@@ -177,20 +180,28 @@ const OperatorsScreen = () => {
           </Box>
           {selectedOperator && (
             <div>
-              <Typography variant="h5">Pays: {selectedCountry}</Typography>
+              <Typography variant="h5">Pays: {selectedCountry.name}</Typography>
               <Typography variant="subtitle1">
                 Opérateur :<OperatorLogo src={selectedOperator.logo} alt={selectedOperator.name} />
               </Typography>
               <Typography variant="subtitle1">Solde principal : {selectedOperator.balance}€</Typography>
-              <Typography variant="subtitle1">Solde Opérateur: {selectedOperator.balance}€</Typography>
+              <Typography variant="subtitle1">Solde Opérateur: {selectedOperator.balance} {selectedCountry.currency} </Typography>
               <TextField
-                label="Montant de recharge"
+                label="Montant de recharge en €"
                 value={rechargeAmount}
                 onChange={(e) => setRechargeAmount(e.target.value)}
                 type="number"
                 fullWidth
                 margin="normal"
               />
+            { selectedCountry.currency !=='€' &&<TextField
+              label={`Montant de recharge en ${selectedCountry.currency}`}
+              value={rechargeAmount}
+              onChange={(e) => setRechargeAmount(e.target.value)}
+              type="number"
+              fullWidth
+              margin="normal"
+            />}
               <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <Button variant="contained" color="primary" onClick={handleRecharge} style={{ marginTop: '1rem' }}>
                   Recharger
@@ -200,6 +211,7 @@ const OperatorsScreen = () => {
           )}
         </Box>
       </Modal>
+      <ToastContainer />
     </div>
   );
 };

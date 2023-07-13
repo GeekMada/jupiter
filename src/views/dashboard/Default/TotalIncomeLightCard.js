@@ -116,7 +116,7 @@ const TotalIncomeLightCard = ({ isLoading }) => {
                             color: 'rgba(0, 0, 0, 0.6)'
                           }}
                         >
-                          Total Entrée
+                          Transferts
                         </Typography>
                       </Grid>
                     </Grid>

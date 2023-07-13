@@ -1,5 +1,16 @@
 import React, { useState } from 'react';
-import { Button, FormControl, FormControlLabel, FormHelperText, FormLabel, MobileStepper, Radio, RadioGroup, TextField, Typography } from '@mui/material';
+import {
+  Button,
+  FormControl,
+  FormControlLabel,
+  FormHelperText,
+  FormLabel,
+  MobileStepper,
+  Radio,
+  RadioGroup,
+  TextField,
+  Typography
+} from '@mui/material';
 import { Box } from '@mui/system';
 import { useTheme } from '@mui/material/styles';
 import Stepper from '@mui/material/Stepper';
@@ -7,6 +18,8 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import { ToastContainer } from 'react-toastify';
+import Toast from 'ui-component/Toast';
 
 function Recharge() {
   const [rechargeType, setRechargeType] = useState('');
@@ -26,6 +39,9 @@ function Recharge() {
 
   const handleRecharge = () => {
     // Perform recharge logic here
+    Toast.success(`Compte rechargé de ${amount} €  Solde Principal 20 €`);
+    Toast.error(`Solde insuffisant`);
+    setActiveStep(0);
   };
 
   const isStepFailed = (step) => {
@@ -58,14 +74,13 @@ function Recharge() {
 
   const steps = [
     {
-      titre: 'Type',
+      titre: 'Métode de paiement',
       component: (
         <FormControl component="fieldset" error={rechargeTypeError}>
-          <FormLabel>Choisissez le type de recharge</FormLabel>
+          <FormLabel>Choisissez le méthode recharge</FormLabel>
           <RadioGroup aria-label="recharge-type" name="recharge-type" value={rechargeType} onChange={handleRechargeTypeChange}>
-            <FormControlLabel value="Carte De Credit" control={<Radio />} label="Carte De Credit" sx={{ marginBottom: '0.5rem' }} />
-            <FormControlLabel value="Transfert Banquaire" control={<Radio />} label="Transfert Banquaire" />
-            <FormControlLabel value="Espèce" control={<Radio />} label="Espèce" sx={{ marginBottom: '0.5rem' }} />
+            <FormControlLabel value="Virement Bancaire" control={<Radio />} label="Virement Bancaire" />
+            <FormControlLabel value="Espèces" control={<Radio />} label="Espèces" sx={{ marginBottom: '0.5rem' }} />
           </RadioGroup>
           {rechargeTypeError && <FormHelperText>Veuillez sélectionner une méthode de recharge.</FormHelperText>}
         </FormControl>
@@ -74,9 +89,11 @@ function Recharge() {
     {
       titre: 'Montant',
       component: (
-        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '1rem', justifyContent: 'center', alignItems: 'center' }}>
+        <div
+          style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '1rem', justifyContent: 'center', alignItems: 'center' }}
+        >
           <TextField
-            label="Entrez le Montant"
+            label="Entrez le Montant en €"
             value={amount}
             style={{ width: '100%' }}
             onChange={handleAmountChange}
@@ -91,22 +108,23 @@ function Recharge() {
     {
       titre: 'Validation',
       component: (
-        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '1rem', justifyContent: 'center', alignItems: 'center' }}>
-          <Typography>Recharge de {amount} € pour le compte principal</Typography>
+        <div
+          style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '1rem', justifyContent: 'center', alignItems: 'center' }}
+        >
+          <Typography>Recharge de {amount} € </Typography>
           <Typography>Méthode de paiement : {rechargeType}</Typography>
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Button
-            variant="contained"
-            disableElevation
-            color="primary"
-            style={{ width: '100%' }}
-            onClick={handleRecharge}  
-            sx={{ marginBottom: '0.5rem' }}
-          >
-            Recharger
-          </Button>
-         </Box>
-         
+            <Button
+              variant="contained"
+              disableElevation
+              color="primary"
+              style={{ width: '100%' }}
+              onClick={handleRecharge}
+              sx={{ marginBottom: '0.5rem' }}
+            >
+              Recharger
+            </Button>
+          </Box>
         </div>
       )
     }
@@ -152,6 +170,7 @@ function Recharge() {
           </Button>
         }
       />
+      <ToastContainer />
     </Box>
   );
 }

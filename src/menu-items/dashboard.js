@@ -21,34 +21,34 @@ const dashboard = {
     },
     {
       id: 'recharge',
-      title: 'Recharge',
+      title: 'Recharger Compte',
       type: 'item',
       url: '/pages/recharge',
       icon: icons.IconRecharging,
       breadcrumbs: false
     },
     {
+      id: 'rechargercompte',
+      title: 'Recharger Credit',
+      type: 'item',
+      url: '/pages/tarif',
+      icon: icons.IconTag,
+      breadcrumbs: false
+    },
+    {
       id: 'transfert',
-      title: 'Transfert',
+      title: 'Transferer Credit',
       type: 'item',
       url: '/pages/transfert',
       icon: icons.IconSend,
       breadcrumbs: false
     },
     {
-      id: 'historique',
+      id: 'histroque',
       title: 'Historique',
       type: 'item',
       url: '/pages/historique',
       icon: icons.IconHistory,
-      breadcrumbs: false
-    },
-    {
-      id: 'alouer',
-      title: 'Alouer',
-      type: 'item',
-      url: '/pages/tarif',
-      icon: icons.IconTag,
       breadcrumbs: false
     },
     {

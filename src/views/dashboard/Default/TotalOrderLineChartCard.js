@@ -135,7 +135,7 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
                             color: theme.palette.primary[200]
                           }}
                         >
-                          Total Sortie
+                          Recharges
                         </Typography>
                       </Grid>
                     </Grid>
