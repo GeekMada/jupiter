@@ -40,6 +40,7 @@ import {
 // ==============================|| PROFILE MENU ||============================== //
 
 const ProfileSection = () => {
+  const UserData = useSelector((state) => state.authReducer.user);
   const theme = useTheme();
   const customization = useSelector((state) => state.customization);
   const navigate = useNavigate();
@@ -155,7 +156,7 @@ const ProfileSection = () => {
                       <Stack direction="row" spacing={0.5} alignItems="center">
                         <Typography variant="h3">Bonjour,</Typography>
                         <Typography component="span" variant="h3" sx={{ fontWeight: 400 }}>
-                          Rakoto Solofo
+                          {`${UserData.nom} ${UserData.prenom}`}
                         </Typography>
                       </Stack>
                     </Stack>

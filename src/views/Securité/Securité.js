@@ -19,8 +19,12 @@ import {
 } from '@mui/material';
 import { AddCircleOutline, Delete, Lock, LockOpen } from '@mui/icons-material';
 import { Box } from '@mui/system';
+import api from 'requests/api';
+import { useDispatch, useSelector } from 'react-redux';
 
 const SecurityScreen = () => {
+  const dispatch = useDispatch();
+  const UserData = useSelector((state) => state.authReducer.user);
   const [ipList, setIpList] = useState([
     { id: 1, ip: '192.168.0.1', blocked: false },
     { id: 2, ip: '10.0.0.2', blocked: true },
@@ -68,15 +72,21 @@ const SecurityScreen = () => {
   };
 
   const handleAddIpAddress = () => {
-    if (ipAddress.trim() !== '' && password.trim() !== '') {
-      const newIp = {
-        id: Math.floor(Math.random() * 1000000),
-        ip: ipAddress,
-        blocked: false
-      };
-      setIpList([...ipList, newIp]);
-      handleCloseDialog();
-    }
+    // if (ipAddress.trim() !== '' && password.trim() !== '') {
+    //   const newIp = {
+    //     id: Math.floor(Math.random() * 1000000),
+    //     ip: ipAddress,
+    //     blocked: false
+    //   };
+    //   setIpList([...ipList, newIp]);
+    //   handleCloseDialog();
+    // }
+    api.post(`/ip/add/${UserData._id}`, { ip: ipAddress, password: password }).then((res) => {
+      console.log(res.data)
+      dispatch({ type: 'LOGIN_SUCCESS', payload: res.data.user })
+    }).catch((err) => {
+      console.log(err);
+    })
   };
 
   const handleToggleBlock = (id) => {

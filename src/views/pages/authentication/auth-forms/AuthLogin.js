@@ -6,6 +6,7 @@ import {
   Box,
   Button,
   Checkbox,
+  CircularProgress,
   FormControl,
   FormControlLabel,
   FormHelperText,
@@ -28,16 +29,24 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 // assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { Link } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+
+import api from 'requests/api';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router';
+import Toast from 'ui-component/Toast';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
 const FirebaseLogin = ({ ...others }) => {
+  const navigate = useNavigate();
   const theme = useTheme();
+  const dispatch = useDispatch();
   const scriptedRef = useScriptRef();
   const [checked, setChecked] = useState(true);
 
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -52,7 +61,6 @@ const FirebaseLogin = ({ ...others }) => {
         initialValues={{
           email: '',
           password: '',
-          submit: null
         }}
         validationSchema={Yup.object().shape({
           email: Yup.string().email('Doit etre un email valide').max(255).required('Email obligatoire'),
@@ -148,21 +156,37 @@ const FirebaseLogin = ({ ...others }) => {
                 <Button
                   disableElevation
                   disabled={isSubmitting}
-                  to="/pages/dashboard/default"
-                  LinkComponent={Link}
+                  // to="/pages/dashboard/default"
+                  // LinkComponent={Link}
                   fullWidth
                   size="large"
                   type="submit"
                   variant="contained"
                   color="secondary"
+                  onClick={() => {
+                    setLoading(true);
+                    api
+                      .post('/auth/login', values)
+                      .then((resp) => {
+                        setLoading(false);
+                        dispatch({ type: 'LOGIN_SUCCESS', payload: resp.data.user });
+                        navigate('/pages/dashboard/default');
+                      })
+                      .catch((err) => {
+                        setLoading(false);
+                        console.log(err);
+                        Toast.error(err.response.data.message);
+                   });
+                  }}
                 >
-                  Se connecter
+                  {loading ? <CircularProgress style={{ color: 'white' }} /> : 'Se connecter'}
                 </Button>
               </AnimateButton>
             </Box>
           </form>
         )}
       </Formik>
+      <ToastContainer />
     </>
   );
 };

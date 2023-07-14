@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import {
-  Box,
+  Box,  
   Button,
   Checkbox,
+  CircularProgress,
   FormControl,
   FormControlLabel,
   FormHelperText,
@@ -16,7 +17,6 @@ import {
   InputLabel,
   OutlinedInput,
   // Slide,
-  TextField,
   Typography,
   useMediaQuery
 } from '@mui/material';
@@ -33,101 +33,16 @@ import { strengthColor, strengthIndicator } from 'utils/password-strength';
 // assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-
+import { useDispatch } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
+import Toast from 'ui-component/Toast';
+import api from 'requests/api';
+// import api from 'requests/api';
 // ===========================|| FIREBASE - REGISTER ||=========================== //
-// const AuthConfirmationCode = ({ onNext }) => {
-//   const [codeSent, setCodeSent] = useState(false);
-
-//   const handleSubmit = async (values, {  setStatus, setSubmitting }) => {
-//     try {
-//       // Envoyer le code de confirmation ici
-//       console.log(values);
-
-//       // Simulation d'un code envoyé avec succès
-//       setCodeSent(true);
-//       setStatus({ success: true });
-//       setSubmitting(false);
-//       onNext(); // Passer à l'étape suivante (écran de confirmation du code)
-//     } catch (err) {
-//       console.error(err);
-//       setStatus({ success: false });
-//       setSubmitting(false);
-//     }
-//   };
-
-//   return (
-//     <>
-//       <Slide direction="left" in={!codeSent} mountOnEnter unmountOnExit>
-//         <Box>
-//           <Typography variant="h2" gutterBottom>
-//             Confirmer le code
-//           </Typography>
-//           <Typography variant="caption" fontSize="16px" textAlign="center">
-//             Entrez le code de confirmation envoyé à votre adresse e-mail.
-//           </Typography>
-//           <Formik
-//             initialValues={{
-//               code: '',
-//             }}
-//             validationSchema={Yup.object().shape({
-//               code: Yup.string().required('Code de confirmation requis'),
-//             })}
-//             onSubmit={handleSubmit}
-//           >
-//             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
-//               <form onSubmit={handleSubmit}>
-//                 <Grid container spacing={2}>
-//                   <Grid item xs={12}>
-//                     <FormControl fullWidth error={Boolean(touched.code && errors.code)}>
-//                       <TextField
-//                         fullWidth
-//                         label="Code de confirmation"
-//                         margin="normal"
-//                         name="code"
-//                         type="text"
-//                         value={values.code}
-//                         onBlur={handleBlur}
-//                         onChange={handleChange}
-//                       />
-//                       {touched.code && errors.code && (
-//                         <FormHelperText error>{errors.code}</FormHelperText>
-//                       )}
-//                     </FormControl>
-//                   </Grid>
-//                 </Grid>
-//                 <Box sx={{ mt: 2 }}>
-//                   <Button
-//                     disableElevation
-//                     disabled={isSubmitting}
-//                     fullWidth
-//                     size="large"
-//                     type="submit"
-//                     variant="contained"
-//                     color="secondary"
-//                   >
-//                     Confirmer
-//                   </Button>
-//                 </Box>
-//               </form>
-//             )}
-//           </Formik>
-//         </Box>
-//       </Slide>
-
-//       <Slide direction="left" in={codeSent} mountOnEnter unmountOnExit>
-//         <Box>
-//           <Typography variant="h2" gutterBottom>
-//             Code envoyé
-//           </Typography>
-//           <Typography variant="caption" fontSize="16px" textAlign="center">
-//             Veuillez vérifier votre boîte de réception pour le code de confirmation.
-//           </Typography>
-//         </Box>
-//       </Slide>
-//     </>
-//   );
-// };
 const FirebaseRegister = ({ ...others }) => {
+  const dispatch = useDispatch()
+
+  const navigate = useNavigate();
   const theme = useTheme();
   const scriptedRef = useScriptRef();
   const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
@@ -136,6 +51,7 @@ const FirebaseRegister = ({ ...others }) => {
 
   const [strength, setStrength] = useState(0);
   const [level, setLevel] = useState();
+  const [loading, setLoading] = useState(false);
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -159,17 +75,17 @@ const FirebaseRegister = ({ ...others }) => {
     <>
       <Formik
         initialValues={{
-          email: '',
-          password: '',
           nom: '',
           prenom: '',
-          company: '',
+          entreprise: '',
+          email: '',
+          password: '',
           tel: ''
         }}
         validationSchema={Yup.object().shape({
           email: Yup.string().email('entrez un mail valid').max(255).required('Email obligatoire'),
           password: Yup.string().required('Mot de passe obligatoire'),
-          company: Yup.string().required('Nom entreprise obligatoire'),
+          entreprise: Yup.string().required('Nom entreprise obligatoire'),
           tel: Yup.string().required('Télephone obligatoire'),
           nom: Yup.string().required('Nom obligatoire'),
           prenom: Yup.string().required('Prénom obligatoire')
@@ -194,74 +110,82 @@ const FirebaseRegister = ({ ...others }) => {
           <form noValidate {...others} onSubmit={handleSubmit}>
             <Grid container spacing={matchDownSM ? 0 : 2}>
               <Grid item xs={12} sm={6}>
-                <TextField
-                  // error={Boolean(touched.prenom && errors.prenom)}
-                  fullWidth
-                  label="Prénom"
-                  margin="normal"
-                  name="prenom"
-                  type="text"
-                  defaultValue=""
-                  sx={{ ...theme.typography.customInput }}
-                />
-                {/* {touched.prenom && errors.prenom && (
-                  <FormHelperText error id="standard-weight-helper-text--register">
-                    {errors.prenom}
-                  </FormHelperText>
-                )} */}
+              <FormControl fullWidth error={Boolean(touched.nom && errors.nom)} sx={{ ...theme.typography.customInput }}>
+              <InputLabel htmlFor="outlined-adornment-nom-register">Nom</InputLabel>
+              <OutlinedInput
+                id="outlined-adornment-nom-register"
+                type="nom"
+                value={values.nom}
+                name="nom"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                inputProps={{}}
+              />
+              {touched.nom && errors.nom && (
+                <FormHelperText error id="standard-weight-helper-text--register">
+                  {errors.nom}
+                </FormHelperText>
+              )}
+            </FormControl>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  // error={Boolean(touched.nom && errors.nom)}
-                  fullWidth
-                  label="Nom"
-                  margin="normal"
-                  name="nom"
-                  type="text"
-                  defaultValue=""
-                  sx={{ ...theme.typography.customInput }}
-                />
-                {/* {touched.nom && errors.nom && (
-                  <FormHelperText error id="standard-weight-helper-text--register">
-                    {errors.nom}
-                  </FormHelperText>
-                )} */}
+              <Grid item xs={12} sm={6}>  
+              <FormControl fullWidth error={Boolean(touched.prenom && errors.prenom)} sx={{ ...theme.typography.customInput }}>
+              <InputLabel htmlFor="outlined-adornment-prenom-register">Prenom</InputLabel>
+              <OutlinedInput
+                id="outlined-adornment-prenom-register"
+                type="prenom"
+                value={values.prenom}
+                name="prenom"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                inputProps={{}}
+              />
+              {touched.prenom && errors.prenom && (
+                <FormHelperText error id="standard-weight-helper-text--register">
+                  {errors.prenom}
+                </FormHelperText>
+              )}
+            </FormControl>
               </Grid>
             </Grid>
             <Grid container spacing={matchDownSM ? 0 : 2}>
               <Grid item xs={12} sm={6}>
-                <TextField
-                  // error={Boolean(touched.company && errors.company)}
-                  fullWidth
-                  label="Nom de l'entreprise"
-                  margin="normal"
-                  name="company"
-                  type="text"
-                  defaultValue=""
-                  sx={{ ...theme.typography.customInput }}
-                />
-                {/* {touched.company && errors.company && (
-                  <FormHelperText error id="standard-weight-helper-text--register">
-                    {errors.company}
-                  </FormHelperText>
-                )} */}
+              <FormControl fullWidth error={Boolean(touched.entreprise && errors.entreprise)} sx={{ ...theme.typography.customInput }}>
+              <InputLabel htmlFor="outlined-adornment-entreprise-register">Entreprise</InputLabel>
+              <OutlinedInput
+                id="outlined-adornment-entreprise-register"
+                type="entreprise"
+                value={values.entreprise}
+                name="entreprise"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                inputProps={{}}
+              />
+              {touched.entreprise && errors.entreprise && (
+                <FormHelperText error id="standard-weight-helper-text--register">
+                  {errors.entreprise}
+                </FormHelperText>
+              )}
+            </FormControl>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField
-                  // error={Boolean(touched.tel && errors.tel)}
-                  fullWidth
-                  label="Téléphone"
-                  margin="normal"
-                  name="tel"
-                  type="text"
-                  defaultValue=""
-                  sx={{ ...theme.typography.customInput }}
-                />
-                {/* {touched.tel && errors.tel && (
-                  <FormHelperText error id="standard-weight-helper-text--register">
-                    {errors.tel}
-                  </FormHelperText>
-                )} */}
+              <FormControl fullWidth error={Boolean(touched.tel && errors.tel)} sx={{ ...theme.typography.customInput }}>
+              <InputLabel htmlFor="outlined-adornment-tel-register">Telephone</InputLabel>
+              <OutlinedInput
+                id="outlined-adornment-tel-register"
+                type="tel"
+                value={values.tel}
+                name="tel"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                inputProps={{}}
+              />
+              {touched.tel && errors.tel && (
+                <FormHelperText error id="standard-weight-helper-text--register">
+                  {errors.tel}
+                </FormHelperText>
+              )}
+            </FormControl>
               </Grid>
             </Grid>
             <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
@@ -361,7 +285,19 @@ const FirebaseRegister = ({ ...others }) => {
               <AnimateButton>
                 <Button
                   onClick={() => {
-                    console.log(values);
+                    setLoading(true);
+                    api
+                      .post('/auth/register', values)
+                      .then((resp) => {
+                        setLoading(false);
+                        dispatch({ type: 'REGISTER_SUCCESS', payload: resp.data.user });
+                        navigate('/pages/dashboard/default');
+                      })
+                      .catch((err) => {
+                        setLoading(false);
+                        Toast.error('Une erreur est survenue réessayez plus tard.');
+                        console.log(err.response.data);
+                      });
                   }}
                   disableElevation
                   disabled={isSubmitting}
@@ -371,13 +307,14 @@ const FirebaseRegister = ({ ...others }) => {
                   variant="contained"
                   color="secondary"
                 >
-                  S&apos;inscrire
+                  {loading ? <CircularProgress size={20} /> : "S'inscrire"}
                 </Button>
               </AnimateButton>
             </Box>
           </form>
         )}
       </Formik>
+      <ToastContainer />
     </>
   );
 };

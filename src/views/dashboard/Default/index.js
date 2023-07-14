@@ -9,6 +9,7 @@ import PopularCard from './PopularCard';
 import TotalOrderLineChartCard from './TotalOrderLineChartCard';
 import TotalIncomeLightCard from './TotalIncomeLightCard';
 import { gridSpacing } from 'store/constant';
+// import { useSelector } from 'react-redux';
 
 // ==============================|| DEFAULT DASHBOARD ||============================== //
 
@@ -17,7 +18,8 @@ const Dashboard = () => {
   useEffect(() => {
     setLoading(false);
   }, []);
-
+//   const info = useSelector((state) => state.authReducer);
+// console.log(info)
   return (
     <Grid container spacing={gridSpacing}>
       <Grid item xs={12}>

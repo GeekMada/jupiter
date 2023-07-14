@@ -25,8 +25,8 @@ const countries = [
     id: 1,
     name: 'France',
     operators: [
-      { id: 1, name: 'Orange', logo: 'orange.png', tariff: '0.15', balance: 10 },
-      { id: 2, name: 'SFR', logo: 'sfr.png', tariff: '0.18', balance: 5 }
+      { id: 1, name: 'Orange', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Orange_logo.svg/2048px-Orange_logo.svg.png', tariff: '0.15', balance: 10 },
+      { id: 2, name: 'SFR', logo: 'shttps://upload.wikimedia.org/wikipedia/commons/9/97/SFR-2022-logo.svg', tariff: '0.18', balance: 5 }
     ],
     currency:'€'
   },
@@ -34,11 +34,47 @@ const countries = [
     id: 2,
     name: 'United States',
     operators: [
-      { id: 3, name: 'AT&T', logo: 'att.png', tariff: '0.12', balance: 20 },
-      { id: 4, name: 'Verizon', logo: 'verizon.png', tariff: '0.14', balance: 15 }
+      { id: 3, name: 'AT&T', logo: 'https://companieslogo.com/img/orig/T-cec8a3f9.png?t=1633439494', tariff: '0.12', balance: 20 },
+      { id: 4, name: 'Verizon', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Verizon_Logo_2000_to_2015.svg/2560px-Verizon_Logo_2000_to_2015.svg.png', tariff: '0.14', balance: 15 }
     ],
     currency:'$'
-  }
+  }, 
+   {
+    id: 3,
+    name: 'Madagascaar',
+    operators: [
+      { id: 1, name: 'Telma', logo: 'https://phileum.com/wp-content/uploads/2016/01/telma-logo.png', tariff: '0.15', balance: 10 },
+      { id: 2, name: 'Orange', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Orange_logo.svg/2048px-Orange_logo.svg.png', tariff: '0.18', balance: 6 },
+      { id: 2, name: 'Airtel', logo: 'https://logos-marques.com/wp-content/uploads/2022/04/Airtel-Logo.png', tariff: '0.18', balance: 5 },      
+    ],
+    currency:'Ar'
+  },
+  {
+    id: 4,
+    name: 'Comores',
+    operators: [
+      { id: 1, name: 'Telma', logo: 'https://phileum.com/wp-content/uploads/2016/01/telma-logo.png', tariff: '0.15', balance: 10 },
+      { id: 4, name: 'Verizon', logo: 'verizon.png', tariff: '0.14', balance: 15 }
+    ],
+    currency:'Kmf'
+  },{
+    id: 6,
+    name: 'Mali',
+    operators: [
+      { id: 1, name: 'Sotelma', logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCZh_H_Yy1fsphKVgzqgIASnHPiGYg3F-8JOJA0xyaKA&s', tariff: '0.15', balance: 10 },
+      { id: 2, name: 'Telecel', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Telcel_logo.svg/2560px-Telcel_logo.svg.png', tariff: '0.18', balance: 6 },
+      { id: 2, name: 'Airtel', logo: 'https://logos-marques.com/wp-content/uploads/2022/04/Airtel-Logo.png', tariff: '0.18', balance: 5 },      
+    ],
+    currency:'cfa'
+  },
+  {
+    id: 7,
+    name: 'Comores',
+    operators: [
+      { id: 1, name: 'Emtel', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Emtel_Logo.png/640px-Emtel_Logo.png', tariff: '0.15', balance: 10 },
+    ],
+    currency:'Rs'
+  },
 ];
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({

@@ -16,8 +16,11 @@ import {
 } from '@mui/material';
 import { Edit, PhotoCamera, Save } from '@mui/icons-material';
 import { Box } from '@mui/system';
+import { useSelector } from 'react-redux';
 
 const UserInfoScreen = () => {
+  const UserData = useSelector((state) => state.authReducer.user);
+  console.log(UserData);
   const [userInfo, setUserInfo] = useState({
     firstName: 'John',
     lastName: 'Doe',
