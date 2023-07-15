@@ -1,22 +1,16 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
 
 // material-ui
-import { useTheme, styled } from '@mui/material/styles';
-import { Avatar, Box, Button, Grid, Typography } from '@mui/material';
-
-// third-party
-import Chart from 'react-apexcharts';
+import {  styled } from '@mui/material/styles';
+import {  Box, Button, Grid, Typography } from '@mui/material';
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import SkeletonTotalOrderCard from 'ui-component/cards/Skeleton/EarningCard';
-
-import ChartDataMonth from './chart-data/total-order-month-line-chart';
-import ChartDataYear from './chart-data/total-order-year-line-chart';
-
-// assets
-import MoveDown from '@mui/icons-material/MoveDown';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/material.css';
+import { useState } from 'react';
+import {  useNavigate } from 'react-router-dom';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
   backgroundColor: theme.palette.primary.dark,
@@ -63,89 +57,43 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 // ==============================|| DASHBOARD - TOTAL ORDER LINE CHART CARD ||============================== //
 
 const TotalOrderLineChartCard = ({ isLoading }) => {
-  const theme = useTheme();
-
-  const [timeValue, setTimeValue] = useState(false);
-  const handleChangeTime = (event, newValue) => {
-    setTimeValue(newValue);
+  const navigate = useNavigate();
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const handlePhoneNumberChange = (value) => {
+    setPhoneNumber(value);
+  }
+  const handleNext = () => {
+    // Naviguer vers l'écran /pages/developer/api avec le numéro de téléphone comme paramètre
+    navigate(`/pages/Transfert?phoneNumber=${encodeURIComponent(phoneNumber)}`);
   };
-
   return (
     <>
       {isLoading ? (
         <SkeletonTotalOrderCard />
       ) : (
         <CardWrapper border={false} content={false}>
-          <Box sx={{ p: 2.25 }}>
-            <Grid container direction="column">
-              <Grid item>
-                <Grid container justifyContent="space-between">
-                  <Grid item>
-                    <Avatar
-                      variant="rounded"
-                      sx={{
-                        ...theme.typography.commonAvatar,
-                        ...theme.typography.largeAvatar,
-                        backgroundColor: theme.palette.primary[800],
-                        color: '#fff',
-                        mt: 1
-                      }}
-                    >
-                      <MoveDown fontSize="inherit" />
-                    </Avatar>
-                  </Grid>
-                  <Grid item>
-                    <Button
-                      disableElevation
-                      variant={timeValue ? 'contained' : 'text'}
-                      size="small"
-                      sx={{ color: 'inherit' }}
-                      onClick={(e) => handleChangeTime(e, true)}
-                    >
-                      Semaine
-                    </Button>
-                    <Button
-                      disableElevation
-                      variant={!timeValue ? 'contained' : 'text'}
-                      size="small"
-                      sx={{ color: 'inherit' }}
-                      onClick={(e) => handleChangeTime(e, false)}
-                    >
-                      Mois
-                    </Button>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item sx={{ mb: 0.75 }}>
-                <Grid container alignItems="center">
-                  <Grid item xs={6}>
-                    <Grid container alignItems="center">
-                      <Grid item>
-                        {timeValue ? (
-                          <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>108€</Typography>
-                        ) : (
-                          <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>961€</Typography>
-                        )}
-                      </Grid>
-                      <Grid item xs={12}>
-                        <Typography
-                          sx={{
-                            fontSize: '1rem',
-                            fontWeight: 500,
-                            color: theme.palette.primary[200]
-                          }}
-                        >
-                          Recharges
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={6}>
-                    {timeValue ? <Chart {...ChartDataMonth} /> : <Chart {...ChartDataYear} />}
-                  </Grid>
-                </Grid>
-              </Grid>
+          <Box
+            sx={{ p: 2.25, height: '183px' }}
+            justifyContent={'space-evenly'}
+            flexDirection={'column'}
+            alignItems={'center'}
+            display={'flex'}
+          >
+          <Grid>
+              <Typography sx={{ fontWeight: 500 }}>Recharge Mobile</Typography>
             </Grid>
+            <Grid>
+              <PhoneInput
+                specialLabel=""
+                placeholder=""
+                value={phoneNumber}
+                dropdownStyle={{ color: 'black' }}
+                onChange={handlePhoneNumberChange}
+              />
+          </Grid>
+          <Button variant="contained" color="primary" disableElevation onClick={handleNext}>
+              <Typography sx={{ fontWeight: 500 }}>Suivant</Typography>
+          </Button>
           </Box>
         </CardWrapper>
       )}
