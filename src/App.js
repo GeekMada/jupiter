@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { ThemeProvider } from '@mui/material/styles';
 import { CssBaseline, StyledEngineProvider } from '@mui/material';
-
+import {AuthProvider } from './context/auth-context';
 // routing
 import Routes from 'routes';
 
@@ -19,12 +19,16 @@ const App = () => {
 
   return (
     <StyledEngineProvider injectFirst>
+      <AuthProvider>
       <ThemeProvider theme={themes(customization)}>
-        <CssBaseline />
-        <NavigationScroll>
-          <Routes />
-        </NavigationScroll>
+      <CssBaseline />
+      <NavigationScroll>
+        {/* <AuthConsumer> */}
+            <Routes />
+        {/* </AuthConsumer> */}
+      </NavigationScroll>
       </ThemeProvider>
+      </AuthProvider>
     </StyledEngineProvider>
   );
 };

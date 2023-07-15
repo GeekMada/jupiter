@@ -1,8 +1,8 @@
 // assets
-import { IconDashboard, IconHistory, IconShield, IconRecharging, IconTag, IconSend } from '@tabler/icons';
+import { IconDashboard, IconHistory, IconShield, IconRecharging, IconTag, IconSend, IconApiApp } from '@tabler/icons';
 
 // constant
-const icons = { IconDashboard, IconHistory, IconShield, IconRecharging, IconTag, IconSend };
+const icons = { IconDashboard, IconHistory, IconShield, IconRecharging, IconTag, IconSend, IconApiApp };
 
 // ==============================|| DASHBOARD MENU ITEMS ||============================== //
 
@@ -28,8 +28,8 @@ const dashboard = {
       breadcrumbs: false
     },
     {
-      id: 'rechargercompte',
-      title: 'Recharger Credit',
+      id: 'tarif',
+      title: 'Tarification',
       type: 'item',
       url: '/pages/tarif',
       icon: icons.IconTag,
@@ -58,6 +58,27 @@ const dashboard = {
       url: '/pages/security',
       icon: icons.IconShield,
       breadcrumbs: false
+    },
+    {
+      id: 'authentication',
+      title: 'Developpeur',
+      type: 'collapse',
+      icon: IconApiApp,
+
+      children: [
+        {
+          id: 'api',
+          title: 'Paramettre API',
+          type: 'item',
+          url: '/pages/developer/api',
+        },
+        {
+          id: 'doc',
+          title: 'Documentation',
+          type: 'item',
+          url: '/pages/developer/doc',
+        }
+      ]
     }
   ]
 };

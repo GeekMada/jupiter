@@ -6,10 +6,12 @@ import Loadable from 'ui-component/Loadable';
 // import Login from 'views/pages/authentication/authentication3/Login3';
 import Recharge from 'views/Recharge/Recharge';
 import Historique from 'views/Historique/Historique';
-import RechargerCredit from 'views/RechargeCredit/RechargeCredit';
+import Tarification from 'views/Tarification/Tarification';
 import Securité from 'views/Securité/Securité';
 import UserInfoScreen from 'views/Profil/Profil';
 import Transfert from 'views/Transfert/Transfert';
+import Documenation from 'views/api/Documenation';
+import ParamettreApi from 'views/api/ParamettreApi';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -47,7 +49,7 @@ const MainRoutes = {
     },
     {
       path: '/pages/Tarif',
-      element: <RechargerCredit />
+      element: <Tarification />
     },
     {
       path: '/pages/Security',
@@ -56,6 +58,14 @@ const MainRoutes = {
     {
       path: '/pages/Profil',
       element: <UserInfoScreen />
+    },
+    {
+      path: '/pages/developer/api',
+      element: <Documenation />
+    },
+    {
+      path: '/pages/developer/doc',
+      element: <ParamettreApi />
     }
   ]
 };

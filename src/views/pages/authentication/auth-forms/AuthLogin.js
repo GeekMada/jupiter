@@ -32,16 +32,18 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { ToastContainer } from 'react-toastify';
 
 import api from 'requests/api';
-import { useDispatch } from 'react-redux';
+// import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import Toast from 'ui-component/Toast';
+import { useAuthContext } from 'context/auth-context';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
 const FirebaseLogin = ({ ...others }) => {
   const navigate = useNavigate();
   const theme = useTheme();
-  const dispatch = useDispatch();
+  const Auth= useAuthContext()
+  // const dispatch = useDispatch();
   const scriptedRef = useScriptRef();
   const [checked, setChecked] = useState(true);
 
@@ -169,7 +171,8 @@ const FirebaseLogin = ({ ...others }) => {
                       .post('/auth/login', values)
                       .then((resp) => {
                         setLoading(false);
-                        dispatch({ type: 'LOGIN_SUCCESS', payload: resp.data.user });
+                        Auth.login(resp.data.user);
+                        // dispatch({ type: 'LOGIN_SUCCESS', payload: resp.data.user });
                         navigate('/pages/dashboard/default');
                       })
                       .catch((err) => {

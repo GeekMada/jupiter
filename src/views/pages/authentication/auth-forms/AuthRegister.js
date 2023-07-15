@@ -33,14 +33,16 @@ import { strengthColor, strengthIndicator } from 'utils/password-strength';
 // assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { useDispatch } from 'react-redux';
+// import { useDispatch } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import Toast from 'ui-component/Toast';
 import api from 'requests/api';
+import { useAuthContext } from 'context/auth-context';
 // import api from 'requests/api';
 // ===========================|| FIREBASE - REGISTER ||=========================== //
 const FirebaseRegister = ({ ...others }) => {
-  const dispatch = useDispatch()
+  // const dispatch = useDispatch()
+  const Auth = useAuthContext()
 
   const navigate = useNavigate();
   const theme = useTheme();
@@ -290,7 +292,8 @@ const FirebaseRegister = ({ ...others }) => {
                       .post('/auth/register', values)
                       .then((resp) => {
                         setLoading(false);
-                        dispatch({ type: 'REGISTER_SUCCESS', payload: resp.data.user });
+                        // dispatch({ type: 'REGISTER_SUCCESS', payload: resp.data.user });
+                        Auth.login(resp.data.user);
                         navigate('/pages/dashboard/default');
                       })
                       .catch((err) => {

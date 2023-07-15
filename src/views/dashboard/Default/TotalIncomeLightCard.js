@@ -1,7 +1,6 @@
 
 // material-ui
-import { MoveUp } from '@mui/icons-material';
-import { Avatar, Button, Grid, Typography } from '@mui/material';
+import { Button , Typography } from '@mui/material';
 import { Box } from '@mui/system';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
@@ -9,11 +8,8 @@ import TotalIncomeCard from 'ui-component/cards/Skeleton/TotalIncomeCard';
 
 // assets
 import PropTypes from 'prop-types';
-import Chart from 'react-apexcharts';
-import { useTheme, styled } from '@mui/material/styles';
-import { useState } from 'react';
-import ChartDataMonth from './chart-data/total-order-month-line-chart';
-import ChartDataYear from './chart-data/total-order-year-line-chart';
+import { styled } from '@mui/material/styles';
+import { Link } from 'react-router-dom';
 // styles
 const CardWrapper = styled(MainCard)(({ theme }) => ({
   overflow: 'hidden',
@@ -43,90 +39,17 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 // ==============================|| DASHBOARD - TOTAL INCOME LIGHT CARD ||============================== //
 
 const TotalIncomeLightCard = ({ isLoading }) => {
-  const theme = useTheme();
-  const [timeValue, setTimeValue] = useState(false);
-  const handleChangeTime = (event, newValue) => {
-    setTimeValue(newValue);
-  };
-
   return (
     <>
       {isLoading ? (
         <TotalIncomeCard />
       ) : (
         <CardWrapper border={false} content={false}>
-          <Box sx={{ p: 2.25 }}>
-            <Grid container direction="column">
-              <Grid item>
-                <Grid container justifyContent="space-between">
-                  <Grid item>
-                    <Avatar
-                      variant="rounded"
-                      sx={{
-                        ...theme.typography.commonAvatar,
-                        ...theme.typography.largeAvatar,
-                        backgroundColor: theme.palette.warning.main,
-                        color: '#fff',
-                        mt: 1
-                      }}
-                    >
-                      <MoveUp fontSize="inherit" />
-                    </Avatar>
-                  </Grid>
-                  <Grid item>
-                    <Button
-                      disableElevation
-                      style={{ backgroundColor: timeValue ? theme.palette.warning.main : '' }}
-                      variant={timeValue ? 'contained' : 'text'}
-                      size="small"
-                      sx={{ color: 'inherit' }}
-                      onClick={(e) => handleChangeTime(e, true)}
-                    >
-                      Semaine
-                    </Button>
-                    <Button
-                      disableElevation
-                      variant={!timeValue ? 'contained' : 'text'}
-                      style={{ backgroundColor: timeValue ? '' : theme.palette.warning.main }}
-                      size="small"
-                      sx={{ color: 'inherit' }}
-                      onClick={(e) => handleChangeTime(e, false)}
-                    >
-                      Mois
-                    </Button>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item sx={{ mb: 0.75 }}>
-                <Grid container alignItems="center">
-                  <Grid item xs={6}>
-                    <Grid container alignItems="center">
-                      <Grid item>
-                        {timeValue ? (
-                          <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>108€</Typography>
-                        ) : (
-                          <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>961€</Typography>
-                        )}
-                      </Grid>
-                      <Grid item xs={12}>
-                        <Typography
-                          sx={{
-                            fontSize: '1rem',
-                            fontWeight: 500,
-                            color: 'rgba(0, 0, 0, 0.6)'
-                          }}
-                        >
-                          Transferts
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={6}>
-                    {timeValue ? <Chart {...ChartDataMonth} /> : <Chart {...ChartDataYear} />}
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
+          <Box sx={{ p: 2.25, height: '183px' }} justifyContent={'space-evenly'} flexDirection={'column'} alignItems={'center'} display={'flex'} >
+          <Typography variant='h3'>Parametre de l&apos;API</Typography>
+            <Button variant="contained" color="warning" disableElevation to='/pages/developer/doc' LinkComponent={Link}>
+              <Typography sx={{ fontWeight: 500, color: 'white' }}>Documentation</Typography>
+          </Button>
           </Box>
         </CardWrapper>
       )}

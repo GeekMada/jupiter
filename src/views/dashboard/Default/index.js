@@ -18,8 +18,8 @@ const Dashboard = () => {
   useEffect(() => {
     setLoading(false);
   }, []);
-//   const info = useSelector((state) => state.authReducer);
-// console.log(info)
+  // const userString = window.sessionStorage.getItem('user');
+  // // console.log(JSON.parse(userString));
   return (
     <Grid container spacing={gridSpacing}>
       <Grid item xs={12}>

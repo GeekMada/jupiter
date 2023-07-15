@@ -36,10 +36,12 @@ import {
   // IconSearch,
   IconSettings
 } from '@tabler/icons';
+import { useAuthContext } from 'context/auth-context';
 
 // ==============================|| PROFILE MENU ||============================== //
 
 const ProfileSection = () => {
+  const Auth = useAuthContext()
   const UserData = useSelector((state) => state.authReducer.user);
   const theme = useTheme();
   const customization = useSelector((state) => state.customization);
@@ -53,7 +55,8 @@ const ProfileSection = () => {
    * */
   const anchorRef = useRef(null);
   const handleLogout = async () => {
-    console.log('Logout');
+    Auth.logout();
+    navigate('/');
   };
 
   const handleClose = (event) => {
@@ -64,6 +67,7 @@ const ProfileSection = () => {
   };
 
   const handleListItemClick = (event, index, route = '') => {
+    console.log(UserData);
     setSelectedIndex(index);
     handleClose(event);
 
@@ -195,8 +199,6 @@ const ProfileSection = () => {
                           sx={{ borderRadius: `${customization.borderRadius}px` }}
                           selected={selectedIndex === 4}
                           onClick={handleLogout}
-                          LinkComponent={Link}
-                          to="/"
                         >
                           <ListItemIcon>
                             <IconLogout stroke={1.5} size="1.3rem" />

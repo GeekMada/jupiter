@@ -20,7 +20,7 @@ import { useSelector } from 'react-redux';
 
 const UserInfoScreen = () => {
   const UserData = useSelector((state) => state.authReducer.user);
-  console.log(UserData);
+  console.log('dans profil',UserData);
   const [userInfo, setUserInfo] = useState({
     firstName: 'John',
     lastName: 'Doe',
