@@ -24,7 +24,7 @@ const AuthContext = createContext({
     isAuthenticated: false,
     // eslint-disable-next-line no-unused-vars
     login: (userData) => { },
-    logout: () => { }
+    logout: () => {window.sessionStorage.removeItem('user')}
 });
 
 const authReducer = (state, action) => {

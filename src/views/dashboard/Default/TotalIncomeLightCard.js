@@ -1,6 +1,6 @@
 
 // material-ui
-import { Button , Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
@@ -45,11 +45,17 @@ const TotalIncomeLightCard = ({ isLoading }) => {
         <TotalIncomeCard />
       ) : (
         <CardWrapper border={false} content={false}>
-          <Box sx={{ p: 2.25, height: '183px' }} justifyContent={'space-evenly'} flexDirection={'column'} alignItems={'center'} display={'flex'} >
-          <Typography variant='h3'>Parametre de l&apos;API</Typography>
-            <Button variant="contained" color="warning" disableElevation to='/pages/developer/doc' LinkComponent={Link}>
-              <Typography sx={{ fontWeight: 500, color: 'white' }}>Documentation</Typography>
-          </Button>
+          <Box
+            sx={{ p: 2.25, height: '183px' }}
+            justifyContent={'space-evenly'}
+            flexDirection={'column'}
+            alignItems={'center'}
+            display={'flex'}
+          >
+            <Typography variant="h3">Parametre de l&apos;API</Typography>
+            <Button variant="contained" color="warning" disableElevation to="/pages/developer/doc" LinkComponent={Link}>
+              <Typography sx={{ fontWeight: 500, color: 'white' }}>Documentation</Typography>{' '}
+            </Button>
           </Box>
         </CardWrapper>
       )}

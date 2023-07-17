@@ -18,8 +18,6 @@ const Dashboard = () => {
   useEffect(() => {
     setLoading(false);
   }, []);
-  // const userString = window.sessionStorage.getItem('user');
-  // // console.log(JSON.parse(userString));
   return (
     <Grid container spacing={gridSpacing}>
       <Grid item xs={12}>

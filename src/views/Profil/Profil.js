@@ -16,20 +16,10 @@ import {
 } from '@mui/material';
 import { Edit, PhotoCamera, Save } from '@mui/icons-material';
 import { Box } from '@mui/system';
-import { useSelector } from 'react-redux';
+import { parse } from 'flatted';
 
 const UserInfoScreen = () => {
-  const UserData = useSelector((state) => state.authReducer.user);
-  console.log('dans profil',UserData);
-  const [userInfo, setUserInfo] = useState({
-    firstName: 'John',
-    lastName: 'Doe',
-    phone: '1234567890',
-    companyName: 'My Company',
-    email: 'john.doe@example.com',
-    photo: 'https://example.com/user.jpg'
-  });
-
+  const UserData = parse(sessionStorage.getItem('user'));
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
@@ -99,7 +89,7 @@ const UserInfoScreen = () => {
                 >
                   <Avatar
                     alt="User Photo"
-                    src={newPhoto ? URL.createObjectURL(newPhoto) : userInfo.photo}
+                    src={newPhoto ? URL.createObjectURL(newPhoto) : "p"}
                     sx={{ width: 120, height: 120 }}
                   />
                 </Badge>
@@ -110,7 +100,7 @@ const UserInfoScreen = () => {
             <TextField
               label="Prénom"
               name="firstName"
-              value={userInfo.firstName}
+              value={UserData.prenom}
               disabled={!editMode}
               onChange={handleFieldChange}
               fullWidth
@@ -121,7 +111,7 @@ const UserInfoScreen = () => {
             <TextField
               label="Nom"
               name="lastName"
-              value={userInfo.lastName}
+              value={UserData.nom}
               disabled={!editMode}
               onChange={handleFieldChange}
               fullWidth
@@ -132,7 +122,7 @@ const UserInfoScreen = () => {
             <TextField
               label="Téléphone"
               name="phone"
-              value={userInfo.phone}
+              value={UserData.tel}
               disabled={!editMode}
               onChange={handleFieldChange}
               fullWidth
@@ -143,7 +133,7 @@ const UserInfoScreen = () => {
             <TextField
               label="Nom de l'entreprise"
               name="companyName"
-              value={userInfo.companyName}
+              value={UserData.entreprise}
               disabled={!editMode}
               onChange={handleFieldChange}
               fullWidth
@@ -154,7 +144,7 @@ const UserInfoScreen = () => {
             <TextField
               label="Email"
               name="email"
-              value={userInfo.email}
+              value={UserData.email}
               disabled={!editMode}
               onChange={handleFieldChange}
               fullWidth

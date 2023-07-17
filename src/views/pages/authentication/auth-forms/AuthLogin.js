@@ -36,6 +36,7 @@ import api from 'requests/api';
 import { useNavigate } from 'react-router';
 import Toast from 'ui-component/Toast';
 import { useAuthContext } from 'context/auth-context';
+import {stringify} from 'flatted';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
@@ -171,7 +172,7 @@ const FirebaseLogin = ({ ...others }) => {
                       .post('/auth/login', values)
                       .then((resp) => {
                         setLoading(false);
-                        Auth.login(resp.data.user);
+                        Auth.login(stringify(resp.data.user));
                         // dispatch({ type: 'LOGIN_SUCCESS', payload: resp.data.user });
                         navigate('/pages/dashboard/default');
                       })

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 
-import { Link, useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 // material-ui
@@ -36,13 +36,15 @@ import {
   // IconSearch,
   IconSettings
 } from '@tabler/icons';
+import { parse } from 'flatted';
 import { useAuthContext } from 'context/auth-context';
 
 // ==============================|| PROFILE MENU ||============================== //
 
 const ProfileSection = () => {
   const Auth = useAuthContext()
-  const UserData = useSelector((state) => state.authReducer.user);
+  // const UserData = useSelector((state) => state.authReducer.user);
+  const UserData = parse(sessionStorage.getItem('user'));
   const theme = useTheme();
   const customization = useSelector((state) => state.customization);
   const navigate = useNavigate();
@@ -66,14 +68,14 @@ const ProfileSection = () => {
     setOpen(false);
   };
 
-  const handleListItemClick = (event, index, route = '') => {
+  const handleListItemClick = (event, index) => {
     console.log(UserData);
     setSelectedIndex(index);
     handleClose(event);
-
-    if (route && route !== '') {
-      navigate(route);
-    }
+    navigate('/pages/Profil');
+    // if (route && route !== '') {
+    //   navigate(route);
+    // }
   };
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -187,8 +189,6 @@ const ProfileSection = () => {
                           sx={{ borderRadius: `${customization.borderRadius}px` }}
                           selected={selectedIndex === 0}
                           onClick={(event) => handleListItemClick(event, 0, '#')}
-                          to="/pages/Profil"
-                          LinkComponent={Link}
                         >
                           <ListItemIcon>
                             <IconSettings stroke={1.5} size="1.3rem" />

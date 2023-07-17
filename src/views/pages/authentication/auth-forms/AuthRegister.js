@@ -38,6 +38,10 @@ import { ToastContainer } from 'react-toastify';
 import Toast from 'ui-component/Toast';
 import api from 'requests/api';
 import { useAuthContext } from 'context/auth-context';
+import { stringify } from 'flatted';
+// import PhoneInput from 'react-phone-input-2';
+// import 'react-phone-input-2/lib/material.css';
+
 // import api from 'requests/api';
 // ===========================|| FIREBASE - REGISTER ||=========================== //
 const FirebaseRegister = ({ ...others }) => {
@@ -171,17 +175,30 @@ const FirebaseRegister = ({ ...others }) => {
             </FormControl>
               </Grid>
               <Grid item xs={12} sm={6}>
-              <FormControl fullWidth error={Boolean(touched.tel && errors.tel)} sx={{ ...theme.typography.customInput }}>
-              <InputLabel htmlFor="outlined-adornment-tel-register">Telephone</InputLabel>
-              <OutlinedInput
+                <FormControl fullWidth error={Boolean(touched.tel && errors.tel)} sx={{ ...theme.typography.customInput }}>
+                  <InputLabel htmlFor="outlined-adornment-tel-register">Telephone</InputLabel>
+                <OutlinedInput
+                    id="outlined-adornment-tel-register"
+                    type="tel"
+                    value={values.tel}
+                    name="tel"  
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    inputProps={{}}
+                  />
+              {/* <PhoneInput
                 id="outlined-adornment-tel-register"
                 type="tel"
                 value={values.tel}
                 name="tel"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                inputProps={{}}
-              />
+                placeholder=''
+                specialLabel=""
+                inputStyle={{borderRadius:12, width:'100%',display:'flex',flexDirection:'column',justifyContent:'center', alignItems:'center'}}
+                containerStyle={{display:'flex',flexDirection:'column'}}
+              /> */}
+              
               {touched.tel && errors.tel && (
                 <FormHelperText error id="standard-weight-helper-text--register">
                   {errors.tel}
@@ -293,12 +310,15 @@ const FirebaseRegister = ({ ...others }) => {
                       .then((resp) => {
                         setLoading(false);
                         // dispatch({ type: 'REGISTER_SUCCESS', payload: resp.data.user });
-                        Auth.login(resp.data.user);
+                        Auth.login(stringify(resp.data.user));
                         navigate('/pages/dashboard/default');
                       })
                       .catch((err) => {
                         setLoading(false);
+                        err.response.data=="The email address is already in use by another account."? 
+                        Toast.error('l\'adresse est déjà utilisé!'):
                         Toast.error('Une erreur est survenue réessayez plus tard.');
+
                         console.log(err.response.data);
                       });
                   }}
