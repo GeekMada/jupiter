@@ -28,7 +28,6 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import Transitions from 'ui-component/extended/Transitions';
-import User1 from 'assets/images/users/user-round.svg';
 
 // assets
 import {
@@ -38,13 +37,11 @@ import {
 } from '@tabler/icons';
 import { parse } from 'flatted';
 import { useAuthContext } from 'context/auth-context';
-
 // ==============================|| PROFILE MENU ||============================== //
 
 const ProfileSection = () => {
-  const Auth = useAuthContext()
-  // const UserData = useSelector((state) => state.authReducer.user);
   const UserData = parse(sessionStorage.getItem('user'));
+  const Auth = useAuthContext()
   const theme = useTheme();
   const customization = useSelector((state) => state.customization);
   const navigate = useNavigate();
@@ -114,7 +111,7 @@ const ProfileSection = () => {
         }}
         icon={
           <Avatar
-            src={User1}
+            src={UserData.photoUrl}
             sx={{
               ...theme.typography.mediumAvatar,
               margin: '8px 0 8px 8px !important',

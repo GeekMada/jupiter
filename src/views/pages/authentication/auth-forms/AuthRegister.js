@@ -315,7 +315,7 @@ const FirebaseRegister = ({ ...others }) => {
                       })
                       .catch((err) => {
                         setLoading(false);
-                        err.response.data=="The email address is already in use by another account."? 
+                        err.response.data.error=="The email address is already in use by another account."? 
                         Toast.error('l\'adresse est déjà utilisé!'):
                         Toast.error('Une erreur est survenue réessayez plus tard.');
 
@@ -330,7 +330,7 @@ const FirebaseRegister = ({ ...others }) => {
                   variant="contained"
                   color="secondary"
                 >
-                  {loading ? <CircularProgress size={20} /> : "S'inscrire"}
+                  {loading ? <CircularProgress size={20} style={{ color: 'white' }}/> : "S'inscrire"}
                 </Button>
               </AnimateButton>
             </Box>

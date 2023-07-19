@@ -36,14 +36,14 @@ import api from 'requests/api';
 import { useNavigate } from 'react-router';
 import Toast from 'ui-component/Toast';
 import { useAuthContext } from 'context/auth-context';
-import {stringify} from 'flatted';
+import { stringify } from 'flatted';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
 const FirebaseLogin = ({ ...others }) => {
   const navigate = useNavigate();
   const theme = useTheme();
-  const Auth= useAuthContext()
+  const Auth = useAuthContext();
   // const dispatch = useDispatch();
   const scriptedRef = useScriptRef();
   const [checked, setChecked] = useState(true);
@@ -63,7 +63,7 @@ const FirebaseLogin = ({ ...others }) => {
       <Formik
         initialValues={{
           email: '',
-          password: '',
+          password: ''
         }}
         validationSchema={Yup.object().shape({
           email: Yup.string().email('Doit etre un email valide').max(255).required('Email obligatoire'),
@@ -85,7 +85,7 @@ const FirebaseLogin = ({ ...others }) => {
           }
         }}
       >
-        {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
+        {({ errors, handleBlur, handleChange, handleSubmit, touched, values }) => (
           <form noValidate onSubmit={handleSubmit} {...others}>
             <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
               <InputLabel htmlFor="outlined-adornment-email-login">Email </InputLabel>
@@ -158,7 +158,7 @@ const FirebaseLogin = ({ ...others }) => {
               <AnimateButton>
                 <Button
                   disableElevation
-                  disabled={isSubmitting}
+                  disabled={loading}
                   // to="/pages/dashboard/default"
                   // LinkComponent={Link}
                   fullWidth
@@ -180,7 +180,7 @@ const FirebaseLogin = ({ ...others }) => {
                         setLoading(false);
                         console.log(err);
                         Toast.error(err.response.data.message);
-                   });
+                      });
                   }}
                 >
                   {loading ? <CircularProgress style={{ color: 'white' }} /> : 'Se connecter'}

@@ -12,6 +12,7 @@ import UserInfoScreen from 'views/Profil/Profil';
 import Transfert from 'views/Transfert/Transfert';
 import Documenation from 'views/api/Documenation';
 import ParamettreApi from 'views/api/ParamettreApi';
+import Offre from 'views/Offre/Offre';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -61,11 +62,15 @@ const MainRoutes = {
     },
     {
       path: '/pages/developer/api',
-      element: <Documenation />
+      element: <ParamettreApi />
     },
     {
       path: '/pages/developer/doc',
-      element: <ParamettreApi />
+      element: <Documenation />
+    },
+    {
+      path: '/pages/Offres',
+      element: <Offre />
     }
   ]
 };

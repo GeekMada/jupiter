@@ -14,6 +14,7 @@ import EarningIcon from 'assets/images/icons/earning.svg';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import FileCopyTwoToneIcon from '@mui/icons-material/FileCopyOutlined';
 import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfOutlined';
+import { parse } from 'flatted';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
   backgroundColor: theme.palette.secondary.dark,
@@ -65,7 +66,7 @@ const EarningCard = ({ isLoading }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+const userData = parse(sessionStorage.getItem('user'));
   return (
     <>
       {isLoading ? (
@@ -134,7 +135,9 @@ const EarningCard = ({ isLoading }) => {
               <Grid item>
                 <Grid container alignItems="center" justifyContent="center">
                   <Grid item>
-                    <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>500€</Typography>
+                    <Typography sx={{ fontSize: '2rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75, }}>
+                      {userData.soldePrincipal}Ar
+                    </Typography>
                   </Grid>
                 </Grid>
               </Grid>

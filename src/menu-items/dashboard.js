@@ -1,8 +1,8 @@
 // assets
-import { IconDashboard, IconHistory, IconShield, IconRecharging, IconTag, IconSend, IconApiApp } from '@tabler/icons';
+import { IconDashboard, IconHistory, IconShield, IconRecharging, IconTag, IconSend, IconApiApp ,IconGiftCard} from '@tabler/icons';
 
 // constant
-const icons = { IconDashboard, IconHistory, IconShield, IconRecharging, IconTag, IconSend, IconApiApp };
+const icons = { IconDashboard, IconHistory, IconShield, IconRecharging, IconTag, IconSend, IconApiApp ,IconGiftCard};
 
 // ==============================|| DASHBOARD MENU ITEMS ||============================== //
 
@@ -41,6 +41,14 @@ const dashboard = {
       type: 'item',
       url: '/pages/transfert',
       icon: icons.IconSend,
+      breadcrumbs: false
+    },
+    {
+      id: 'offre',
+      title: 'Transferer Offres',
+      type: 'item',
+      url: '/pages/Offres',
+      icon: icons.IconGiftCard,
       breadcrumbs: false
     },
     {

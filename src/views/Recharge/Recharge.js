@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
   Button,
+  CircularProgress,
   FormControl,
   FormControlLabel,
   FormHelperText,
@@ -20,13 +21,18 @@ import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import { ToastContainer } from 'react-toastify';
 import Toast from 'ui-component/Toast';
+import api from 'requests/api';
+import { parse } from 'flatted';
+import getUserInfo from 'context/getuserInfo';
 
 function Recharge() {
+  const UserData = parse(sessionStorage.getItem('user'));
   const [rechargeType, setRechargeType] = useState('');
   const [amount, setAmount] = useState('');
   const [activeStep, setActiveStep] = React.useState(0);
   const [rechargeTypeError, setRechargeTypeError] = useState(false);
   const [amountError, setAmountError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const theme = useTheme();
 
   const handleRechargeTypeChange = (event) => {
@@ -38,10 +44,22 @@ function Recharge() {
   };
 
   const handleRecharge = () => {
-    // Perform recharge logic here
-    Toast.success(`Compte rechargé de ${amount} €  Solde Principal 20 €`);
-    Toast.error(`Solde insuffisant`);
-    setActiveStep(0);
+    setLoading(true);
+    api.put(`/solde/recharge/${UserData.id}`, { somme: amount, ip: '1.1.1.1' })
+      .then((response) => {
+        setLoading(false);
+        Toast.success(`Compte rechargé de ${amount}Ar  Solde Principal ${response.data.soldePrincipal}Ar`);
+        setActiveStep(0);
+        setAmount('');
+        setRechargeTypeError(false);
+        setAmountError(false);
+        console.log(response.data);
+        getUserInfo()
+      }).catch((error) => {
+        setLoading(false);
+        error.response.data.message ? Toast.error(error.response.data.message) : Toast.error('Erreur lors de la recharge');
+        console.error('Error fetching user data:', error);
+      })
   };
 
   const isStepFailed = (step) => {
@@ -122,7 +140,7 @@ function Recharge() {
               onClick={handleRecharge}
               sx={{ marginBottom: '0.5rem' }}
             >
-              Recharger
+              {loading ? <CircularProgress size={24} style={{ color: 'white' }}/> : 'Recharger'}
             </Button>
           </Box>
         </div>

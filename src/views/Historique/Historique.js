@@ -19,109 +19,11 @@ import {
 import { CheckCircleOutline, ErrorOutline, WatchLater } from '@mui/icons-material';
 import { styled, useTheme } from '@mui/material/styles';
 import { Close } from '@mui/icons-material';
-const transactions = [
-  {
-    id: 1,
-    date: '2023-07-01',
-    amount: 100,
-    type: 'Envoi',
-    country: 'France',
-    operator: 'Orange',
-    recipient: '06XXXXXXXX',
-    status: 'Réussi'
-  },
-  {
-    id: 2,
-    date: '2023-06-29',
-    amount: 50,
-    type: 'Recharge',
-    country: '',
-    operator: '',
-    recipient: '',
-    status: 'Attente'
-  },
-  {
-    id: 3,
-    date: '2023-06-28',
-    amount: 75,
-    type: 'Envoi',
-    country: 'Allemagne',
-    operator: 'Vodafone',
-    recipient: '04XXXXXXXX',
-    status: 'Échec'
-  },
-  {
-    id: 4,
-    date: '2023-06-27',
-    amount: 120,
-    type: 'Recharge',
-    country: '',
-    operator: '',
-    recipient: '',
-    status: 'Réussi'
-  },
-  {
-    id: 5,
-    date: '2023-06-26',
-    amount: 60,
-    type: 'Envoi',
-    country: 'Espagne',
-    operator: 'Movistar',
-    recipient: '09XXXXXXXX',
-    status: 'Attente'
-  },
-  {
-    id: 6,
-    date: '2023-06-25',
-    amount: 80,
-    type: 'Envoi',
-    country: 'Italie',
-    operator: 'TIM',
-    recipient: '03XXXXXXXX',
-    status: 'Réussi'
-  },
-  {
-    id: 7,
-    date: '2023-06-24',
-    amount: 90,
-    type: 'Recharge',
-    country: '',
-    operator: '',
-    recipient: '',
-    status: 'Échec'
-  },
-  {
-    id: 8,
-    date: '2023-06-23',
-    amount: 70,
-    type: 'Envoi',
-    country: 'Royaume-Uni',
-    operator: 'Vodafone',
-    recipient: '07XXXXXXXX',
-    status: 'Réussi'
-  },
-  {
-    id: 9,
-    date: '2023-06-22',
-    amount: 110,
-    type: 'Recharge',
-    country: '',
-    operator: '',
-    recipient: '',
-    status: 'Attente'
-  },
-  {
-    id: 10,
-    date: '2023-06-21',
-    amount: 95,
-    type: 'Envoi',
-    country: 'États-Unis',
-    operator: 'AT&T',
-    recipient: '02XXXXXXXX',
-    status: 'Réussi'
-  }
-];
+import { parse } from 'flatted';
+import moment from 'moment';
+import 'moment/locale/fr';
 const Historique = () => {
+  const UserData = parse(sessionStorage.getItem('user'));
   const theme = useTheme();
   const [sortBy, setSortBy] = useState('recent');
   const [filterByCountry, setFilterByCountry] = useState('all');
@@ -138,35 +40,40 @@ const Historique = () => {
   const handleTypeFilterChange = (event) => {
     setFilterByType(event.target.value);
   };
+  
+  const formatDate = (date) => {
+    moment.locale('fr')
+    return moment.unix(date._seconds).format('DD MMM [à] HH[h]mm');
+  };
 
-  const filteredTransactions = transactions.filter((transaction) => {
+  const filteredTransactions = UserData.historique.filter((transaction) => {
     if (filterByCountry === 'all' && filterByType === 'all') {
       return true;
     } else if (filterByCountry === 'all') {
       return transaction.type === filterByType;
     } else if (filterByType === 'all') {
-      return transaction.country === filterByCountry;
+      return transaction.pays === filterByCountry;
     } else {
-      return transaction.country === filterByCountry && transaction.type === filterByType;
+      return transaction.pays === filterByCountry && transaction.type === filterByType;
     }
   });
 
   const sortedTransactions = filteredTransactions.slice().sort((a, b) => {
     if (sortBy === 'recent') {
-      return new Date(b.date) - new Date(a.date);
-    } else if (sortBy === 'amount') {
-      return a.amount - b.amount;
+      return new Date(formatDate(b.date)) - new Date(formatDate(a.date));
+    } else if (sortBy === 'montant') {
+      return a.montant - b.montant;
     }
     return 0;
   });
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'Réussi':
+      case 'réussis':
         return <CheckCircleOutline sx={{ color: theme.palette.success.main }} />;
-      case 'Échec':
+      case 'échec':
         return <ErrorOutline sx={{ color: theme.palette.error.main }} />;
-      case 'Attente':
+      case 'attente':
         return <WatchLater sx={{ color: theme.palette.warning.main }} />;
       default:
         return null;
@@ -215,25 +122,25 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
         <FormControl variant="outlined" sx={{ marginBottom: '1rem' }}>
           <Select value={filterByType} onChange={handleTypeFilterChange}>
             <MenuItem value="all">Toutes</MenuItem>
-            <MenuItem value="Envoi">Envoi</MenuItem>
-            <MenuItem value="Recharge">Recharge</MenuItem>
+            <MenuItem value="transfert">Transferts</MenuItem>
+            <MenuItem value="recharge">Recharges</MenuItem>
             {/* Ajoutez d'autres types de transactions ici */}
           </Select>
         </FormControl>
         <FormControl variant="outlined" sx={{ marginBottom: '1rem' }}>
           <Select value={sortBy} onChange={handleSortChange}>
             <MenuItem value="recent">Plus récent</MenuItem>
-            <MenuItem value="amount">Montant</MenuItem>
+            <MenuItem value="montant">Montant</MenuItem>
           </Select>
         </FormControl>
         <FormControl variant="outlined" sx={{ marginBottom: '1rem' }}>
           <Select value={filterByCountry} onChange={handleCountryFilterChange}>
             <MenuItem value="all">Tous les pays</MenuItem>
-            {transactions.map((transaction) => {
-              if (transaction.country !== '') {
+            {UserData.historique.map((transaction) => {
+              if (transaction.pays !== '') {
                 return (
-                  <MenuItem key={transaction.country} value={transaction.country}>
-                    {transaction.country}
+                  <MenuItem key={transaction.pays} value={transaction.pays}>
+                    {transaction.pays}
                   </MenuItem>
                 );
               }
@@ -261,20 +168,20 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
               <RowContainer key={transaction.id} className="row" onClick={() => handleOpenPopup(transaction)} style={{ cursor: 'pointer' }}>
                 {/* <TableCell>{transaction.id}</TableCell> */}
                 <TableCell>{transaction.type}</TableCell>
-                <TableCell>{transaction.date}</TableCell>
-                <TableCell>{transaction.amount}€</TableCell>
+                <TableCell>{formatDate(transaction.date)}</TableCell>
+                <TableCell>{transaction.montant}Ar</TableCell>
                 {/* <TableCell>{transaction.country}</TableCell> */}
                 {/* <TableCell>{transaction.operator}</TableCell> */}
-                <TableCell>{transaction.recipient}</TableCell>
+                <TableCell>{transaction.destinataire}</TableCell>
                 <TableCell
                   style={{
                     display: 'flex',
                     gap: '5px',
                     alignItems: 'center',
                     color:
-                      transaction.status === 'Réussi'
+                      transaction.status === 'réussis'
                         ? theme.palette.success.main
-                        : transaction.status === 'Attente'
+                        : transaction.status === 'attente'
                         ? theme.palette.warning.main
                         : theme.palette.error.main
                   }}
@@ -293,7 +200,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
           return `${from} à ${to}`;
         }}
         component="div"
-        count={transactions.length}
+        count={UserData.historique.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
@@ -321,15 +228,16 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
               <Typography variant="h4" component="h2" gutterBottom>
                 Détails de la transaction
               </Typography>
-              <Typography variant="body1">Type de transaction: {selectedTransaction.type}</Typography>
               <Typography variant="body1">ID : {selectedTransaction.id}</Typography>
-              <Typography variant="body1">Date : {selectedTransaction.date}</Typography>
-              <Typography variant="body1">Montant : {selectedTransaction.amount}€</Typography>
+              <Typography variant="body1">Type de transaction: {selectedTransaction.type}</Typography>
+              <Typography variant="body1">Date : {formatDate(selectedTransaction.date)}</Typography>
+              <Typography variant="body1">Montant : {selectedTransaction.montant}Ar</Typography>
+              <Typography variant="body1">Pays : {selectedTransaction.pays}</Typography>
               {selectedTransaction.type === 'Envoi' && (
                 <>
-                  <Typography variant="body1">Pays : {selectedTransaction.country}</Typography>
-                  <Typography variant="body1">Opérateur : {selectedTransaction.operator}</Typography>
-                  <Typography variant="body1">Numéro : {selectedTransaction.recipient}</Typography>
+                  <Typography variant="body1">Pays : {selectedTransaction.pays}</Typography>
+                  {/* <Typography variant="body1">Opérateur : {selectedTransaction.operator}</Typography> */}
+                  <Typography variant="body1">Numéro : {selectedTransaction.destinataire}</Typography>
                 </>
               )}
               <Typography style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
@@ -337,9 +245,9 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
                 <Typography
                   style={{
                     color:
-                      selectedTransaction.status === 'Réussi'
+                      selectedTransaction.status === 'réussis'
                         ? theme.palette.success.main
-                        : selectedTransaction.status === 'Attente'
+                        : selectedTransaction.status === 'attente'
                         ? theme.palette.warning.main
                         : theme.palette.error.main
                   }}

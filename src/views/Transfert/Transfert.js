@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
   Button,
+  CircularProgress,
   Divider,
   FormControl,
   FormHelperText,
@@ -18,21 +19,29 @@ import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/material.css';
-import axios from 'axios';
+// import axios from 'axios';
 import { useLocation } from 'react-router';
+import Toast from 'ui-component/Toast';
+import { ToastContainer } from 'react-toastify';
+import api from 'requests/api';
+import { parse } from 'flatted';
+import getuserInfo from 'context/getuserInfo';
+import { useEffect } from 'react';
 
 const TransferScreen = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [amount, setAmount] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [selectedCountry, setSelectedCountry] = useState('');
-  const [currencySymbol, setCurrencySymbol] = useState('');
+  // const [currencySymbol, setCurrencySymbol] = useState('');
   const [errors, setErrors] = useState({});
-
+  const [loading, setLoading] = useState(false);
+  const UserData = parse(sessionStorage.getItem('user'));
   const theme = useTheme();
   const location = useLocation();
-  // const searchParams = new URLSearchParams(location);
-  console.log('phoneDepuisDash: ',location.search);
+  useEffect(() => {
+    if (location.search) setPhoneNumber(location.search.split('=')[1]);
+  }, [location.search]);
   const handleNext = () => {
     if (validateStep(activeStep)) {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -54,25 +63,46 @@ const TransferScreen = () => {
   const handlePhoneNumberChange = async (value, countryData) => {
     setPhoneNumber(value);
     setSelectedCountry(countryData.name);
-
-    const countryDataResponse = await fetchCountryData(countryData.countryCode);
-    const currency=Object.values(countryDataResponse[0].currencies)
-      setCurrencySymbol(currency[0].symbol);
+    // const countryDataResponse = await fetchCountryData(countryData.countryCode);
+    // const currency = Object.values(countryDataResponse[0].currencies);
+    // setCurrencySymbol(currency[0].symbol);
   };
 
-  const fetchCountryData = async (countryCode) => {
-    try {
-      const response = await axios.get(`https://restcountries.com/v3.1/alpha/${countryCode}`);
-      console.log(response.data);
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching country data:', error);
-      return null;
-    }
-  };
-
-  const handleTransfer = () => {
-    // Perform transfer logic here
+  // const fetchCountryData = async (countryCode) => {
+  //   try {
+  //     const response = await axios.get(`https://restcountries.com/v3.1/alpha/${countryCode}`);
+  //     console.log(response.data);
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error('Error fetching country data:', error);
+  //     return null;
+  //   }
+  // };
+  const handleTransfer =  () => {
+    setLoading(true);
+    api.post(`/solde/transfert/${UserData.id}`, {
+        numero: '0' + phoneNumber.slice(3),
+        credit_amount: amount,
+        pays: selectedCountry,
+        ip: '1.1.1.1'
+      })
+      .then(async (res) => {
+        await getuserInfo();
+        Toast.success(`Transfert de ${amount}Ar envoyé avec succès au numéro ${phoneNumber}`);
+        Toast.success(`Votre solde actuel est de ${res.data.soldePrincipal}Ar`);
+        setLoading(false);
+        setActiveStep(0);
+        setPhoneNumber('');
+        setAmount('');
+        console.log(res.data);
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+        Toast.error(error.response.data.message)
+        err.response.data.message  ? Toast.error(error.response.data.message) :
+        Toast.error('une erreur est survenue, veuillez réessayer plus tard');
+      });
   };
 
   const validateStep = (step) => {
@@ -91,7 +121,7 @@ const TransferScreen = () => {
       title: 'Numéro',
       component: (
         <Grid justifyContent={'center'} display={'flex'} alignItems={'center'}>
-          <PhoneInput specialLabel="" placeholder="" value={phoneNumber} onChange={handlePhoneNumberChange} />
+          <PhoneInput enableSearch specialLabel="" placeholder="" value={phoneNumber} onChange={handlePhoneNumberChange} />
         </Grid>
       )
     },
@@ -100,10 +130,10 @@ const TransferScreen = () => {
       component: (
         <Grid justifyContent={'center'} display={'flex'} alignItems={'center'} flexDirection={'column'}>
           <FormControl error={errors[1]} sx={{ marginBottom: '1rem' }}>
-            <TextField label="Montant en €" value={amount} onChange={handleAmountChange} type="number" />
+            <TextField label={`Montant en Ar`} value={amount} onChange={handleAmountChange} type="number" />
             {errors[1] && <FormHelperText>Veuillez saisir un montant</FormHelperText>}
           </FormControl>
-          <Typography variant="subtitle1">Solde : 500€</Typography>
+          <Typography variant="subtitle1">Solde : {UserData.soldePrincipal}Ar</Typography>
         </Grid>
       )
     },
@@ -113,8 +143,10 @@ const TransferScreen = () => {
         <div>
           <Typography variant="subtitle1">Numéro de téléphone : {phoneNumber}</Typography>
           <Typography variant="subtitle1">Pays : {selectedCountry}</Typography>
-          <Typography variant="subtitle1">Tarif :   19{currencySymbol} / 5€</Typography>
-          <Typography variant="subtitle1">Montant :  8{currencySymbol} / {amount} € </Typography>
+          {/* <Typography variant="subtitle1">Tarif : 19{currencySymbol} / 5€</Typography> */}
+          <Typography variant="subtitle1">
+            Montant à transferer: {amount}
+          </Typography>
         </div>
       )
     }
@@ -141,6 +173,11 @@ const TransferScreen = () => {
         nextButton={
           <Button
             size="small"
+            onKeyDown={(event) => {
+              if (event.keyCode === 13) {
+                handleNext();
+              }
+            }}
             onClick={handleNext}
             disabled={activeStep === maxSteps - 1 || !validateStep(activeStep)}
           >
@@ -158,12 +195,13 @@ const TransferScreen = () => {
       {activeStep === maxSteps - 1 && (
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <Button variant="contained" onClick={handleTransfer} color="primary" sx={{ marginTop: '1rem' }}>
-            Envoyer
+            {loading ? <CircularProgress style={{ color: 'white' }} /> : 'Transférer'}
           </Button>
         </Box>
       )}
+      <ToastContainer />
     </Box>
   );
-};  
+};
 
 export default TransferScreen;

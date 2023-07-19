@@ -15,28 +15,28 @@ import {
   TextField,
   Stepper,
   Step,
-  StepLabel
+  StepLabel,
+  CircularProgress
 } from '@mui/material';
 import { AddCircleOutline, Delete, Lock, LockOpen } from '@mui/icons-material';
 import { Box } from '@mui/system';
 import api from 'requests/api';
-import { useDispatch, useSelector } from 'react-redux';
+import { parse } from 'flatted';
+import Toast from 'ui-component/Toast';
+import { ToastContainer } from 'react-toastify';
 
 const SecurityScreen = () => {
-  const dispatch = useDispatch();
-  const UserData = useSelector((state) => state.authReducer.user);
-  const [ipList, setIpList] = useState([
-    { id: 1, ip: '192.168.0.1', blocked: false },
-    { id: 2, ip: '10.0.0.2', blocked: true },
-    { id: 3, ip: '172.16.0.3', blocked: false }
-  ]);
+  const UserData = parse(sessionStorage.getItem('user'));
+  const [ipList, setIpList] = useState(UserData.ips);
 
   const [openDialog, setOpenDialog] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [ipAddress, setIpAddress] = useState('');
   const [password, setPassword] = useState('');
   const [ipError, setIpError] = useState('');
-
+  const [loading, setLoading] = useState(false);
+  const [togglingIpId, setTogglingIpId] = useState(null); // Store the IP ID that is currently being toggled (blocked/unblocked)
+  const [deletingIpId, setDeletingIpId] = useState(null);
   const handleOpenDialog = () => {
     setOpenDialog(true);
   };
@@ -72,36 +72,60 @@ const SecurityScreen = () => {
   };
 
   const handleAddIpAddress = () => {
-    // if (ipAddress.trim() !== '' && password.trim() !== '') {
-    //   const newIp = {
-    //     id: Math.floor(Math.random() * 1000000),
-    //     ip: ipAddress,
-    //     blocked: false
-    //   };
-    //   setIpList([...ipList, newIp]);
-    //   handleCloseDialog();
-    // }
-    api.post(`/ip/add/${UserData._id}`, { ip: ipAddress, password: password }).then((res) => {
-      console.log(res.data)
-      dispatch({ type: 'LOGIN_SUCCESS', payload: res.data.user })
-    }).catch((err) => {
-      console.log(err);
-    })
+    setLoading(true);
+    api
+      .post(`/ip/add/${UserData.id}`, { ip: ipAddress, password: password })
+      .then((res) => {
+        Toast.success("l'adresse IP a bien été ajoutée");
+        console.log(res.data);
+        setPassword('');
+        setIpAddress('');
+        setActiveStep(0);
+        setLoading(false);
+        setOpenDialog(false);
+        setIpList(res.data.ips);
+      })
+      .catch((err) => {
+        setLoading(false);
+        Toast.error(err.response.data.message);
+        console.log(err);
+      });
   };
 
   const handleToggleBlock = (id) => {
-    setIpList((prevIpList) =>
-      prevIpList.map((item) => {
-        if (item.id === id) {
-          return { ...item, blocked: !item.blocked };
-        }
-        return item;
+    setTogglingIpId(id);
+    api
+      .put(`/ip/update/${UserData.id}/${id}`)
+      .then((res) => {
+        console.log(res.data);
+        setIpList(res.data.updatedIps);
+        setTogglingIpId(null);
+        Toast.success(`l'adresse IP a bien été mise à jour`);
       })
-    );
+      .catch((err) => {
+        Toast.error('une erreur est survenue, veuillez réessayer plus tard');
+        console.log(err);
+        setTogglingIpId(null);
+      });
   };
 
-  const handleDeleteIp = (id) => {
-    setIpList((prevIpList) => prevIpList.filter((item) => item.id !== id));
+    const handleDeleteIp = (id) => {
+    setDeletingIpId(id);
+    // Call the API to delete the IP
+    api
+      .delete(`/ip/delete/${UserData.id}/${id}`)
+      .then((res) => {
+        Toast.success("l'adresse IP a bien été supprimée");
+        console.log(res.data);
+        // Update the IP list after successful deletion
+        setIpList(res.data.remainingIps);
+        setDeletingIpId(null);
+      })
+      .catch((err) => {
+        Toast.error('une erreur est survenue, veuillez réessayer plus tard');
+        console.log(err);
+        setDeletingIpId(null);
+      });
   };
 
   const validateIPAddress = (ip) => {
@@ -115,7 +139,7 @@ const SecurityScreen = () => {
         Écran de sécurité
       </Typography>
       <Typography variant="caption" color="textSecondary">
-        Seule les adresses IP dans liste et qui ne sont pas bloquées peuvent être utilisées pour vos transactions
+        Seules les adresses IP dans la liste et qui ne sont pas bloquées peuvent être utilisées pour vos transactions
       </Typography>
       <Paper
         elevation={3}
@@ -128,9 +152,11 @@ const SecurityScreen = () => {
         <List>
           {ipList.map((item) => (
             <ListItem key={item.id}>
-              <ListItemText primary={item.ip} />
+              <ListItemText primary={item.adresse} />
               <ListItemSecondaryAction>
-                {item.blocked ? (
+                {togglingIpId === item.id ? (
+                  <CircularProgress size={24} style={{ color: 'blue' }} />
+                ) : item.is_blocked ? (
                   <Button variant="outlined" startIcon={<LockOpen />} color="primary" onClick={() => handleToggleBlock(item.id)}>
                     Débloquer
                   </Button>
@@ -140,7 +166,7 @@ const SecurityScreen = () => {
                   </Button>
                 )}
                 <IconButton edge="end" onClick={() => handleDeleteIp(item.id)}>
-                  <Delete />
+                  {deletingIpId===item.id ? <CircularProgress size={24} style={{ color: 'gray' }} /> : <Delete />}
                 </IconButton>
               </ListItemSecondaryAction>
             </ListItem>
@@ -189,12 +215,7 @@ const SecurityScreen = () => {
         </DialogContent>
 
         <DialogActions>
-          <Button
-            onClick={() => {
-              setOpenDialog(false);
-            }}
-            color="primary"
-          >
+          <Button onClick={() => setOpenDialog(false)} color="primary">
             Annuler
           </Button>
           {activeStep === 0 && (
@@ -211,11 +232,12 @@ const SecurityScreen = () => {
 
           {activeStep === 1 && (
             <Button onClick={handleAddIpAddress} color="primary" style={{ width: '100%' }}>
-              Ajouter
+              {loading ? <CircularProgress size={24} style={{ color: 'blue' }} /> : 'Ajouter'}
             </Button>
           )}
         </DialogActions>
       </Dialog>
+      <ToastContainer />
     </div>
   );
 };
