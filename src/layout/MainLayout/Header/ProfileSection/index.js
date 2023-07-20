@@ -28,6 +28,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import Transitions from 'ui-component/extended/Transitions';
+import DialogConfirmLogout from './DialogConfirmLogout';
 
 // assets
 import {
@@ -49,13 +50,15 @@ const ProfileSection = () => {
   // const [value, setValue] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [open, setOpen] = useState(false);
+
+  //Open dialogue of logout
+  const [openDialogue, setOpenDialogue] = useState(false);
   /**
    * anchorRef is used on different componets and specifying one type leads to other components throwing an error
    * */
   const anchorRef = useRef(null);
   const handleLogout = async () => {
-    Auth.logout();
-    navigate('/');
+    setOpenDialogue(true);
   };
 
   const handleClose = (event) => {
@@ -63,6 +66,10 @@ const ProfileSection = () => {
       return;
     }
     setOpen(false);
+  };
+
+  const handleCloseDialogue = () => {
+    setOpenDialogue(false);
   };
 
   const handleListItemClick = (event, index) => {
@@ -202,6 +209,7 @@ const ProfileSection = () => {
                           </ListItemIcon>
                           <ListItemText primary={<Typography variant="body2">Déconnexion</Typography>} />
                         </ListItemButton>
+                        <DialogConfirmLogout logout={() => Auth.logout()} open={openDialogue} navigate={()=>navigate('/')} handleClose={handleCloseDialogue}/>
                       </List>
                     </Box>
                   </PerfectScrollbar>
