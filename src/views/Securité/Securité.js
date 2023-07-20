@@ -24,6 +24,8 @@ import api from 'requests/api';
 import { parse } from 'flatted';
 import Toast from 'ui-component/Toast';
 import { ToastContainer } from 'react-toastify';
+import {publicIpv4} from 'public-ip';
+import AnimateButton from 'ui-component/extended/AnimateButton';
 
 const SecurityScreen = () => {
   const UserData = parse(sessionStorage.getItem('user'));
@@ -37,10 +39,23 @@ const SecurityScreen = () => {
   const [loading, setLoading] = useState(false);
   const [togglingIpId, setTogglingIpId] = useState(null); // Store the IP ID that is currently being toggled (blocked/unblocked)
   const [deletingIpId, setDeletingIpId] = useState(null);
+  const getLocalIpAddress = async () => {
+    try {
+      const ipAddress = await publicIpv4();
+      return ipAddress;
+    } catch (error) {
+      console.error('Une erreur est survenue lors de la récupération de l\'adresse IP locale :', error);
+      return null;
+    }
+  };
   const handleOpenDialog = () => {
     setOpenDialog(true);
   };
-
+const handleOpenDialogwithip = async () => {
+  const ipAddress = await getLocalIpAddress();
+  setOpenDialog(true);
+  setIpAddress(ipAddress);
+}
   const handleCloseDialog = () => {
     setOpenDialog(false);
     setActiveStep(0);
@@ -57,7 +72,6 @@ const SecurityScreen = () => {
       setIpError('Adresse IP invalide');
     }
   };
-
   const handlePrevStep = () => {
     setActiveStep((prevStep) => prevStep - 1);
     setIpError('');
@@ -109,7 +123,7 @@ const SecurityScreen = () => {
       });
   };
 
-    const handleDeleteIp = (id) => {
+  const handleDeleteIp = (id) => {
     setDeletingIpId(id);
     // Call the API to delete the IP
     api
@@ -172,10 +186,17 @@ const SecurityScreen = () => {
             </ListItem>
           ))}
         </List>
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Button variant="contained" onClick={handleOpenDialog} startIcon={<AddCircleOutline />} color="primary">
-            Ajouter
-          </Button>
+        <Box sx={{ display: 'flex', justifyContent: 'center',flexDirection: 'column' , alignItems: 'center'}} gap={'1rem'}>
+          <AnimateButton>
+            <Button variant="contained" onClick={handleOpenDialog} startIcon={<AddCircleOutline />} color="primary">
+              Ajouter
+            </Button>
+          </AnimateButton>
+          <AnimateButton>
+            <Button variant="contained" onClick={handleOpenDialogwithip} startIcon={<AddCircleOutline />} color="primary">
+              Ajouter cet appareil
+            </Button>
+          </AnimateButton>
         </Box>
       </Paper>
 

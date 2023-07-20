@@ -15,6 +15,8 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import FileCopyTwoToneIcon from '@mui/icons-material/FileCopyOutlined';
 import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfOutlined';
 import { parse } from 'flatted';
+import { useEffect } from 'react';
+import api from 'requests/api';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
   backgroundColor: theme.palette.secondary.dark,
@@ -67,6 +69,18 @@ const EarningCard = ({ isLoading }) => {
     setAnchorEl(null);
   };
 const userData = parse(sessionStorage.getItem('user'));
+const [solde, setsolde] = useState([]);
+const getSolde = () => {
+  api.get(`/solde/${userData.id}`).then((response) => {
+    setsolde(response.data.soldePrincipal);
+  }).catch((error) => {
+    console.error('Error fetching user data:', error);
+  })
+}
+useEffect(() => {
+  getSolde();
+  userData.soldePrincipal=solde
+})
   return (
     <>
       {isLoading ? (
@@ -136,7 +150,7 @@ const userData = parse(sessionStorage.getItem('user'));
                 <Grid container alignItems="center" justifyContent="center">
                   <Grid item>
                     <Typography sx={{ fontSize: '2rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75, }}>
-                      {userData.soldePrincipal}Ar
+                      {solde}Ar
                     </Typography>
                   </Grid>
                 </Grid>
