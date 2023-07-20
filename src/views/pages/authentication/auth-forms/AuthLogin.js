@@ -37,6 +37,7 @@ import { useNavigate } from 'react-router';
 import Toast from 'ui-component/Toast';
 import { useAuthContext } from 'context/auth-context';
 import { stringify } from 'flatted';
+import { Link } from 'react-router-dom';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
@@ -144,7 +145,7 @@ const FirebaseLogin = ({ ...others }) => {
                 }
                 label="se souvenir de moi"
               />
-              <Typography variant="subtitle1" color="secondary" sx={{ textDecoration: 'none', cursor: 'pointer' }}>
+              <Typography component={Link} to="/reset-password" variant="subtitle1" color="secondary" sx={{ textDecoration: 'none', cursor: 'pointer' }}>
                 Mot de passe oublié?
               </Typography>
             </Stack>
