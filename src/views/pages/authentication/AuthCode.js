@@ -163,7 +163,7 @@ const ConfirmationScreen = () => {
                         })
                         .catch((error) => {
                           console.error('Error confirmation code:', error);
-                        }) 
+                        })
                     }}
                     disabled={loading}
                     type="submit"
