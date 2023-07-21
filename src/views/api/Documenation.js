@@ -25,15 +25,51 @@ const DocumentationAPI = () => {
       method: 'POST',
       description: 'Permet à un utilisateur de faire une demande de recharge de son crédit.',
       parameters: [
-        { name: 'userId', type: 'chaîne', location: 'URL', description: "L'ID de l'utilisateur" },
+        { name: 'userId', type: 'chaîne', location: 'URL', description: "L'ID de l'utilisateur." },
         { name: 'ip', type: 'chaîne', location: 'BODY', description: "L'adresse IP de l'utilisateur." },
         { name: 'somme', type: 'nombre', location: 'BODY', description: 'Le montant de crédit à recharger.' },
       ],
       response: [
         { code: '200 OK', description: 'La demande de crédit a été envoyée.' },
-        { code: '404 Not Found', description: "L'utilisateur n'existe pas." },
         { code: '403 Forbidden', description: 'Adresse IP non autorisée ou bloquée.' },
+        { code: '404 Not Found', description: "L'utilisateur n'existe pas." },
         { code: '500 Internal Server Error', description: "Une erreur s'est produite lors du traitement de la demande de recharge." },
+      ],
+    },
+
+    {
+      title: 'Transfert de crédit',
+      endpoint: '/api/transfert',
+      method: 'POST',
+      description: 'Permet à un utilisateur de faire un transfert de crédit.',
+      parameters: [
+        { name: 'userId', type: 'chaîne', location: 'URL', description: "L'ID de l'utilisateur." },
+        { name: 'ip', type: 'chaîne', location: 'BODY', description: "L'adresse IP de l'utilisateur." },
+        { name: 'numéro', type: 'chaîne', location: 'BODY', description: 'Le numéro du destinataire.'},
+        { name: 'somme', type: 'nombre', location: 'BODY', description: 'Le montant de crédit à transférer.' },
+      ],
+      response: [
+        { code: '200 OK', description: 'Transfert de crédit effectué avec succès.' },
+        { code: '400 Bad Request', description: 'Solde insuffisant.'},
+        { code: '403 Forbidden', description: 'Adresse IP non autorisée ou bloquée.' },
+        { code: '404 Not Found', description: "Utilisateur non trouvé." },
+        { code: '500 Internal Server Error', description: "Une erreur est survenue lors du transfert de credit." },
+      ],
+    },
+
+    {
+      title: 'Consultation de solde',
+      endpoint: '/api/solde',
+      method: 'GET',
+      description: 'Permet à un utilisateur de consulter son solde.',
+      parameters: [
+        { name: 'userId', type: 'chaîne', location: 'URL', description: "L'ID de l'utilisateur." },
+        { name: 'ip', type: 'chaîne', location: 'BODY', description: "L'adresse IP de l'utilisateur." }
+      ],
+      response: [
+        { code: '200 OK', description: 'Le solde est affiché.'},
+        { code: '400 Not Found', description: 'Utilisateur non trouvé.'},
+        { code: '500 Internal Server Error', description: "Une erreur est survenue lors de la récupération du solde de l'utilisateur." },
       ],
     },
   ];
