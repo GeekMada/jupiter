@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -53,7 +53,6 @@ const AuthNewPassword = ({ ...others }) => {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    //const [userId, setUserId] = useState('')
 
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
