@@ -21,7 +21,7 @@ const DocumentationAPI = () => {
   const apiData = [
     {
       title: 'Recharge de crédit',
-      endpoint: '/api/recharge',
+      endpoint: '/solde/recharge/',
       method: 'POST',
       description: 'Permet à un utilisateur de faire une demande de recharge de son crédit.',
       parameters: [
@@ -39,13 +39,13 @@ const DocumentationAPI = () => {
 
     {
       title: 'Transfert de crédit',
-      endpoint: '/api/transfert',
+      endpoint: '/solde/transfert',
       method: 'POST',
       description: 'Permet à un utilisateur de faire un transfert de crédit.',
       parameters: [
         { name: 'userId', type: 'chaîne', location: 'URL', description: "L'ID de l'utilisateur." },
         { name: 'ip', type: 'chaîne', location: 'BODY', description: "L'adresse IP de l'utilisateur." },
-        { name: 'numéro', type: 'chaîne', location: 'BODY', description: 'Le numéro du destinataire.'},
+        { name: 'numero', type: 'chaîne', location: 'BODY', description: 'Le numéro du destinataire.'},
         { name: 'somme', type: 'nombre', location: 'BODY', description: 'Le montant de crédit à transférer.' },
       ],
       response: [
@@ -59,7 +59,7 @@ const DocumentationAPI = () => {
 
     {
       title: 'Consultation de solde',
-      endpoint: '/api/solde',
+      endpoint: '/solde',
       method: 'GET',
       description: 'Permet à un utilisateur de consulter son solde.',
       parameters: [
@@ -67,13 +67,13 @@ const DocumentationAPI = () => {
         { name: 'ip', type: 'chaîne', location: 'BODY', description: "L'adresse IP de l'utilisateur." }
       ],
       response: [
-        { code: '200 OK', description: 'Le solde est affiché.'},
+        { code: '200 OK', description: 'Le solde est envoyé.'},
         { code: '400 Not Found', description: 'Utilisateur non trouvé.'},
         { code: '500 Internal Server Error', description: "Une erreur est survenue lors de la récupération du solde de l'utilisateur." },
       ],
     },
   ];
-  const baseUrl ='https://localhost:3000'
+  const baseUrl ='http://localhost:8000'
 
   return (
     <Container className={classes.container}>
@@ -117,12 +117,12 @@ const DocumentationAPI = () => {
                   <strong>Requête curl :</strong>
                   <Paper className={classes.paper}>
                     <code className="language-bash" style={{color: 'white'}}>
-                      {`curl -X ${api.method} ${baseUrl}${api.endpoint}}${api.parameters
+                      {`curl -X ${api.method} ${baseUrl}${api.endpoint}${api.parameters
                         .filter((param) => param.location === 'URL')
                         .map((param) => `/${param.name}`)
                         .join('')} \\\n`}
                       {api.method === 'POST' ? '  -H "Content-Type: application/json" \\\n' : ''}
-                      {api.method === 'POST' ? `-d '{${api.parameters.filter((param)=>param.location === 'BODY').map((param) => `${param.name}: ${param.description}`).join(', ')}}}' \\\n` : ''}
+                      {api.method === 'POST' ? `-d '{${api.parameters.filter((param)=>param.location === 'BODY').map((param) => `${param.name}: ${param.description}`).join(', ')}}' \\\n` : ''}
                     </code>
                   </Paper>
                 </Typography>

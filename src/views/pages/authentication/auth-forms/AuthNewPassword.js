@@ -135,7 +135,7 @@ const AuthNewPassword = ({ ...others }) => {
                                     onClick={() => {
                                         setLoading(true);
                                         api
-                                            .put(`/user/changePassword/${id}`, values)
+                                            .put(`/auth/changePassword/${id}`, values)
                                             .then(() => {
                                                 setLoading(false);
                                                 navigate('/');
