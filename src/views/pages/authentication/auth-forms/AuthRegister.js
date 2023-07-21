@@ -308,7 +308,7 @@ const FirebaseRegister = ({ ...others }) => {
                       // eslint-disable-next-line no-unused-vars
                       .then((resp) => {
                         setLoading(false);
-                        navigate(`/authcode?email=${values.email}`);
+                        navigate(`/authCodeRegister`);
                       })
                       .catch((err) => {
                         setLoading(false);

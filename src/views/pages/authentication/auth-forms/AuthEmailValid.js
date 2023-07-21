@@ -116,7 +116,7 @@ const FirebaseLogin = ({ ...others }) => {
                                                 console.log(resp.data)
                                                 const userId = resp.data.id
                                                 // dispatch({ type: 'LOGIN_SUCCESS', payload: resp.data.user });
-                                                navigate(`/new-password/${userId}`);
+                                                navigate(`/authCode/${userId}`);
                                             })
                                             .catch((err) => {
                                                 setLoading(false);
