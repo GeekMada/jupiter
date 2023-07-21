@@ -7,6 +7,10 @@ import { makeStyles } from '@mui/styles';
 import * as Yup from 'yup';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { Alert } from '@mui/material';
+import api from 'requests/api';
+import { useLocation, useNavigate } from 'react-router';
+import { useAuthContext } from 'context/auth-context';
+import { stringify } from 'flatted';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -14,27 +18,27 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '100vh',
+    height: '100vh'
   },
   otpContainer: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(2)
   },
   otpInput: {
     width: '100px',
-    height: '100px',
+    height: '70px',
     margin: '7px',
     fontSize: '50px',
     borderRadius: '4px',
     border: '1px solid #ccc',
     outline: 'none',
-    textAlign: 'center',
+    textAlign: 'center'
   },
   submitButton: {
-    marginTop: theme.spacing(2),
-  },
+    marginTop: theme.spacing(2)
+  }
 }));
 
 const ConfirmationScreen = () => {
@@ -43,13 +47,21 @@ const ConfirmationScreen = () => {
   const [resendDisabled, setResendDisabled] = useState(false);
   const [resendTime, setResendTime] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
-
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [email, setemail] = useState(0);
+  const location = useLocation();
+  const Auth = useAuthContext();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (location.search) setemail(location.search.split('=')[1]);
+    console.log(email);
+  }, [email, location.search]);
   const initialValues = {
-    code: '',
+    code: ''
   };
 
   const validationSchema = Yup.object().shape({
-    code: Yup.string().length(4, 'Le code doit contenir 4 chiffres').required('Champ obligatoire'),
+    code: Yup.string().length(4, 'Le code doit contenir 4 chiffres').required('Champ obligatoire')
   });
 
   const handleSubmit = (values, { setSubmitting }) => {
@@ -69,35 +81,60 @@ const ConfirmationScreen = () => {
     // Simuler l'envoi du code par e-mail (ici, on attend 2 secondes)
     setTimeout(() => {
       setShowAlert(false);
+    }, 2000);
+
+    // Réactiver le bouton de renvoi après 30 secondes
+    setTimeout(() => {
       setResendDisabled(false);
-    }, 5000);
+    }, 30000);
   };
 
   useEffect(() => {
     // Vérifier s'il s'est écoulé plus de 30 secondes depuis le dernier renvoi du code
     if (resendTime && Date.now() - resendTime >= 30000) {
       setResendDisabled(false);
+      setTimeLeft(0);
+    } else if (resendTime && resendDisabled) {
+      // Mettre à jour le temps restant jusqu'à la réactivation du bouton
+      const timeElapsed = Date.now() - resendTime;
+      const remainingTime = 30000 - timeElapsed;
+      setTimeLeft(remainingTime);
     }
-  }, [resendTime]);
+  }, [resendTime, resendDisabled]);
+
+  useEffect(() => {
+    // Mettre à jour le temps restant toutes les secondes
+    const interval = setInterval(() => {
+      if (timeLeft > 1000) {
+        setTimeLeft(timeLeft - 1000);
+      }
+    }, 1000);
+
+    // Nettoyer l'intervalle lorsque le composant est démonté ou le temps restant est à zéro
+    return () => {
+      clearInterval(interval);
+    };
+  }, [timeLeft]);
 
   return (
     <Container className={classes.container}>
       <Grid container justify="center">
         <Grid item xs={12}>
-        <Typography variant="h5" align="center" gutterBottom>
+          <Typography variant="h5" align="center" gutterBottom>
             Nous avons envoyé un code dans votre boîte mail
           </Typography>
           <Typography variant="h5" align="center" gutterBottom>
-            Entrez le code à 4 chiffres
+            Entrez le code à 6 chiffres
           </Typography>
         </Grid>
         <Grid item xs={12} className={classes.otpContainer}>
           <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
             {({ values, errors, touched, setFieldValue, isSubmitting }) => (
               <Form>
+                {/* <Grid sx={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}> */}
                 <OtpInput
                   name="code"
-                  numInputs={4}
+                  numInputs={6}
                   isInputNum={true}
                   shouldAutoFocus={true}
                   onChange={(otp) => setFieldValue('code', otp)}
@@ -105,11 +142,24 @@ const ConfirmationScreen = () => {
                   inputStyle={classes.otpInput}
                   renderInput={(props) => <input {...props} />}
                 />
-                {errors.code && touched.code && <FormHelperText>{errors.code}</FormHelperText>}
+                {errors.code && touched.code && <FormHelperText sx={{ color: 'red' }}>{errors.code}</FormHelperText>}
                 <AnimateButton>
                   <Button
                     onClick={() => {
-                      alert(values.code);
+                      api
+                        .post('/user/verification', {
+                          code: values.code,
+                          email: email
+                        })
+                        .then((response) => {
+                          console.log(response.data);
+                          // dispatch({ type: 'REGISTER_SUCCESS', payload: response.data.user });
+                          Auth.login(stringify(response.data.user));
+                          navigate('/dashboard/default');
+                        })
+                        .catch((error) => {
+                          console.error('Error confirmation code:', error);
+                        });
                     }}
                     disabled={loading}
                     type="submit"
@@ -122,37 +172,39 @@ const ConfirmationScreen = () => {
                     {loading ? <CircularProgress style={{ color: 'white' }} /> : 'Confirmer'}
                   </Button>
                 </AnimateButton>
-                <Grid sx={{ justifyContent: 'center', display: 'flex',flexDirection: 'row' , alignItems: 'center'}}>
-                    <Typography variant="h6">
-                        Code non reçu?
+                <Grid sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'row', alignItems: 'center' }}>
+                  <Grid>
+                    <Typography marginTop={1} color="textSecondary">
+                      Code non reçu?
                     </Typography>
-                  <AnimateButton
-                    onClick={handleResendCode}
-                    disabled={resendDisabled}
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    size="large"
-                    disableElevation
-                    color="secondary"
-                  >
+                  </Grid>
+                  <AnimateButton>
                     <Button
-                  onClick={handleResendCode}
-                  disabled={resendDisabled}
-                  variant="text"
-                  color="primary"
-                  fullWidth
-                  style={{ marginTop: '10px' }}
-                >
-                  Renvoyer le code
-                </Button>
+                      onClick={handleResendCode}
+                      disabled={resendDisabled}
+                      variant="text"
+                      color="primary"
+                      fullWidth
+                      style={{ marginTop: '10px' }}
+                    >
+                      Renvoyer le code
+                    </Button>
                   </AnimateButton>
                 </Grid>
-                {showAlert && (
-                  <Alert severity="success" style={{ marginTop: '10px' }}>
-                    Code renvoyé avec succès !
-                  </Alert>
-                )}
+                {/* </Grid> */}
+                <Grid sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
+                  {showAlert && (
+                    <Alert severity="success" style={{ marginTop: '10px' }}>
+                      Code renvoyé avec succès !
+                    </Alert>
+                  )}
+                  {resendDisabled && timeLeft > 0 && (
+                    <Typography variant="body2" color="textSecondary" style={{ marginTop: '5px' }}>
+                      Vous pourrez renvoyer le code dans {Math.ceil(timeLeft / 1000)}
+                      {Math.ceil(timeLeft / 1000) !== 1 ? 's' : ''}
+                    </Typography>
+                  )}
+                </Grid>
               </Form>
             )}
           </Formik>

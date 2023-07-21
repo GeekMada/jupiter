@@ -10,6 +10,9 @@ const AuthRegister3 = Loadable(lazy(() => import('views/pages/authentication/aut
 const AuthResetPassword = Loadable(lazy(() => import('views/pages/authentication/authentication3/ResetPassword')));
 const AuthNewPassword = Loadable(lazy(() => import('views/pages/authentication/authentication3/NewPassword')));
 const AuthCode = Loadable(lazy(() => import('views/pages/authentication/AuthCode')));
+const Errors404 = Loadable(lazy(() => import('views/errors/404')));
+const Errors500 = Loadable(lazy(() => import('views/errors/500')));
+const Errors550 = Loadable(lazy(() => import('views/errors/550')));
 // ==============================|| ROUTING RENDER ||============================== //
 export default function ThemeRoutes() {
   return useRoutes([
@@ -23,17 +26,28 @@ export default function ThemeRoutes() {
       element: <AuthRegister3 />
     },
     {
-      path:'/reset-password',
-      element: <AuthResetPassword/>
+      path: '/reset-password',
+      element: <AuthResetPassword />
     },
     {
-      path:'/new-password/:id',
+      path: '/new-password/:id',
       element: <AuthNewPassword />
-      },
+    },
     {
       path: '/authCode',
       element: <AuthCode />
     },
-  
+    {
+      path: '*',
+      element: <Errors404 />
+    },
+    {
+      path: '/error/500',
+      element: <Errors500 />
+    },
+    {
+      path: '/error/550',
+      element: <Errors550 />
+    }
 ]);
 }
