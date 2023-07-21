@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -37,8 +38,6 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { ToastContainer } from 'react-toastify';
 import Toast from 'ui-component/Toast';
 import api from 'requests/api';
-import { useAuthContext } from 'context/auth-context';
-import { stringify } from 'flatted';
 // import PhoneInput from 'react-phone-input-2';
 // import 'react-phone-input-2/lib/material.css';
 
@@ -46,7 +45,6 @@ import { stringify } from 'flatted';
 // ===========================|| FIREBASE - REGISTER ||=========================== //
 const FirebaseRegister = ({ ...others }) => {
   // const dispatch = useDispatch()
-  const Auth = useAuthContext()
 
   const navigate = useNavigate();
   const theme = useTheme();
@@ -307,11 +305,10 @@ const FirebaseRegister = ({ ...others }) => {
                     setLoading(true);
                     api
                       .post('/auth/register', values)
+                      // eslint-disable-next-line no-unused-vars
                       .then((resp) => {
                         setLoading(false);
-                        // dispatch({ type: 'REGISTER_SUCCESS', payload: resp.data.user });
-                        Auth.login(stringify(resp.data.user));
-                        navigate('/pages/dashboard/default');
+                        navigate(`/authCodeRegister`);
                       })
                       .catch((err) => {
                         setLoading(false);

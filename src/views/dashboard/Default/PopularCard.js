@@ -14,23 +14,38 @@ import ChevronRightOutlinedIcon from '@mui/icons-material/ChevronRightOutlined';
 import moment from 'moment/moment';
 import 'moment/locale/fr';
 import { parse } from 'flatted';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import api from 'requests/api';
 // ==============================|| DASHBOARD DEFAULT - POPULAR CARD ||============================== //
-// const transactions = [
-//   { type: 'Envoie', destinataire: 'Bajaj Finery', montant: '839', status: 'réussis', date: '2023-05-23T16:30:00.000Z', id: 1 },
-//   { type: 'Envoie', destinataire: 'TTML', montant: '100', status: 'échec', date: '2023-05-22T14:15:00.000Z', id: 2 },
-//   { type: 'Recharge', destinataire: 'Reliance', montant: '200', status: 'attente', date: '2023-05-21T10:45:00.000Z', id: 3 },
-//   { type: 'Envoie', destinataire: 'TTML', montant: '189', status: 'réussis', date: '2023-05-20T09:30:00.000Z', id: 4 },
-//   { type: 'Recharge', destinataire: 'Toleance', montant: '189', status: 'réussis', date: '2023-05-19T08:00:00.000Z', id: 5 }
-// ];
-
-
-
+// eslint-disable-next-line no-unused-vars
 const PopularCard = ({ isLoading }) => {
   const UserData = parse(sessionStorage.getItem('user'));
-   UserData.historique.sort((a, b) => b.date - a.date);
-   const cinqPlusRecentes = UserData.historique.filter(
-    (transaction) => transaction.status !== 'attente'
-  ).slice(0, 5);
+  const [historique, setHistorique] = useState([]);
+  const [loading, setLoading] = useState(false);
+   historique.sort((a, b) => b.date - a.date);
+
+   const getHistorique = async () => {
+    setLoading(true);
+    await api
+      .get(`/history/${UserData.id}`)
+      .then((response) => {
+        console.log(response.data);
+        setHistorique(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching user data:', error);
+        setLoading(false);
+      });
+  };
+    useEffect(() => {
+       getHistorique();
+    },[])
+    const cinqPlusRecentes = historique
+    .filter((transaction) => transaction.status !== 'attente')
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 5);  
   const theme = useTheme();
   const RowContainer = styled(TableRow)(({ theme }) => ({
     transition: '0.5s ease-out',
@@ -53,15 +68,17 @@ const PopularCard = ({ isLoading }) => {
   };
 const formatDate = (date) => {
   moment.locale('fr')
-  return moment.unix(date._seconds).format('DD MMM [à] HH[h]mm');
+  return moment(date).format('DD MMM [à] HH[h]mm');
 };
-const attenteTransactions = UserData.historique.filter(
+const attenteTransactions = historique.filter(
   (transaction) => transaction.status === 'attente'
 );
   return (  
     <>
-      {isLoading ? (
-        <SkeletonPopularCard />
+      {loading ? (
+        <Grid sx={{ marginTop: '15px' }}>
+          <SkeletonPopularCard  />
+        </Grid>
       ) : ( 
       <Grid>
           {attenteTransactions.length == 0 ?
@@ -112,7 +129,7 @@ const attenteTransactions = UserData.historique.filter(
                     <Typography variant="h4">Dernières Transactions</Typography>
           </Grid>
           {
-            UserData.historique.length == 0 ?
+            historique.length == 0 ?
             <Grid item xs={12} justifyContent={'center'} alignItems={'center'} display={'flex'}>
                 <Typography>Aucune transaction</Typography>
             </Grid>
@@ -181,7 +198,7 @@ const attenteTransactions = UserData.historique.filter(
         //           </Grid>
         //         </Grid>
         //       </Grid>
-        //       {UserData.historique.length == 0 ?
+        //       {historique.length == 0 ?
         //           <Grid item xs={12} justifyContent={'center'} alignItems={'center'} display={'flex'}>
         //             <Typography>Aucune transaction</Typography>
         //           </Grid>

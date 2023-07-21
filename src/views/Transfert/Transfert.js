@@ -27,6 +27,7 @@ import api from 'requests/api';
 import { parse } from 'flatted';
 import getuserInfo from 'context/getuserInfo';
 import { useEffect } from 'react';
+import {publicIpv4} from 'public-ip';
 
 const TransferScreen = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -59,6 +60,15 @@ const TransferScreen = () => {
   const handleAmountChange = (event) => {
     setAmount(event.target.value);
   };
+  const getLocalIpAddress = async () => {
+    try {
+      const ipAddress = await publicIpv4();
+      return ipAddress;
+    } catch (error) {
+      console.error('Une erreur est survenue lors de la récupération de l\'adresse IP locale :', error);
+      return null;
+    }
+  };
 
   const handlePhoneNumberChange = async (value, countryData) => {
     setPhoneNumber(value);
@@ -78,16 +88,18 @@ const TransferScreen = () => {
   //     return null;
   //   }
   // };
-  const handleTransfer =  () => {
+
+  const handleTransfer = async () => {
     setLoading(true);
+    const ipAddress = await getLocalIpAddress();
     api.post(`/solde/transfert/${UserData.id}`, {
         numero: '0' + phoneNumber.slice(3),
         credit_amount: amount,
         pays: selectedCountry,
-        ip: '1.1.1.1'
+        ip: ipAddress
       })
-      .then(async (res) => {
-        await getuserInfo();
+      .then( (res) => {
+        getuserInfo();
         Toast.success(`Transfert de ${amount}Ar envoyé avec succès au numéro ${phoneNumber}`);
         Toast.success(`Votre solde actuel est de ${res.data.soldePrincipal}Ar`);
         setLoading(false);
@@ -99,8 +111,7 @@ const TransferScreen = () => {
       .catch((err) => {
         setLoading(false);
         console.log(err);
-        Toast.error(error.response.data.message)
-        err.response.data.message  ? Toast.error(error.response.data.message) :
+        err.response.data.message  ? Toast.error(err.response.data.message) :
         Toast.error('une erreur est survenue, veuillez réessayer plus tard');
       });
   };

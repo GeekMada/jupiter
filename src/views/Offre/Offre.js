@@ -17,6 +17,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/material.css';
 import api from 'requests/api';
 import { useEffect } from 'react';
+import ProductPlaceholder from 'ui-component/cards/Skeleton/ProductPlaceholder';
   
 const OfferCard = ({ offer, onSelectOffer }) => {
   return (
@@ -49,17 +50,20 @@ const OfferScreen = () => {
   const [selectedOffer, setSelectedOffer] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
+  const [loading, setloading] = useState(false);
   const [offres , setOffres] = useState([]);
 
   useEffect(() => {
     fetchOffres();
   },[])
   const fetchOffres = async () => {
+    setloading(true)
     api.get('/offres').then((resp) => {
       setOffres(resp.data);
-      console.log(resp.data);
+      setloading(false)
     }).catch((err) => {
       console.log(err);
+      setloading(false)
     })
   }
   const handleSelectOffer = (offer) => {
@@ -85,13 +89,15 @@ const OfferScreen = () => {
       <Typography variant="h4" sx={{ mb: 2 }}>
         Offres disponibles
       </Typography>
+   { loading?<ProductPlaceholder/>
+   :
       <Grid container spacing={2}>
         {offres.map((offer) => (
           <Grid item key={offer.id} xs={12} sm={6} md={4}>
             <OfferCard offer={offer} onSelectOffer={handleSelectOffer} />
           </Grid>
         ))}
-      </Grid>
+      </Grid>}
 
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         {selectedOffer && (
