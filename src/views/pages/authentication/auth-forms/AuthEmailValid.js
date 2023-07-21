@@ -110,7 +110,7 @@ const FirebaseLogin = ({ ...others }) => {
                                     onClick={() => {
                                         setLoading(true);
                                         api
-                                            .post('/auth/find-user-id', values)
+                                            .post('/auth/find', values)
                                             .then((resp) => {
                                                 setLoading(false);
                                                 console.log(resp.data)
