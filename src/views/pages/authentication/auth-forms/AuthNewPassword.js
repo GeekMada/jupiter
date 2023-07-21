@@ -5,16 +5,13 @@ import { useTheme } from '@mui/material/styles';
 import {
     Box,
     Button,
-    Checkbox,
     CircularProgress,
     FormControl,
-    FormControlLabel,
     FormHelperText,
     IconButton,
     InputAdornment,
     InputLabel,
     OutlinedInput,
-    Stack,
 } from '@mui/material';
 
 // third party
@@ -34,8 +31,6 @@ import api from 'requests/api';
 // import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import Toast from 'ui-component/Toast';
-import { useAuthContext } from 'context/auth-context';
-import { stringify } from 'flatted';
 import { useParams } from 'react-router-dom';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
@@ -45,10 +40,8 @@ const AuthNewPassword = ({ ...others }) => {
 
     const navigate = useNavigate();
     const theme = useTheme();
-    const Auth = useAuthContext();
     // const dispatch = useDispatch();
     const scriptedRef = useScriptRef();
-    const [checked, setChecked] = useState(true);
 
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -122,14 +115,6 @@ const AuthNewPassword = ({ ...others }) => {
                                 </FormHelperText>
                             )}
                         </FormControl>
-                        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox checked={checked} onChange={(event) => setChecked(event.target.checked)} name="checked" color="primary" />
-                                }
-                                label="se souvenir de moi"
-                            />
-                        </Stack>
                         {errors.submit && (
                             <Box sx={{ mt: 3 }}>
                                 <FormHelperText error>{errors.submit}</FormHelperText>
@@ -151,12 +136,10 @@ const AuthNewPassword = ({ ...others }) => {
                                     onClick={() => {
                                         setLoading(true);
                                         api
-                                            .put(`/user/change_password/${id}`, values)
-                                            .then((resp) => {
+                                            .put(`/user/changePassword/${id}`, values)
+                                            .then(() => {
                                                 setLoading(false);
-                                                Auth.login(stringify(resp.data.user));
-                                                // dispatch({ type: 'LOGIN_SUCCESS', payload: resp.data.user });
-                                                navigate('/pages/dashboard/default');
+                                                navigate('/');
                                             })
                                             .catch((err) => {
                                                 setLoading(false);

@@ -145,7 +145,7 @@ const FirebaseLogin = ({ ...others }) => {
                 }
                 label="se souvenir de moi"
               />
-              <Typography component={Link} to="/reset-password" variant="subtitle1" color="secondary" sx={{ textDecoration: 'none', cursor: 'pointer' }}>
+              <Typography component={Link} to="/resetPassword" variant="subtitle1" color="secondary" sx={{ textDecoration: 'none', cursor: 'pointer' }}>
                 Mot de passe oublié?
               </Typography>
             </Stack>

@@ -9,6 +9,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import { Alert } from '@mui/material';
 import api from 'requests/api';
 import { useLocation, useNavigate } from 'react-router';
+import { useParams } from 'react-router-dom';
 import { useAuthContext } from 'context/auth-context';
 import { stringify } from 'flatted';
 
@@ -52,6 +53,9 @@ const ConfirmationScreen = () => {
   const location = useLocation();
   const Auth = useAuthContext();
   const navigate = useNavigate();
+
+  const userId = useParams();
+
   useEffect(() => {
     if (location.search) setemail(location.search.split('=')[1]);
     console.log(email);
@@ -61,7 +65,7 @@ const ConfirmationScreen = () => {
   };
 
   const validationSchema = Yup.object().shape({
-    code: Yup.string().length(4, 'Le code doit contenir 4 chiffres').required('Champ obligatoire')
+    code: Yup.string().length(6, 'Le code doit contenir 6 chiffres').required('Champ obligatoire')
   });
 
   const handleSubmit = (values, { setSubmitting }) => {
@@ -146,20 +150,32 @@ const ConfirmationScreen = () => {
                 <AnimateButton>
                   <Button
                     onClick={() => {
-                      api
-                        .post('/user/verification', {
+                     userId ? api
+                       .post('/auth/verification', {
                           code: values.code,
                           email: email
                         })
                         .then((response) => {
                           console.log(response.data);
                           // dispatch({ type: 'REGISTER_SUCCESS', payload: response.data.user });
-                          Auth.login(stringify(response.data.user));
-                          navigate('/dashboard/default');
+                          navigate(`/newPassword/${userId.id}`);
                         })
                         .catch((error) => {
                           console.error('Error confirmation code:', error);
-                        });
+                        }) : api
+                         .post('/auth/verification', {
+                            code: values.code,
+                            email: email
+                          })
+                          .then((response) => {
+                            console.log(response.data);
+                            // dispatch({ type: 'REGISTER_SUCCESS', payload: response.data.user });
+                            Auth.login(stringify(response.data.user));
+                            navigate('/dashboard/default');
+                          })
+                          .catch((error) => {
+                            console.error('Error confirmation code:', error);
+                          });
                     }}
                     disabled={loading}
                     type="submit"

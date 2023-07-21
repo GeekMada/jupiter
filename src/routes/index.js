@@ -26,15 +26,19 @@ export default function ThemeRoutes() {
       element: <AuthRegister3 />
     },
     {
-      path: '/reset-password',
+      path: '/resetPassword',
       element: <AuthResetPassword />
     },
     {
-      path: '/new-password/:id',
+      path: '/newPassword/:id',
       element: <AuthNewPassword />
     },
     {
       path: '/authCode',
+      element: <AuthCode />
+    },
+    {
+      path: '/authCode/:id',
       element: <AuthCode />
     },
     {
