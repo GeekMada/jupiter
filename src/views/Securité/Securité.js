@@ -26,11 +26,11 @@ import Toast from 'ui-component/Toast';
 import { ToastContainer } from 'react-toastify';
 import {publicIpv4} from 'public-ip';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import { useEffect } from 'react';
 
 const SecurityScreen = () => {
   const UserData = parse(sessionStorage.getItem('user'));
   const [ipList, setIpList] = useState(UserData.ips);
-
   const [openDialog, setOpenDialog] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [ipAddress, setIpAddress] = useState('');
@@ -39,12 +39,24 @@ const SecurityScreen = () => {
   const [loading, setLoading] = useState(false);
   const [togglingIpId, setTogglingIpId] = useState(null); // Store the IP ID that is currently being toggled (blocked/unblocked)
   const [deletingIpId, setDeletingIpId] = useState(null);
+  const getAllIp = () => {
+    api
+      .get(`/ip/${UserData.id}`)
+      .then((res) => {
+      console.log(res.data);
+    }).catch((err) => {
+        console.log(err);
+      });
+  };
+  useEffect(() => {
+    getAllIp();
+  }, []);
   const getLocalIpAddress = async () => {
     try {
       const ipAddress = await publicIpv4();
       return ipAddress;
     } catch (error) {
-      console.error('Une erreur est survenue lors de la récupération de l\'adresse IP locale :', error);
+      console.error("Une erreur est survenue lors de la récupération de l'adresse IP locale :", error);
       return null;
     }
   };

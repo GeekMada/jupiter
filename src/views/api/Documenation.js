@@ -86,7 +86,7 @@ const DocumentationAPI = () => {
                         .map((param) => `/${param.name}`)
                         .join('')} \\\n`}
                       {api.method === 'POST' ? '  -H "Content-Type: application/json" \\\n' : ''}
-                      {api.method === 'POST' ? `-d '{"ip": "votre_ip", "somme": montant}' \\\n` : ''}
+                      {api.method === 'POST' ? `-d '{${api.parameters.filter((param)=>param.location === 'BODY').map((param) => `${param.name}: ${param.description}`).join(', ')}}}' \\\n` : ''}
                     </code>
                   </Paper>
                 </Typography>

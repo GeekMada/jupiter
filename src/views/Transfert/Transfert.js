@@ -98,8 +98,8 @@ const TransferScreen = () => {
         pays: selectedCountry,
         ip: ipAddress
       })
-      .then(async (res) => {
-        await getuserInfo();
+      .then( (res) => {
+        getuserInfo();
         Toast.success(`Transfert de ${amount}Ar envoyé avec succès au numéro ${phoneNumber}`);
         Toast.success(`Votre solde actuel est de ${res.data.soldePrincipal}Ar`);
         setLoading(false);
@@ -111,8 +111,7 @@ const TransferScreen = () => {
       .catch((err) => {
         setLoading(false);
         console.log(err);
-        Toast.error(error.response.data.message)
-        err.response.data.message  ? Toast.error(error.response.data.message) :
+        err.response.data.message  ? Toast.error(err.response.data.message) :
         Toast.error('une erreur est survenue, veuillez réessayer plus tard');
       });
   };
