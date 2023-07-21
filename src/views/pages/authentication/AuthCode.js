@@ -60,6 +60,7 @@ const ConfirmationScreen = () => {
     if (location.search) setemail(location.search.split('=')[1]);
     console.log(email);
   }, [email, location.search]);
+
   const initialValues = {
     code: ''
   };
@@ -150,7 +151,7 @@ const ConfirmationScreen = () => {
                 <AnimateButton>
                   <Button
                     onClick={() => {
-                     userId ? api
+                      api
                        .post('/auth/verification', {
                           code: values.code,
                           email: email
@@ -162,20 +163,7 @@ const ConfirmationScreen = () => {
                         })
                         .catch((error) => {
                           console.error('Error confirmation code:', error);
-                        }) : api
-                         .post('/auth/verification', {
-                            code: values.code,
-                            email: email
-                          })
-                          .then((response) => {
-                            console.log(response.data);
-                            // dispatch({ type: 'REGISTER_SUCCESS', payload: response.data.user });
-                            Auth.login(stringify(response.data.user));
-                            navigate('/dashboard/default');
-                          })
-                          .catch((error) => {
-                            console.error('Error confirmation code:', error);
-                          });
+                        }) 
                     }}
                     disabled={loading}
                     type="submit"

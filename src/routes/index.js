@@ -10,6 +10,7 @@ const AuthRegister3 = Loadable(lazy(() => import('views/pages/authentication/aut
 const AuthResetPassword = Loadable(lazy(() => import('views/pages/authentication/authentication3/ResetPassword')));
 const AuthNewPassword = Loadable(lazy(() => import('views/pages/authentication/authentication3/NewPassword')));
 const AuthCode = Loadable(lazy(() => import('views/pages/authentication/AuthCode')));
+const AuthCodeRegister = Loadable(lazy(() => import('views/pages/authentication/AuthCodeRegister')));
 const Errors404 = Loadable(lazy(() => import('views/errors/404')));
 const Errors500 = Loadable(lazy(() => import('views/errors/500')));
 const Errors550 = Loadable(lazy(() => import('views/errors/550')));
@@ -34,8 +35,8 @@ export default function ThemeRoutes() {
       element: <AuthNewPassword />
     },
     {
-      path: '/authCode',
-      element: <AuthCode />
+      path: '/authCodeRegister',
+      element: <AuthCodeRegister />
     },
     {
       path: '/authCode/:id',
