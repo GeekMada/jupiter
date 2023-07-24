@@ -4,6 +4,7 @@ import Loadable from 'ui-component/Loadable';
 // routes
 import MainRoutes from './MainRoutes';
 import { lazy } from 'react';
+import TokenExpiredPopup from 'views/token/TokenExpire';
 const AuthLogin3 = Loadable(lazy(() => import('views/pages/authentication/authentication3/Login3')));
 const AuthRegister3 = Loadable(lazy(() => import('views/pages/authentication/authentication3/Register3')));
 
@@ -41,6 +42,10 @@ export default function ThemeRoutes() {
     {
       path: '/authCode/:id',
       element: <AuthCode />
+    },
+    {
+      path: '/expiredToken',
+      element: <TokenExpiredPopup />
     },
     {
       path: '*',

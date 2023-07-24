@@ -15,7 +15,11 @@ import { SET_MENU } from 'store/actions';
 
 // assets
 import { IconChevronRight } from '@tabler/icons';
+import TokenExpiredPopup from 'views/token/TokenExpire';
 
+import api from '../../requests/api'
+import { useState } from 'react';
+// import { useNavigate } from 'react-router-dom';
 // styles
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
   ...theme.typography.mainContent,
@@ -53,6 +57,21 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({
 // ==============================|| MAIN LAYOUT ||============================== //
 
 const MainLayout = () => {
+  const [open, setOpen] = useState(false);
+  api.interceptors.response.use(
+    (config) => {
+     
+      return config;
+    },
+    (error) => {
+      // En cas d'erreur lors de la configuration de la requête, vous pouvez gérer l'erreur ici
+      console.log('errorrrrrr', error.response.data.message);
+      if (error.response.data.message === 'Le token a expiré, veuillez vous reconnecter') {
+        return setOpen(true)
+      }
+      return Promise.reject(error);
+    }
+  )
   const theme = useTheme();
   const matchDownMd = useMediaQuery(theme.breakpoints.down('md'));
   // Handle left drawer
@@ -61,7 +80,6 @@ const MainLayout = () => {
   const handleLeftDrawerToggle = () => {
     dispatch({ type: SET_MENU, opened: !leftDrawerOpened });
   };
-
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -80,7 +98,7 @@ const MainLayout = () => {
           <Header handleLeftDrawerToggle={handleLeftDrawerToggle} />
         </Toolbar>
       </AppBar>
-
+      {open && <TokenExpiredPopup />}
       {/* drawer */}
       <Sidebar drawerOpen={!matchDownMd ? leftDrawerOpened : !leftDrawerOpened} drawerToggle={handleLeftDrawerToggle} />
 

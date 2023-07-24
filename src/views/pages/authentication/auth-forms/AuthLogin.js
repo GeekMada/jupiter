@@ -174,13 +174,14 @@ const FirebaseLogin = ({ ...others }) => {
                       .then((resp) => {
                         setLoading(false);
                         Auth.login(stringify(resp.data.user));
+                        sessionStorage.setItem('authToken', resp.data.token);
                         // dispatch({ type: 'LOGIN_SUCCESS', payload: resp.data.user });
                         navigate('/pages/dashboard/default');
                       })
                       .catch((err) => {
                         setLoading(false);
                         console.log(err);
-                        Toast.error(err.response.data.message);
+                        Toast.error("Erreur d'authentification");
                       });
                   }}
                 >
