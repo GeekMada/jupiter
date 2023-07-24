@@ -151,6 +151,7 @@ const ConfirmationScreen = () => {
                 <AnimateButton>
                   <Button
                     onClick={() => {
+                      setLoading(true);
                       api
                        .post('/auth/verification', {
                           code: values.code,
@@ -158,6 +159,7 @@ const ConfirmationScreen = () => {
                         })
                         .then((response) => {
                           console.log(response.data);
+                          setLoading(false);
                           // dispatch({ type: 'REGISTER_SUCCESS', payload: response.data.user });
                           navigate(`/newPassword/${userId.id}`);
                         })
