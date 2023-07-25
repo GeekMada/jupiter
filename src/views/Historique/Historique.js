@@ -195,7 +195,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
                {/* <TableCell>{transaction.id}</TableCell> */}
                <TableCell>{transaction.type}</TableCell>
                <TableCell>{formatDate(transaction.date)}</TableCell>
-               <TableCell>{transaction.montant}Ar</TableCell>
+               <TableCell>{transaction.montant}€</TableCell>
                {/* <TableCell>{transaction.country}</TableCell> */}
                {/* <TableCell>{transaction.operator}</TableCell> */}
                <TableCell>{transaction.destinataire}</TableCell>
@@ -258,7 +258,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
               <Typography variant="body1">ID : {selectedTransaction.id}</Typography>
               <Typography variant="body1">Type de transaction: {selectedTransaction.type}</Typography>
               <Typography variant="body1">Date : {formatDate(selectedTransaction.date)}</Typography>
-              <Typography variant="body1">Montant : {selectedTransaction.montant}Ar</Typography>
+              <Typography variant="body1">Montant : {selectedTransaction.montant}€</Typography>
               
               {selectedTransaction.type === 'Envoi' && (
                 <>

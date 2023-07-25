@@ -17,6 +17,7 @@
     "apexcharts": "^3.35.3",
     "axios": "^1.4.0",
     "cloudinary-react": "^1.8.1",
+    "easy-currencies": "^1.7.0",
     "flatted": "^3.2.7",
     "formik": "^2.2.9",
     "framer-motion": "^6.3.16",

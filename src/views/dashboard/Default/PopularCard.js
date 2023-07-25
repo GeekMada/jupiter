@@ -113,7 +113,7 @@ const attenteTransactions = historique.filter(
                     <TableRow>
                       <TableCell>{transaction.type}</TableCell>
                       <TableCell>{formatDate(transaction.date)}</TableCell>
-                      <TableCell>{transaction.montant}Ar</TableCell>
+                      <TableCell>{transaction.montant}€</TableCell>
                       <TableCell>{transaction.destinataire}</TableCell>
                       <TableCell style={{ display: 'flex',gap: '5px',alignItems: 'center', color:theme.palette.warning.main}}>{getStatusIcon(transaction.status)}  {transaction.status}</TableCell>
                     </TableRow>
@@ -154,7 +154,7 @@ const attenteTransactions = historique.filter(
                 {/* <TableCell>{transaction.id}</TableCell> */}
                 <TableCell>{transaction.type}</TableCell>
                 <TableCell>{formatDate(transaction.date)}</TableCell>
-                <TableCell>{transaction.montant}Ar</TableCell>
+                <TableCell>{transaction.montant}€</TableCell>
                 {/* <TableCell>{transaction.country}</TableCell> */}
                 {/* <TableCell>{transaction.operator}</TableCell> */}
                 <TableCell>{transaction.destinataire}</TableCell>
@@ -226,7 +226,7 @@ const attenteTransactions = historique.filter(
         //                       <Grid container alignItems="center" justifyContent="space-between">
         //                         <Grid item>
         //                           <Typography variant="subtitle1" color="inherit">
-        //                             {item.montant}Ar
+        //                             {item.montant}€
         //                           </Typography>
         //                         </Grid>
         //                         <Grid item>
