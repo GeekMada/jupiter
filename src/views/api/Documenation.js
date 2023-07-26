@@ -74,7 +74,7 @@ const DocumentationAPI = () => {
     },
 
     {
-      title: "Transfert de l'offre",
+      title: "Transfert d'une offre",
       endpoint: '/offre/transfert',
       method: 'POST',
       description: "Permet à un utilisateur de faire le transfert d'une offre.",
