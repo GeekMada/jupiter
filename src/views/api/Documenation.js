@@ -74,18 +74,18 @@ const DocumentationAPI = () => {
     },
   ];
   const baseUrl ='http://localhost:8000'
-
+  const apiKey = 'YOUR_API_KEY';
   return (
     <Container className={classes.container}>
-      <Grid container spacing={1}>
-        {apiData.map((api, index) => (
-          <Grid item xs={12} key={index}>
-            <Accordion className={classes.accordion}>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="h5">{api.title}</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography variant="body1">
+    <Grid container spacing={1}>
+      {apiData.map((api, index) => (
+        <Grid item xs={12} key={index}>
+          <Accordion className={classes.accordion}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography variant="h5">{api.title}</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+            <Typography variant="body1">
                   <strong>Endpoint :</strong>{baseUrl}{api.endpoint}
                   <br />
                   <strong>Méthode :</strong> {api.method}
@@ -111,27 +111,29 @@ const DocumentationAPI = () => {
                     ))}
                   </ul>
                 </Typography>
-              </AccordionDetails>
-              <AccordionDetails>
+            </AccordionDetails>
+            <AccordionDetails>
                 <Typography variant="body1">
                   <strong>Requête curl :</strong>
                   <Paper className={classes.paper}>
-                    <code className="language-bash" style={{color: 'white'}}>
+                    <code className="language-bash" style={{ color: 'white' }}>
                       {`curl -X ${api.method} ${baseUrl}${api.endpoint}${api.parameters
                         .filter((param) => param.location === 'URL')
                         .map((param) => `/${param.name}`)
                         .join('')} \\\n`}
                       {api.method === 'POST' ? '  -H "Content-Type: application/json" \\\n' : ''}
-                      {api.method === 'POST' ? `-d '{${api.parameters.filter((param)=>param.location === 'BODY').map((param) => `${param.name}: ${param.description}`).join(', ')}}' \\\n` : ''}
+                      {/* Include the API key in the curl request */}
+                      {apiKey ? `  -H "Authorization: x-api-key ${apiKey}" \\\n` : ''}
+                      {api.method === 'POST' ? `-d '{${api.parameters.filter((param) => param.location === 'BODY').map((param) => `${param.name}: ${param.description}`).join(', ')}}' \\\n` : ''}
                     </code>
                   </Paper>
                 </Typography>
               </AccordionDetails>
-            </Accordion>
-          </Grid>
-        ))}
-      </Grid>
-    </Container>
+          </Accordion>
+        </Grid>
+      ))}
+    </Grid>
+  </Container>
   );
 };
 

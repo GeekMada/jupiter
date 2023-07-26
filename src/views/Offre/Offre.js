@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState } from 'react';
 import {
   Box,
@@ -28,7 +29,7 @@ const OfferCard = ({ offer, onSelectOffer }) => {
   };
 
   return (
-    <Card sx={{ maxWidth: 345}}>
+    <Card sx={{ maxWidth: 345 }}>
       <CardActionArea onClick={() => onSelectOffer(offer)}>
         <CardMedia
           component="img"
@@ -161,18 +162,12 @@ const OfferScreen = () => {
     setOpenDialog(false);
   };
 
- 
-
   const filterOffres = () => {
     if (searchValue === '') {
       setFilteredOffres(offres);
     } else {
-      const filteredByCountry = offres.filter((offer) =>
-        offer.pays.toLowerCase().includes(searchValue.toLowerCase())
-      );
-      const filteredByOperator = offres.filter((offer) =>
-        offer.operateur.toLowerCase().includes(searchValue.toLowerCase())
-      );
+      const filteredByCountry = offres.filter((offer) => offer.pays.toLowerCase().includes(searchValue.toLowerCase()));
+      const filteredByOperator = offres.filter((offer) => offer.operateur.toLowerCase().includes(searchValue.toLowerCase()));
       const filteredOffers = [...filteredByCountry, ...filteredByOperator];
       setFilteredOffres(filteredOffers);
     }
