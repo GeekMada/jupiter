@@ -60,18 +60,18 @@ const MainLayout = () => {
   const [open, setOpen] = useState(false);
   api.interceptors.response.use(
     (config) => {
-     
       return config;
     },
     (error) => {
       // En cas d'erreur lors de la configuration de la requête, vous pouvez gérer l'erreur ici
       console.log('errorrrrrr', error.response.data.message);
       if (error.response.data.message === 'Le token a expiré, veuillez vous reconnecter') {
-        return setOpen(true)
+        // Mettez à jour l'état open en cas de token expiré
+        setOpen(true);
       }
       return Promise.reject(error);
     }
-  )
+  );
   const theme = useTheme();
   const matchDownMd = useMediaQuery(theme.breakpoints.down('md'));
   // Handle left drawer
@@ -98,7 +98,7 @@ const MainLayout = () => {
           <Header handleLeftDrawerToggle={handleLeftDrawerToggle} />
         </Toolbar>
       </AppBar>
-      {open && <TokenExpiredPopup />}
+      {open && <TokenExpiredPopup setOpen={setOpen} />} 
       {/* drawer */}
       <Sidebar drawerOpen={!matchDownMd ? leftDrawerOpened : !leftDrawerOpened} drawerToggle={handleLeftDrawerToggle} />
 

@@ -19,7 +19,9 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/material.css';
 import { useEffect } from 'react';
 import ProductPlaceholder from 'ui-component/cards/Skeleton/ProductPlaceholder';
-
+import api from '../../requests/api';
+import countryCodesJSON from 'react-phone-input-2/lang/fr.json'
+// import { parse } from 'flatted';
 const OfferCard = ({ offer, onSelectOffer }) => {
   const [expanded, setExpanded] = useState(false);
 
@@ -87,57 +89,23 @@ const OfferScreen = () => {
     event.stopPropagation();
     setExpanded((prevExpanded) => !prevExpanded);
   };
-  const fakeOffres = [
-    {
-      id: 1,
-      nom: 'Offre 1',
-      description: 'Description de l\'offre 1 ',
-      prix: 10,
-      pays: 'France',
-      operateur: 'Orange',
-      image: 'https://via.placeholder.com/640x480?text=Offre+1',
-    },{
-      id: 2,
-      nom: 'Offre 2',
-      description: 'Description de l\'offre 1',
-      prix: 12,
-      pays: 'France',
-      operateur: 'Bouygue',
-      image: 'https://via.placeholder.com/640x480?text=Offre+2',
-    },{
-      id: 3,
-      nom: 'Offre 3',
-      description: 'Description de l\'offre 3',
-      prix: 15,
-      pays: 'Mada',
-      operateur: 'Orange',
-      image: 'https://via.placeholder.com/640x480?text=Offre+3',
-    },{
-      id: 4,
-      nom: 'Offre 4',
-      description: 'Description de l\'offre 4',
-      prix: 25,
-      pays: 'Mada',
-      operateur: 'Telma',
-      image: 'https://via.placeholder.com/640x480?text=Offre+4',
-    },{
-      id: 5,
-      nom: 'Offre 5',
-      description: 'Description de l\'offre 5',
-      prix: 19,
-      pays: 'Mali',
-      operateur: 'Malitel',
-      image: 'https://via.placeholder.com/640x480?text=Offre+5',
-    },
-  ];
-  useEffect(() => {
-    // Fetch data from API or use fake data here
+  const getOffres = () => {
     setLoading(true);
-    // Simulate API call delay
-    setTimeout(() => {
-      setOffres(fakeOffres);
-      setLoading(false);
-    }, 1000);
+    api
+      .get('/offres')
+      .then((response) => {
+        setOffres(response.data);
+        console.log(response.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+  useEffect(() => {
+    getOffres();
   }, []);
 
   useEffect(() => {
@@ -175,7 +143,15 @@ const OfferScreen = () => {
   useEffect(() => {
     filterOffres();
   }, [searchValue]);
-
+  // Fonction pour convertir un nom de pays en code
+  const convertCountryToCode = (countryName) => {
+    // Chercher le nom du pays dans l'objet countryCodesObj
+    for (const [code, country] of Object.entries(countryCodesJSON)) {
+      if (country === countryName) {
+        return code;
+      }
+    }
+  };
   return (
     <Box sx={{ p: 2 }}>
       <Typography variant="h4" sx={{ mb: 2 }}>
@@ -251,7 +227,8 @@ const OfferScreen = () => {
                   inputStyle={{ width: '100%' }}
                   placeholder="Numéro de téléphone"
                   specialLabel=""
-                  enableSearch
+                  country={convertCountryToCode(selectedOffer.pays)}
+                  // enableSearch
                   value={phoneNumber}
                   onChange={setPhoneNumber}
                 />

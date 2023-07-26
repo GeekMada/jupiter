@@ -31,6 +31,9 @@ import { useEffect } from 'react';
 import {publicIpv4} from 'public-ip';
 import axios from 'axios';
 import { Convert } from 'easy-currencies';
+import fr from 'react-phone-input-2/lang/fr.json'
+import countries from 'i18n-iso-countries'
+countries.registerLocale(require('i18n-iso-countries/langs/fr.json'));
 const TransferScreen = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [amount, setAmount] = useState('');
@@ -83,9 +86,10 @@ const TransferScreen = () => {
 
   const handlePhoneNumberChange = async (value, countryData) => {
     setPhoneNumber(value);
-    setSelectedCountry(countryData.name);
     const countryDataResponse = await fetchCountryData(countryData.countryCode);
+    const countryFr = countries.getName(countryData.countryCode, 'fr');
     const currency = Object.values(countryDataResponse[0].currencies);
+    setSelectedCountry(countryFr);
     setCurrencySymbol(currency[0].symbol);
     setSelectedCurrency(Object.keys(countryDataResponse[0].currencies)[0]);
   };
@@ -143,7 +147,15 @@ const TransferScreen = () => {
       title: 'Numéro',
       component: (
         <Grid justifyContent={'center'} display={'flex'} alignItems={'center'}>
-          <PhoneInput enableSearch specialLabel="" placeholder="" value={phoneNumber} onChange={handlePhoneNumberChange} />
+          <PhoneInput
+            enableSearch
+            specialLabel=""
+            placeholder=""
+            localization={fr}
+            value={phoneNumber}
+            
+            onChange={handlePhoneNumberChange}
+          />
         </Grid>
       )
     },
@@ -152,7 +164,7 @@ const TransferScreen = () => {
       component: (
         <Grid justifyContent={'center'} display={'flex'} alignItems={'center'} flexDirection={'column'}>
           <FormControl error={errors[1]} sx={{ marginBottom: '1rem' }}>
-            <TextField label={`Montant en €`} value={amount} onChange={handleAmountChange} type="number" />
+            <TextField label={`Montant en €`} value={amount}  onChange={handleAmountChange} type="number" />
             {errors[1] && <FormHelperText>Veuillez saisir un montant</FormHelperText>}
           </FormControl>
           <FormControl sx={{ marginBottom: '1rem' }}>

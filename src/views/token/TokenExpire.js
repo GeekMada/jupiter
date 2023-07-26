@@ -22,9 +22,8 @@ import { ToastContainer } from 'react-toastify';
 import api from 'requests/api';
 import { useTheme } from '@mui/material/styles';
 import Toast from 'ui-component/Toast';
-const TokenExpiredPopup = () => {
+const TokenExpiredPopup = ({ setOpen }) => {
   const [showPassword, setShowPassword] = React.useState(false);
-  const [open, setopen] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
   const theme = useTheme();
   const handleClickShowPassword = () => {
@@ -36,7 +35,7 @@ const TokenExpiredPopup = () => {
   };
 
   return (
-    <Dialog open={open}>
+    <Dialog open={true}>
       <DialogTitle style={{ display: 'flex', justifyContent: 'center', alignContent: 'center', flexDirection: 'column' }}>
         <Typography variant="h5">Votre session est expiré</Typography>
         <Typography variant="h6">Veuillez vous reconnecter</Typography>
@@ -136,7 +135,7 @@ const TokenExpiredPopup = () => {
                     .then((resp) => {
                       setLoading(false);
                       sessionStorage.setItem('authToken', resp.data.token);
-                      setopen(false)
+                      setOpen(false)
                     })
                     .catch((err) => {
                       setLoading(false);

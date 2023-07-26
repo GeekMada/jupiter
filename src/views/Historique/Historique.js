@@ -90,7 +90,7 @@ const [selectedTransaction, setSelectedTransaction] = useState(null);
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'réussis':
+      case 'réussi':
         return <CheckCircleOutline sx={{ color: theme.palette.success.main }} />;
       case 'échec':
         return <ErrorOutline sx={{ color: theme.palette.error.main }} />;
@@ -205,7 +205,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
                    gap: '5px',
                    alignItems: 'center',
                    color:
-                     transaction.status === 'réussis'
+                     transaction.status === 'réussi'
                        ? theme.palette.success.main
                        : transaction.status === 'attente'
                        ? theme.palette.warning.main
@@ -272,7 +272,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
                 <Typography
                   style={{
                     color:
-                      selectedTransaction.status === 'réussis'
+                      selectedTransaction.status === 'réussi'
                         ? theme.palette.success.main
                         : selectedTransaction.status === 'attente'
                         ? theme.palette.warning.main

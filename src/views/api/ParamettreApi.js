@@ -55,9 +55,11 @@ const APIKeyScreen = () => {
   const [showGenerateForm, setShowGenerateForm] = useState(true);
   const [loading, setLoading] = useState(false);
   const [apiKeyVisible, setApiKeyVisible] = useState(false);
+  const [IdVisible, setIdVisible] = useState(false);
+
   const user = parse(sessionStorage.getItem('user'));
   var apiKeyFromSession = user.apiKey;
-
+  const userId = user.id;
   useEffect(() => {
     // Fetch existing API key and remaining API calls from your backend
     if (apiKeyFromSession) {
@@ -69,7 +71,7 @@ const APIKeyScreen = () => {
   const handleGenerateApiKey = async () => {
     setLoading(true);
     api
-      .get(`/api/generateKey/${user.id}`)
+      .get(`/api/generateKey/${userId}`)
       .then((response) => {
         console.log(response.data);
         setApiKey(response.data.apiKey);
@@ -88,7 +90,7 @@ const APIKeyScreen = () => {
   const handleRevokeApiKey = () => {
     setLoading(true);
     api
-      .delete(`/api/revokeKey/${user.id}`)
+      .delete(`/api/revokeKey/${userId}`)
       .then((response) => {
         console.log(response.data);
         Toast.success('La clé a bien été révoquée');
@@ -112,6 +114,10 @@ const APIKeyScreen = () => {
   const handleCopyApiKey = () => {
     navigator.clipboard.writeText(apiKey);
     Toast.success('Clé API copiée dans le presse-papiers');
+  };  
+  const handleCopyId = () => {
+    navigator.clipboard.writeText(userId);
+    Toast.success('Votre ID est copiée dans le presse-papiers');
   };
 
   return (
@@ -166,6 +172,32 @@ const APIKeyScreen = () => {
                     >
                       {loading ? <CircularProgress style={{ color: 'white'}} size={24} /> : 'Revoquer la clé API'}
                     </Button>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion className={classes.accordion}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography variant="h6">Mon ID</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography variant="body1" className={classes.apiKey}>
+                    <strong>Mon userId :</strong>
+                    {userId && (
+                      <span className={classes.apiKeyText}>
+                        {IdVisible ? userId : '********'}
+                      </span>
+                    )}
+                    <IconButton
+                      className={classes.copyButton}
+                      onClick={handleCopyId}
+                      disabled={!userId}
+                      color="primary"
+                    >
+                      <FileCopy />
+                    </IconButton>
+                    <IconButton onClick={() => setIdVisible(!IdVisible)} color="primary">
+                      {IdVisible ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </Typography>
                 </AccordionDetails>
               </Accordion>
             </Box>
