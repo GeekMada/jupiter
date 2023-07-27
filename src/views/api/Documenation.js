@@ -24,6 +24,7 @@ const DocumentationAPI = () => {
       endpoint: '/solde/recharge/',
       method: 'POST',
       description: 'Permet à un utilisateur de faire une demande de recharge de son crédit.',
+      note: "",
       parameters: [
         { name: 'userId', type: 'chaîne', location: 'URL', description: "L'ID de l'utilisateur." },
         //{ name: 'ip', type: 'chaîne', location: 'BODY', description: "L'adresse IP de l'utilisateur." },
@@ -42,6 +43,7 @@ const DocumentationAPI = () => {
       endpoint: '/solde/transfert',
       method: 'POST',
       description: 'Permet à un utilisateur de faire un transfert de crédit.',
+      note: "",
       parameters: [
         { name: 'userId', type: 'chaîne', location: 'URL', description: "L'ID de l'utilisateur." },
         //{ name: 'ip', type: 'chaîne', location: 'BODY', description: "L'adresse IP de l'utilisateur." },
@@ -62,6 +64,7 @@ const DocumentationAPI = () => {
       endpoint: '/solde',
       method: 'GET',
       description: 'Permet à un utilisateur de consulter son solde.',
+      note: "",
       parameters: [
         { name: 'userId', type: 'chaîne', location: 'URL', description: "L'ID de l'utilisateur." },
         //{ name: 'ip', type: 'chaîne', location: 'BODY', description: "L'adresse IP de l'utilisateur." }
@@ -78,11 +81,14 @@ const DocumentationAPI = () => {
       endpoint: '/offre/transfert',
       method: 'POST',
       description: "Permet à un utilisateur de faire le transfert d'une offre.",
+      note: "La liste des offres se trouve dans l'onglet 'Transférer offre'",
       parameters: [
         { name: 'userId', type: 'chaîne', location: 'URL', description: "L'ID de l'utilisateur." },
         //{ name: 'ip', type: 'chaîne', location: 'BODY', description: "L'adresse IP de l'utilisateur." },
         { name: 'numero', type: 'chaîne', location: 'BODY', description: 'Le numéro du destinataire.'},
-        { name: 'offre', type: 'nombre', location: 'BODY', description: "L'offre à transférer." },
+        { name: 'pays', type: 'chaîne', location: 'BODY', description: "Le pays de l'opérateur."},
+        { name: 'opérateur', type: 'chaîne', location: 'BODY', description: "Le nom de l'opérateur."},
+        { name: 'offre', type: 'chaîne', location: 'BODY', description: "L'offre à transférer." },
       ],
       response: [
         { code: '200 OK', description: "Transfert de l'offre effectué avec succès." },
@@ -95,18 +101,18 @@ const DocumentationAPI = () => {
     },
   ];
   const baseUrl ='http://localhost:8000'
-  const apiKey = 'YOUR_API_KEY';
+
   return (
     <Container className={classes.container}>
-    <Grid container spacing={1}>
-      {apiData.map((api, index) => (
-        <Grid item xs={12} key={index}>
-          <Accordion className={classes.accordion}>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant="h5">{api.title}</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-            <Typography variant="body1">
+      <Grid container spacing={1}>
+        {apiData.map((api, index) => (
+          <Grid item xs={12} key={index}>
+            <Accordion className={classes.accordion}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="h5">{api.title}</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Typography variant="body1">
                   <strong>Endpoint :</strong>{baseUrl}{api.endpoint}
                   <br />
                   <strong>Méthode :</strong> {api.method}
@@ -131,30 +137,30 @@ const DocumentationAPI = () => {
                       </li>
                     ))}
                   </ul>
+                  <br />
+                  <strong>Note :</strong> {api.note}
                 </Typography>
-            </AccordionDetails>
-            <AccordionDetails>
+              </AccordionDetails>
+              <AccordionDetails>
                 <Typography variant="body1">
                   <strong>Requête curl :</strong>
                   <Paper className={classes.paper}>
-                    <code className="language-bash" style={{ color: 'white' }}>
+                    <code className="language-bash" style={{color: 'white'}}>
                       {`curl -X ${api.method} ${baseUrl}${api.endpoint}${api.parameters
                         .filter((param) => param.location === 'URL')
                         .map((param) => `/${param.name}`)
                         .join('')} \\\n`}
                       {api.method === 'POST' ? '  -H "Content-Type: application/json" \\\n' : ''}
-                      {/* Include the API key in the curl request */}
-                      {apiKey ? `  -H "Authorization: x-api-key ${apiKey}" \\\n` : ''}
-                      {api.method === 'POST' ? `-d '{${api.parameters.filter((param) => param.location === 'BODY').map((param) => `${param.name}: ${param.description}`).join(', ')}}' \\\n` : ''}
+                      {api.method === 'POST' ? `-d '{${api.parameters.filter((param)=>param.location === 'BODY').map((param) => `${param.name}: ${param.description}`).join(', ')}}' \\\n` : ''}
                     </code>
                   </Paper>
                 </Typography>
               </AccordionDetails>
-          </Accordion>
-        </Grid>
-      ))}
-    </Grid>
-  </Container>
+            </Accordion>
+          </Grid>
+        ))}
+      </Grid>
+    </Container>
   );
 };
 
