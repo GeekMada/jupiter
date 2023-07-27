@@ -115,6 +115,8 @@ const FirebaseLogin = ({ ...others }) => {
                                                 setLoading(false);
                                                 console.log(resp.data)
                                                 const userId = resp.data.id
+
+                                                localStorage.setItem('email', values.email);
                                                 // dispatch({ type: 'LOGIN_SUCCESS', payload: resp.data.user });
                                                 navigate(`/authCode/${userId}`);
                                             })
