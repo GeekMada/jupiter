@@ -56,7 +56,7 @@ const PopularCard = ({ isLoading }) => {
   
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'réussis':
+      case 'réussi':
         return <CheckCircleOutline sx={{ color: theme.palette.success.main }} />;
       case 'échec':
         return <ErrorOutline sx={{ color: theme.palette.error.main }} />;
@@ -73,6 +73,8 @@ const formatDate = (date) => {
 const attenteTransactions = historique.filter(
   (transaction) => transaction.status === 'attente'
 );
+console.log(attenteTransactions)
+
   return (  
     <>
       {loading ? (
@@ -113,7 +115,7 @@ const attenteTransactions = historique.filter(
                     <TableRow>
                       <TableCell>{transaction.type}</TableCell>
                       <TableCell>{formatDate(transaction.date)}</TableCell>
-                      <TableCell>{transaction.montant}Ar</TableCell>
+                      <TableCell>{transaction.montant}€</TableCell>
                       <TableCell>{transaction.destinataire}</TableCell>
                       <TableCell style={{ display: 'flex',gap: '5px',alignItems: 'center', color:theme.palette.warning.main}}>{getStatusIcon(transaction.status)}  {transaction.status}</TableCell>
                     </TableRow>
@@ -154,7 +156,7 @@ const attenteTransactions = historique.filter(
                 {/* <TableCell>{transaction.id}</TableCell> */}
                 <TableCell>{transaction.type}</TableCell>
                 <TableCell>{formatDate(transaction.date)}</TableCell>
-                <TableCell>{transaction.montant}Ar</TableCell>
+                <TableCell>{transaction.montant}€</TableCell>
                 {/* <TableCell>{transaction.country}</TableCell> */}
                 {/* <TableCell>{transaction.operator}</TableCell> */}
                 <TableCell>{transaction.destinataire}</TableCell>
@@ -164,7 +166,7 @@ const attenteTransactions = historique.filter(
                     gap: '5px',
                     alignItems: 'center',
                     color:
-                      transaction.status === 'réussis'
+                      transaction.status === 'réussi'
                         ? theme.palette.success.main
                         : transaction.status === 'attente'
                         ? theme.palette.warning.main
@@ -226,7 +228,7 @@ const attenteTransactions = historique.filter(
         //                       <Grid container alignItems="center" justifyContent="space-between">
         //                         <Grid item>
         //                           <Typography variant="subtitle1" color="inherit">
-        //                             {item.montant}Ar
+        //                             {item.montant}€
         //                           </Typography>
         //                         </Grid>
         //                         <Grid item>
@@ -238,7 +240,7 @@ const attenteTransactions = historique.filter(
         //                               borderRadius: '5px',
         //                               backgroundColor: 'white',
         //                               color:
-        //                                 item.status === 'réussis'
+        //                                 item.status === 'réussi'
         //                                   ? theme.palette.success.main
         //                                   : item.status === 'attente'
         //                                   ? theme.palette.warning.main
@@ -246,7 +248,7 @@ const attenteTransactions = historique.filter(
         //                               ml: 2
         //                             }}
         //                           >
-        //                             {item.status === 'réussis' ? (
+        //                             {item.status === 'réussi' ? (
         //                               <Check fontSize="small" color="inherit" />
         //                             ) : item.status === 'attente' ? (
         //                               <Warning fontSize="small" color="inherit" />

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import {
   Button,
@@ -28,15 +29,22 @@ import { parse } from 'flatted';
 import getuserInfo from 'context/getuserInfo';
 import { useEffect } from 'react';
 import {publicIpv4} from 'public-ip';
-
+import axios from 'axios';
+import { Convert } from 'easy-currencies';
+import fr from 'react-phone-input-2/lang/fr.json'
+import countries from 'i18n-iso-countries'
+countries.registerLocale(require('i18n-iso-countries/langs/fr.json'));
 const TransferScreen = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [amount, setAmount] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [selectedCountry, setSelectedCountry] = useState('');
-  // const [currencySymbol, setCurrencySymbol] = useState('');
+  const [currencySymbol, setCurrencySymbol] = useState('');
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [selectedCurrency, setSelectedCurrency] = useState('EUR'); // La devise par défaut est l'euro (EUR)
+  const [convertedAmount, setConvertedAmount] = useState(0);
+
   const UserData = parse(sessionStorage.getItem('user'));
   const theme = useTheme();
   const location = useLocation();
@@ -55,39 +63,46 @@ const TransferScreen = () => {
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
     setErrors({});
+    if(activeStep===1){
+      setAmount('');
+      setConvertedAmount(0);
+    }
   };
 
   const handleAmountChange = (event) => {
     setAmount(event.target.value);
+    Convert(event.target.value).from("EUR").to(selectedCurrency).then((res) => { setConvertedAmount(res.toFixed(2)) })
   };
+  
   const getLocalIpAddress = async () => {
     try {
       const ipAddress = await publicIpv4();
       return ipAddress;
     } catch (error) {
-      console.error('Une erreur est survenue lors de la récupération de l\'adresse IP locale :', error);
+      console.error("Une erreur est survenue lors de la récupération de l'adresse IP locale :", error);
       return null;
     }
   };
 
   const handlePhoneNumberChange = async (value, countryData) => {
     setPhoneNumber(value);
-    setSelectedCountry(countryData.name);
-    // const countryDataResponse = await fetchCountryData(countryData.countryCode);
-    // const currency = Object.values(countryDataResponse[0].currencies);
-    // setCurrencySymbol(currency[0].symbol);
+    const countryDataResponse = await fetchCountryData(countryData.countryCode);
+    const countryFr = countries.getName(countryData.countryCode, 'fr');
+    const currency = Object.values(countryDataResponse[0].currencies);
+    setSelectedCountry(countryFr);
+    setCurrencySymbol(currency[0].symbol);
+    setSelectedCurrency(Object.keys(countryDataResponse[0].currencies)[0]);
   };
 
-  // const fetchCountryData = async (countryCode) => {
-  //   try {
-  //     const response = await axios.get(`https://restcountries.com/v3.1/alpha/${countryCode}`);
-  //     console.log(response.data);
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error('Error fetching country data:', error);
-  //     return null;
-  //   }
-  // };
+  const fetchCountryData = async (countryCode) => {
+    try {
+      const response = await axios.get(`https://restcountries.com/v3.1/alpha/${countryCode}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching country data:', error);
+      return null;
+    }
+  };
 
   const handleTransfer = async () => {
     setLoading(true);
@@ -100,8 +115,8 @@ const TransferScreen = () => {
       })
       .then( (res) => {
         getuserInfo();
-        Toast.success(`Transfert de ${amount}Ar envoyé avec succès au numéro ${phoneNumber}`);
-        Toast.success(`Votre solde actuel est de ${res.data.soldePrincipal}Ar`);
+        Toast.success(`Transfert de ${amount}€ envoyé avec succès au numéro ${phoneNumber}`);
+        Toast.success(`Votre solde actuel est de ${res.data.soldePrincipal}€`);
         setLoading(false);
         setActiveStep(0);
         setPhoneNumber('');
@@ -132,7 +147,15 @@ const TransferScreen = () => {
       title: 'Numéro',
       component: (
         <Grid justifyContent={'center'} display={'flex'} alignItems={'center'}>
-          <PhoneInput enableSearch specialLabel="" placeholder="" value={phoneNumber} onChange={handlePhoneNumberChange} />
+          <PhoneInput
+            enableSearch
+            specialLabel=""
+            placeholder=""
+            localization={fr}
+            value={phoneNumber}
+            
+            onChange={handlePhoneNumberChange}
+          />
         </Grid>
       )
     },
@@ -141,10 +164,19 @@ const TransferScreen = () => {
       component: (
         <Grid justifyContent={'center'} display={'flex'} alignItems={'center'} flexDirection={'column'}>
           <FormControl error={errors[1]} sx={{ marginBottom: '1rem' }}>
-            <TextField label={`Montant en Ar`} value={amount} onChange={handleAmountChange} type="number" />
+            <TextField label={`Montant en €`} value={amount}  onChange={handleAmountChange} type="number" />
             {errors[1] && <FormHelperText>Veuillez saisir un montant</FormHelperText>}
           </FormControl>
-          <Typography variant="subtitle1">Solde : {UserData.soldePrincipal}Ar</Typography>
+          <FormControl sx={{ marginBottom: '1rem' }}>
+            <TextField
+              label={`Montant en ${currencySymbol}`}
+              value={convertedAmount} // Affichez le montant converti avec deux décimales
+              InputProps={{
+                readOnly: true
+              }}
+            />
+          </FormControl>
+          <Typography variant="subtitle1">Solde : {UserData.soldePrincipal}€</Typography>
         </Grid>
       )
     },
@@ -154,9 +186,8 @@ const TransferScreen = () => {
         <div>
           <Typography variant="subtitle1">Numéro de téléphone : {phoneNumber}</Typography>
           <Typography variant="subtitle1">Pays : {selectedCountry}</Typography>
-          {/* <Typography variant="subtitle1">Tarif : 19{currencySymbol} / 5€</Typography> */}
           <Typography variant="subtitle1">
-            Montant à transferer: {amount}
+            Montant à transferer: {amount}€ / {convertedAmount}{currencySymbol}
           </Typography>
         </div>
       )

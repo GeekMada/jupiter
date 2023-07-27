@@ -57,7 +57,7 @@ function Recharge() {
     api.post(`/solde/recharge/${UserData.id}`, { somme: amount, ip: ipAddress })
       .then((response) => {
         setLoading(false);
-        Toast.success(`La demande de rechargé de ${amount}Ar est envoyé, Veuillez patienter`);
+        Toast.success(`La demande de rechargé de ${amount}€ est envoyé, Veuillez patienter`);
         setActiveStep(0);
         setAmount('');
         setRechargeTypeError(false);

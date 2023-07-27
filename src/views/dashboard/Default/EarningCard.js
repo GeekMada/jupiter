@@ -68,19 +68,22 @@ const EarningCard = ({ isLoading }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-const userData = parse(sessionStorage.getItem('user'));
-const [solde, setsolde] = useState([]);
-const getSolde = () => {
-  api.get(`/solde/${userData.id}`).then((response) => {
-    setsolde(response.data.soldePrincipal);
-  }).catch((error) => {
-    console.error('Error fetching user data:', error);
-  })
-}
-useEffect(() => {
-  getSolde();
-  userData.soldePrincipal=solde
-})
+  const userData = parse(sessionStorage.getItem('user'));
+  const [solde, setsolde] = useState([]);
+  const getSolde = () => {
+    api
+      .get(`/solde/${userData.id}`)
+      .then((response) => {
+        setsolde(response.data.soldePrincipal);
+      })
+      .catch((error) => {
+        console.error('Error fetching user data:', error);
+      });
+  };
+  useEffect(() => {
+    getSolde();
+    userData.soldePrincipal = solde;
+  });
   return (
     <>
       {isLoading ? (
@@ -149,9 +152,7 @@ useEffect(() => {
               <Grid item>
                 <Grid container alignItems="center" justifyContent="center">
                   <Grid item>
-                    <Typography sx={{ fontSize: '2rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75, }}>
-                      {solde}Ar
-                    </Typography>
+                    <Typography sx={{ fontSize: '2rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>{parseInt(solde).toFixed(2)}€</Typography>
                   </Grid>
                 </Grid>
               </Grid>

@@ -173,6 +173,7 @@ const FirebaseLogin = ({ ...others }) => {
                       .post('/auth/login', values)
                       .then((resp) => {
                         setLoading(false);
+                        console.log(resp.data);
                         Auth.login(stringify(resp.data.user));
                         sessionStorage.setItem('authToken', resp.data.token);
                         // dispatch({ type: 'LOGIN_SUCCESS', payload: resp.data.user });
