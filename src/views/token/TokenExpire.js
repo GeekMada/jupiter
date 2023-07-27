@@ -136,6 +136,7 @@ const TokenExpiredPopup = ({ setOpen }) => {
                       setLoading(false);
                       sessionStorage.setItem('authToken', resp.data.token);
                       setOpen(false)
+                      location.reload()
                     })
                     .catch((err) => {
                       setLoading(false);

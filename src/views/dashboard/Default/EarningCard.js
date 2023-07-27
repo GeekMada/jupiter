@@ -152,7 +152,7 @@ const EarningCard = ({ isLoading }) => {
               <Grid item>
                 <Grid container alignItems="center" justifyContent="center">
                   <Grid item>
-                    <Typography sx={{ fontSize: '2rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>{solde}€</Typography>
+                    <Typography sx={{ fontSize: '2rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>{parseInt(solde).toFixed(2)}€</Typography>
                   </Grid>
                 </Grid>
               </Grid>

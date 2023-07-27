@@ -13,7 +13,8 @@ import {
   DialogTitle,
   Grid,
   Typography,
-  TextField
+  TextField,
+  CircularProgress
 } from '@mui/material';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/material.css';
@@ -21,7 +22,10 @@ import { useEffect } from 'react';
 import ProductPlaceholder from 'ui-component/cards/Skeleton/ProductPlaceholder';
 import api from '../../requests/api';
 import countryCodesJSON from 'react-phone-input-2/lang/fr.json'
-// import { parse } from 'flatted';
+import { parse } from 'flatted';
+import { publicIpv4 } from 'public-ip';
+import Toast from 'ui-component/Toast';
+import { ToastContainer } from 'react-toastify';
 const OfferCard = ({ offer, onSelectOffer }) => {
   const [expanded, setExpanded] = useState(false);
 
@@ -84,7 +88,7 @@ const OfferScreen = () => {
   const [offres, setOffres] = useState([]);
   const [filteredOffres, setFilteredOffres] = useState([]);
   const [searchValue, setSearchValue] = useState('');
-
+  const userData = parse(sessionStorage.getItem('user'));
   const toggleDescription = (event) => {
     event.stopPropagation();
     setExpanded((prevExpanded) => !prevExpanded);
@@ -117,17 +121,28 @@ const OfferScreen = () => {
     setOpenDialog(true);
   };
 
-  const handleSendOffer = () => {
-    if (phoneNumber && selectedOffer) {
-      // Envoyer l'offre avec le numéro de téléphone
-      console.log('Offre sélectionnée :', selectedOffer);
-      console.log('Numéro de téléphone :', phoneNumber);
+  const handleSendOffer = async () => {
+    setLoading(true);
+    const ipAddress = await publicIpv4();
+    api
+      .post(`/offres/transfert/${userData.id}`,
+        { numero: phoneNumber, pays: selectedOffer.pays, operateur: selectedOffer.operateur, nomOffre: selectedOffer.nom, ip: ipAddress },
+      {
+    }).then((response) => {
       setOpenDialog(false);
-    }
+      console.log(response.data);
+      Toast.success(`L'offre a bien été envoyée au ${phoneNumber}`);
+    }).catch((err) => {
+      console.log(err);
+      Toast.error('Une erreur s\'est produite lors de l\'envoi de l\'offre');
+      setOpenDialog(false);
+    })
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
+    setPhoneNumber('')
+    setSelectedOffer(null);
   };
 
   const filterOffres = () => {
@@ -237,12 +252,13 @@ const OfferScreen = () => {
             <DialogActions>
               <Button onClick={handleCloseDialog}>Annuler</Button>
               <Button onClick={handleSendOffer} color="primary">
-                Envoyer l&apos;offre
+                {loading ? <CircularProgress/> : 'Envoyer l\'offre'}
               </Button>
             </DialogActions>
           </>
         )}
       </Dialog>
+      <ToastContainer />
     </Box>
   );
 };
