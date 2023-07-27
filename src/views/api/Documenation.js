@@ -24,6 +24,7 @@ const DocumentationAPI = () => {
       endpoint: '/solde/recharge/',
       method: 'POST',
       description: 'Permet à un utilisateur de faire une demande de recharge de son crédit.',
+      note: "",
       parameters: [
         { name: 'userId', type: 'chaîne', location: 'URL', description: "L'ID de l'utilisateur." },
         //{ name: 'ip', type: 'chaîne', location: 'BODY', description: "L'adresse IP de l'utilisateur." },
@@ -42,6 +43,7 @@ const DocumentationAPI = () => {
       endpoint: '/solde/transfert',
       method: 'POST',
       description: 'Permet à un utilisateur de faire un transfert de crédit.',
+      note: "",
       parameters: [
         { name: 'userId', type: 'chaîne', location: 'URL', description: "L'ID de l'utilisateur." },
         //{ name: 'ip', type: 'chaîne', location: 'BODY', description: "L'adresse IP de l'utilisateur." },
@@ -62,6 +64,7 @@ const DocumentationAPI = () => {
       endpoint: '/solde',
       method: 'GET',
       description: 'Permet à un utilisateur de consulter son solde.',
+      note: "",
       parameters: [
         { name: 'userId', type: 'chaîne', location: 'URL', description: "L'ID de l'utilisateur." },
         //{ name: 'ip', type: 'chaîne', location: 'BODY', description: "L'adresse IP de l'utilisateur." }
@@ -81,11 +84,14 @@ const DocumentationAPI = () => {
       endpoint: '/offre/transfert',
       method: 'POST',
       description: "Permet à un utilisateur de faire le transfert d'une offre.",
+      note: "La liste des offres se trouve dans l'onglet 'Transférer offre'",
       parameters: [
         { name: 'userId', type: 'chaîne', location: 'URL', description: "L'ID de l'utilisateur." },
         // { name: 'ip', type: 'chaîne', location: 'BODY', description: "L'adresse IP de l'utilisateur." },
         { name: 'numero', type: 'chaîne', location: 'BODY', description: 'Le numéro du destinataire.'},
-        { name: 'offre', type: 'nombre', location: 'BODY', description: "L'offre à transférer." },
+        { name: 'pays', type: 'chaîne', location: 'BODY', description: "Le pays de l'opérateur."},
+        { name: 'opérateur', type: 'chaîne', location: 'BODY', description: "Le nom de l'opérateur."},
+        { name: 'offre', type: 'chaîne', location: 'BODY', description: "L'offre à transférer." },
       ],
       response: [
         { code: '200 OK', description: "Transfert de l'offre effectué avec succès." },
@@ -138,13 +144,15 @@ const DocumentationAPI = () => {
                       </li>
                     ))}
                   </ul>
+                  <br />
+                  <strong>Note :</strong> {api.note}
                 </Typography>
-            </AccordionDetails>
-            <AccordionDetails>
+              </AccordionDetails>
+              <AccordionDetails>
                 <Typography variant="body1">
                   <strong>Requête curl :</strong>
                   <Paper className={classes.paper}>
-                    <code className="language-bash" style={{ color: 'white' }}>
+                    <code className="language-bash" style={{color: 'white'}}>
                       {`curl -X ${api.method} ${baseUrl}${api.endpoint}${api.parameters
                         .filter((param) => param.location === 'URL')
                         .map((param) => `/${param.name}`)
@@ -157,11 +165,11 @@ const DocumentationAPI = () => {
                   </Paper>
                 </Typography>
               </AccordionDetails>
-          </Accordion>
-        </Grid>
-      ))}
-    </Grid>
-  </Container>
+            </Accordion>
+          </Grid>
+        ))}
+      </Grid>
+    </Container>
   );
 };
 
