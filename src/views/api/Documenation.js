@@ -20,7 +20,7 @@ const DocumentationAPI = () => {
   const classes = useStyles();
   const apiData = [
     {
-      title: 'Recharge de crédit',
+      title: 'Demande de recharge de crédit',
       endpoint: '/solde/recharge/',
       method: 'POST',
       description: 'Permet à un utilisateur de faire une demande de recharge de son crédit.',
@@ -67,8 +67,8 @@ const DocumentationAPI = () => {
         //{ name: 'ip', type: 'chaîne', location: 'BODY', description: "L'adresse IP de l'utilisateur." }
       ],
       response: [
-        { code: '200 OK', description: 'Le solde est envoyé.'},
-        { code: '400 Not Found', description: 'Utilisateur non trouvé.'},
+        { code: '200 OK', description: 'Le solde est envoyé (Résultat en Euro).'},
+        { code: '404 Not Found', description: 'Utilisateur non trouvé.'},
         { code: '500 Internal Server Error', description: "Une erreur est survenue lors de la récupération du solde de l'utilisateur." },
       ],
     },
