@@ -33,17 +33,14 @@ const OfferCard = ({ offer, onSelectOffer }) => {
     event.stopPropagation();
     setExpanded((prevExpanded) => !prevExpanded);
   };
+  const calculatePriceWithFees = (price, fees) => {
+    return (price + (price * fees) / 100).toFixed(2);
+  };
 
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardActionArea onClick={() => onSelectOffer(offer)}>
-        <CardMedia
-          component="img"
-          height="140"
-          image={offer.image}
-          alt={offer.nom}
-          sx={{ objectFit: 'fill' }}
-        />
+        <CardMedia component="img" height="140" image={offer.image} alt={offer.nom} sx={{ objectFit: 'fill' }} />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
             {offer.nom}
@@ -67,7 +64,7 @@ const OfferCard = ({ offer, onSelectOffer }) => {
             </Button>
           )}
           <Typography variant="h6" color="primary" sx={{ mt: 2 }}>
-            {offer.prix}€
+          {calculatePriceWithFees(parseInt(offer.prix), parseInt(offer.frais))}€
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
           {offer.pays}/{offer.operateur}
@@ -88,6 +85,7 @@ const OfferScreen = () => {
   const [offres, setOffres] = useState([]);
   const [filteredOffres, setFilteredOffres] = useState([]);
   const [searchValue, setSearchValue] = useState('');
+  const [totalAmount, setTotalAmount] = useState(0); 
   const userData = parse(sessionStorage.getItem('user'));
   const toggleDescription = (event) => {
     event.stopPropagation();
@@ -119,6 +117,9 @@ const OfferScreen = () => {
   const handleSelectOffer = (offer) => {
     setSelectedOffer(offer);
     setOpenDialog(true);
+    // Calculer le montant total avec les 20%
+    const amountWithFees = offer.prix * 1.2;
+    setTotalAmount(amountWithFees);
   };
 
   const handleSendOffer = async () => {
@@ -129,19 +130,19 @@ const OfferScreen = () => {
         { numero: phoneNumber, pays: selectedOffer.pays, operateur: selectedOffer.operateur, nomOffre: selectedOffer.nom, ip: ipAddress },
       {
     }).then((response) => {
-      setOpenDialog(false);
-      console.log(response.data);
-      Toast.success(`L'offre a bien été envoyée au ${phoneNumber}`);
+        setOpenDialog(false);
+        console.log(response.data);
+        Toast.success(`L'offre a bien été envoyée au ${phoneNumber}`);
     }).catch((err) => {
-      console.log(err);
-      Toast.error('Une erreur s\'est produite lors de l\'envoi de l\'offre');
-      setOpenDialog(false);
+        console.log(err);
+        Toast.error("Une erreur s'est produite lors de l'envoi de l'offre");
+        setOpenDialog(false);
     })
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
-    setPhoneNumber('')
+    setPhoneNumber('');
     setSelectedOffer(null);
   };
 
@@ -182,7 +183,7 @@ const OfferScreen = () => {
       />
       {loading ? (
         <ProductPlaceholder />
-      ) : filteredOffres.length === 0 ? (
+      ) : filteredOffres.length === 0 ? ( 
         <Grid container spacing={2} sx={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
           <Typography variant="h6" sx={{ mb: 2 }}>
             Aucune offre disponible pour le moment
@@ -197,7 +198,6 @@ const OfferScreen = () => {
           ))}
         </Grid>
       )}
-
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         {selectedOffer && (
           <>
@@ -229,7 +229,7 @@ const OfferScreen = () => {
                       </Button>
                     )}
                     <Typography variant="h6" color="primary" sx={{ mt: 2 }}>
-                      {selectedOffer.prix}€
+                      {totalAmount.toFixed(2)}€
                     </Typography>
                     <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
                       {selectedOffer.pays}/{selectedOffer.operateur}
@@ -252,7 +252,7 @@ const OfferScreen = () => {
             <DialogActions>
               <Button onClick={handleCloseDialog}>Annuler</Button>
               <Button onClick={handleSendOffer} color="primary">
-                {loading ? <CircularProgress/> : 'Envoyer l\'offre'}
+                {loading ? <CircularProgress /> : "Envoyer l'offre"}
               </Button>
             </DialogActions>
           </>

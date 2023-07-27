@@ -44,7 +44,8 @@ const TransferScreen = () => {
   const [loading, setLoading] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState('EUR'); // La devise par défaut est l'euro (EUR)
   const [convertedAmount, setConvertedAmount] = useState(0);
-
+  const totalAmount = amount * 1.2; // Montant + 20%
+  const totalConvertedAmount = convertedAmount * 1.2; // Montant converti + 20%
   const UserData = parse(sessionStorage.getItem('user'));
   const theme = useTheme();
   const location = useLocation();
@@ -109,7 +110,7 @@ const TransferScreen = () => {
     const ipAddress = await getLocalIpAddress();
     api.post(`/solde/transfert/${UserData.id}`, {
         numero: '0' + phoneNumber.slice(3),
-        credit_amount: amount,
+        credit_amount: totalAmount,
         pays: selectedCountry,
         ip: ipAddress
       })
@@ -141,7 +142,7 @@ const TransferScreen = () => {
         return true;
     }
   };
-
+ 
   const steps = [
     {
       title: 'Numéro',
@@ -175,8 +176,8 @@ const TransferScreen = () => {
                 readOnly: true
               }}
             />
-          </FormControl>
-          <Typography variant="subtitle1">Solde : {UserData.soldePrincipal}€</Typography>
+          </FormControl>  
+          <Typography variant="subtitle1">Solde : {parseInt(UserData.soldePrincipal.toFixed(2))}€</Typography>
         </Grid>
       )
     },
@@ -187,7 +188,12 @@ const TransferScreen = () => {
           <Typography variant="subtitle1">Numéro de téléphone : {phoneNumber}</Typography>
           <Typography variant="subtitle1">Pays : {selectedCountry}</Typography>
           <Typography variant="subtitle1">
-            Montant à transferer: {amount}€ / {convertedAmount}{currencySymbol}
+            Montant à transférer : {amount}€ / {convertedAmount}
+            {currencySymbol}
+          </Typography>
+          <Typography variant="subtitle1">
+            Montant total (avec frais 20%) : {totalAmount.toFixed(2)}€ / {totalConvertedAmount.toFixed(2)}
+            {currencySymbol}
           </Typography>
         </div>
       )
