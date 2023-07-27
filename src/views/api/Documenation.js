@@ -72,6 +72,27 @@ const DocumentationAPI = () => {
         { code: '500 Internal Server Error', description: "Une erreur est survenue lors de la récupération du solde de l'utilisateur." },
       ],
     },
+
+    {
+      title: "Transfert d'offre",
+      endpoint: '/offre/transfert',
+      method: 'POST',
+      description: "Permet à un utilisateur de faire le transfert d'une offre.",
+      parameters: [
+        { name: 'userId', type: 'chaîne', location: 'URL', description: "L'ID de l'utilisateur." },
+        { name: 'ip', type: 'chaîne', location: 'BODY', description: "L'adresse IP de l'utilisateur." },
+        { name: 'numero', type: 'chaîne', location: 'BODY', description: 'Le numéro du destinataire.'},
+        { name: 'offre', type: 'nombre', location: 'BODY', description: "L'offre à transférer." },
+      ],
+      response: [
+        { code: '200 OK', description: "Transfert de l'offre effectué avec succès." },
+        { code: '400 Bad Request', description: 'Solde insuffisant.'},
+        { code: '401 Unauthorized', description: 'Offre inexistant/ Solde insuffisant pour cette offre.'},
+        { code: '403 Forbidden', description: 'Adresse IP non autorisée ou bloquée.' },
+        { code: '404 Not Found', description: "Utilisateur non trouvé." },
+        { code: '500 Internal Server Error', description: "Une erreur est survenue lors du transfert de l'offre."},
+      ],
+    },
   ];
   const baseUrl ='http://localhost:8000'
   const apiKey = 'YOUR_API_KEY';
