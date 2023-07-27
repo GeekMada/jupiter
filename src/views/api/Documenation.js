@@ -20,13 +20,13 @@ const DocumentationAPI = () => {
   const classes = useStyles();
   const apiData = [
     {
-      title: 'Recharge de crédit',
+      title: 'Demande de recharge de crédit',
       endpoint: '/solde/recharge/',
       method: 'POST',
       description: 'Permet à un utilisateur de faire une demande de recharge de son crédit.',
       parameters: [
         { name: 'userId', type: 'chaîne', location: 'URL', description: "L'ID de l'utilisateur." },
-        // { name: 'ip', type: 'chaîne', location: 'BODY', description: "L'adresse IP de l'utilisateur." },
+        //{ name: 'ip', type: 'chaîne', location: 'BODY', description: "L'adresse IP de l'utilisateur." },
         { name: 'somme', type: 'nombre', location: 'BODY', description: 'Le montant de crédit à recharger.' },
       ],
       response: [
@@ -44,7 +44,7 @@ const DocumentationAPI = () => {
       description: 'Permet à un utilisateur de faire un transfert de crédit.',
       parameters: [
         { name: 'userId', type: 'chaîne', location: 'URL', description: "L'ID de l'utilisateur." },
-        // { name: 'ip', type: 'chaîne', location: 'BODY', description: "L'adresse IP de l'utilisateur." },
+        //{ name: 'ip', type: 'chaîne', location: 'BODY', description: "L'adresse IP de l'utilisateur." },
         { name: 'numero', type: 'chaîne', location: 'BODY', description: 'Le numéro du destinataire.'},
         { name: 'somme', type: 'nombre', location: 'BODY', description: 'Le montant de crédit à transférer.' },
       ],
@@ -64,11 +64,11 @@ const DocumentationAPI = () => {
       description: 'Permet à un utilisateur de consulter son solde.',
       parameters: [
         { name: 'userId', type: 'chaîne', location: 'URL', description: "L'ID de l'utilisateur." },
-        // { name: 'ip', type: 'chaîne', location: 'BODY', description: "L'adresse IP de l'utilisateur." }
+        //{ name: 'ip', type: 'chaîne', location: 'BODY', description: "L'adresse IP de l'utilisateur." }
       ],
       response: [
-        { code: '200 OK', description: 'Le solde est envoyé.'},
-        { code: '400 Not Found', description: 'Utilisateur non trouvé.'},
+        { code: '200 OK', description: 'Le solde est envoyé (Résultat en Euro).'},
+        { code: '404 Not Found', description: 'Utilisateur non trouvé.'},
         { code: '500 Internal Server Error', description: "Une erreur est survenue lors de la récupération du solde de l'utilisateur." },
       ],
     },
@@ -80,7 +80,7 @@ const DocumentationAPI = () => {
       description: "Permet à un utilisateur de faire le transfert d'une offre.",
       parameters: [
         { name: 'userId', type: 'chaîne', location: 'URL', description: "L'ID de l'utilisateur." },
-        { name: 'ip', type: 'chaîne', location: 'BODY', description: "L'adresse IP de l'utilisateur." },
+        //{ name: 'ip', type: 'chaîne', location: 'BODY', description: "L'adresse IP de l'utilisateur." },
         { name: 'numero', type: 'chaîne', location: 'BODY', description: 'Le numéro du destinataire.'},
         { name: 'offre', type: 'nombre', location: 'BODY', description: "L'offre à transférer." },
       ],
