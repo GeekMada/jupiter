@@ -21,7 +21,7 @@ const DocumentationAPI = () => {
   const apiData = [
     {
       title: 'Recharge de crédit',
-      endpoint: '/solde/recharge/',
+      endpoint: '/solde/recharge',
       method: 'POST',
       description: 'Permet à un utilisateur de faire une demande de recharge de son crédit.',
       parameters: [
@@ -70,6 +70,9 @@ const DocumentationAPI = () => {
         { code: '200 OK', description: 'Le solde est envoyé.'},
         { code: '400 Not Found', description: 'Utilisateur non trouvé.'},
         { code: '500 Internal Server Error', description: "Une erreur est survenue lors de la récupération du solde de l'utilisateur." },
+        { code: '403 Forbidden', description: 'Adresse IP non autorisée ou bloquée.' },
+        { code: '404 Not Found', description: "Utilisateur non trouvé." },
+        { code: '500 Internal Server Error', description: "Une erreur est survenue lors du transfert de l'offre."},
       ],
     },
 
@@ -80,7 +83,7 @@ const DocumentationAPI = () => {
       description: "Permet à un utilisateur de faire le transfert d'une offre.",
       parameters: [
         { name: 'userId', type: 'chaîne', location: 'URL', description: "L'ID de l'utilisateur." },
-        { name: 'ip', type: 'chaîne', location: 'BODY', description: "L'adresse IP de l'utilisateur." },
+        // { name: 'ip', type: 'chaîne', location: 'BODY', description: "L'adresse IP de l'utilisateur." },
         { name: 'numero', type: 'chaîne', location: 'BODY', description: 'Le numéro du destinataire.'},
         { name: 'offre', type: 'nombre', location: 'BODY', description: "L'offre à transférer." },
       ],
@@ -98,6 +101,10 @@ const DocumentationAPI = () => {
   const apiKey = 'YOUR_API_KEY';
   return (
     <Container className={classes.container}>
+      <Typography variant="caption">
+        Toutes Adresse Ip Doit être incluent dans votre liste d&apos;IP autorisées pour faire des requête, autrement la requête vas être
+        interdite
+      </Typography>
     <Grid container spacing={1}>
       {apiData.map((api, index) => (
         <Grid item xs={12} key={index}>
@@ -144,8 +151,8 @@ const DocumentationAPI = () => {
                         .join('')} \\\n`}
                       {api.method === 'POST' ? '  -H "Content-Type: application/json" \\\n' : ''}
                       {/* Include the API key in the curl request */}
-                      {apiKey ? `  -H "Authorization: x-api-key ${apiKey}" \\\n` : ''}
-                      {api.method === 'POST' ? `-d '{${api.parameters.filter((param) => param.location === 'BODY').map((param) => `${param.name}: ${param.description}`).join(', ')}}' \\\n` : ''}
+                      {apiKey ? `  -H "x-api-key: ${apiKey}" \\\n` : ''}
+                      {api.method === 'POST' ? `-d '{${api.parameters.filter((param) => param.location === 'BODY').map((param) => `"${param.name}": "${param.description}"`).join(', ')}}' \\\n` : ''}
                     </code>
                   </Paper>
                 </Typography>
