@@ -98,7 +98,7 @@ const DocumentationAPI = () => {
     },
   ];
   const baseUrl ='http://localhost:8000'
-  const apiKey = 'YOUR_API_KEY';
+  const apiKey = 'VOTRE_CLE_API';
   return (
     <Container className={classes.container}>
       <Typography variant="caption">
@@ -152,7 +152,7 @@ const DocumentationAPI = () => {
                       {api.method === 'POST' ? '  -H "Content-Type: application/json" \\\n' : ''}
                       {/* Include the API key in the curl request */}
                       {apiKey ? `  -H "x-api-key: ${apiKey}" \\\n` : ''}
-                      {api.method === 'POST' ? `-d '{${api.parameters.filter((param) => param.location === 'BODY').map((param) => `"${param.name}": "${param.description}"`).join(', ')}}' \\\n` : ''}
+                      {api.method === 'POST' ? `-d '{${api.parameters.filter((param) => param.location === 'BODY').map((param) => `"${param.name}": ${param.type==='nombre' ? param.name : `"${param.name}"`}`).join(', ')}}' \\\n` : ''}
                     </code>
                   </Paper>
                 </Typography>
