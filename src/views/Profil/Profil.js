@@ -36,18 +36,18 @@ const UserInfoScreen = () => {
     setEditMode(!editMode);
   };
 
-  const handleSaveChanges = () => {
+  const handleSaveChanges = async () => {
     const allowedProperties = ['nom', 'prenom', 'entreprise', 'email', 'tel'];
     const filteredUserInfo = Object.keys(userInfo)
-  .filter(key => allowedProperties.includes(key))
-  .reduce((obj, key) => {
-    obj[key] = userInfo[key];
-    return obj;
-  }, {});
+      .filter(key => allowedProperties.includes(key))
+      .reduce((obj, key) => {
+        obj[key] = userInfo[key];
+        return obj;
+      }, {});
     setLoading(true);
     console.log(filteredUserInfo);
     // Enregistrement des modifications via l'API ici...
-    api.put(`/user/update/${UserData.id}`, {...filteredUserInfo,password})
+    await api.put(`/user/update/${UserData.id}`, {...filteredUserInfo,photoUrl: newPhoto, password})
       .then((res) => {
         console.log(res.data);
         setEditMode(false);
@@ -79,16 +79,16 @@ const UserInfoScreen = () => {
     formData.append('upload_preset', 'jupiter_preset');
     axios.post(`https://api.cloudinary.com/v1_1/dloyqaucz/image/upload`, formData)
       .then((response) => {
-        api.put(`/user/update/${UserData.id}`, { photoUrl: response.data.secure_url })
-          .then((res) => {
-            setUploading(false);
+        // api.put(`/user/update/${UserData.id}`, { photoUrl: response.data.secure_url })
+        //   .then((res) => {
+        //     setUploading(false);
             setNewPhoto(response.data.secure_url);
             console.log(res.data);
-          })
-          .catch((error) => {
-            setUploading(false);
-            console.log('errorupdatePhoto: ', error.response);
-          });
+          // })
+          // .catch((error) => {
+          //   setUploading(false);
+          //   console.log('errorupdatePhoto: ', error.response);
+          // });
       })
       .catch((err) => {
         setUploading(false);
