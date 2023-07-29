@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 // material-ui
 import { useTheme,styled } from '@mui/material/styles';
-import { Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Button, Grid, IconButton, Modal, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import SkeletonPopularCard from 'ui-component/cards/Skeleton/PopularCard';
-import { CheckCircleOutline, ErrorOutline, WatchLater } from '@mui/icons-material';
+import { CheckCircleOutline, Close, ErrorOutline, WatchLater } from '@mui/icons-material';
 // assets
 import ChevronRightOutlinedIcon from '@mui/icons-material/ChevronRightOutlined';
 import moment from 'moment/moment';
@@ -17,14 +17,20 @@ import { parse } from 'flatted';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import api from 'requests/api';
+import { Box } from '@mui/system';
 // ==============================|| DASHBOARD DEFAULT - POPULAR CARD ||============================== //
 // eslint-disable-next-line no-unused-vars
 const PopularCard = ({ isLoading }) => {
   const UserData = parse(sessionStorage.getItem('user'));
   const [historique, setHistorique] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [selectedTransaction, setselectedTransaction] = useState({});
+  
    historique.sort((a, b) => b.date - a.date);
-
+   const handleClosePopup = () => {
+    setOpen(false);
+  };
    const getHistorique = async () => {
     setLoading(true);
     await api
@@ -56,7 +62,7 @@ const PopularCard = ({ isLoading }) => {
   
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'réussis':
+      case 'réussi':
         return <CheckCircleOutline sx={{ color: theme.palette.success.main }} />;
       case 'échec':
         return <ErrorOutline sx={{ color: theme.palette.error.main }} />;
@@ -73,6 +79,8 @@ const formatDate = (date) => {
 const attenteTransactions = historique.filter(
   (transaction) => transaction.status === 'attente'
 );
+console.log(attenteTransactions)
+
   return (  
     <>
       {loading ? (
@@ -110,10 +118,10 @@ const attenteTransactions = historique.filter(
               <TableContainer key={transaction.id} component={Paper}>
                 <Table>
                   <TableBody>
-                    <TableRow>
+                    <TableRow >
                       <TableCell>{transaction.type}</TableCell>
                       <TableCell>{formatDate(transaction.date)}</TableCell>
-                      <TableCell>{transaction.montant}Ar</TableCell>
+                      <TableCell>{transaction.montant}€</TableCell>
                       <TableCell>{transaction.destinataire}</TableCell>
                       <TableCell style={{ display: 'flex',gap: '5px',alignItems: 'center', color:theme.palette.warning.main}}>{getStatusIcon(transaction.status)}  {transaction.status}</TableCell>
                     </TableRow>
@@ -150,11 +158,11 @@ const attenteTransactions = historique.filter(
           </TableHead>
           <TableBody>
             {cinqPlusRecentes.map((transaction) => (
-              <RowContainer key={transaction.id} className="row" onClick={() => {}} style={{ cursor: 'pointer' }}>
+              <RowContainer key={transaction.id} className="row" onClick={() =>{ setselectedTransaction(transaction),setOpen(true)}} style={{ cursor: 'pointer' }}>
                 {/* <TableCell>{transaction.id}</TableCell> */}
                 <TableCell>{transaction.type}</TableCell>
                 <TableCell>{formatDate(transaction.date)}</TableCell>
-                <TableCell>{transaction.montant}Ar</TableCell>
+                <TableCell>{transaction.montant}€</TableCell>
                 {/* <TableCell>{transaction.country}</TableCell> */}
                 {/* <TableCell>{transaction.operator}</TableCell> */}
                 <TableCell>{transaction.destinataire}</TableCell>
@@ -164,7 +172,7 @@ const attenteTransactions = historique.filter(
                     gap: '5px',
                     alignItems: 'center',
                     color:
-                      transaction.status === 'réussis'
+                      transaction.status === 'réussi'
                         ? theme.palette.success.main
                         : transaction.status === 'attente'
                         ? theme.palette.warning.main
@@ -188,6 +196,7 @@ const attenteTransactions = historique.filter(
       
       </MainCard>
       </Grid>
+      
         // <MainCard content={false} style={{ marginTop: '10px' }}>
         //   <CardContent sx={{ width: '100%' }}>
         //     <Grid container spacing={gridSpacing}>
@@ -226,7 +235,7 @@ const attenteTransactions = historique.filter(
         //                       <Grid container alignItems="center" justifyContent="space-between">
         //                         <Grid item>
         //                           <Typography variant="subtitle1" color="inherit">
-        //                             {item.montant}Ar
+        //                             {item.montant}€
         //                           </Typography>
         //                         </Grid>
         //                         <Grid item>
@@ -238,7 +247,7 @@ const attenteTransactions = historique.filter(
         //                               borderRadius: '5px',
         //                               backgroundColor: 'white',
         //                               color:
-        //                                 item.status === 'réussis'
+        //                                 item.status === 'réussi'
         //                                   ? theme.palette.success.main
         //                                   : item.status === 'attente'
         //                                   ? theme.palette.warning.main
@@ -246,7 +255,7 @@ const attenteTransactions = historique.filter(
         //                               ml: 2
         //                             }}
         //                           >
-        //                             {item.status === 'réussis' ? (
+        //                             {item.status === 'réussi' ? (
         //                               <Check fontSize="small" color="inherit" />
         //                             ) : item.status === 'attente' ? (
         //                               <Warning fontSize="small" color="inherit" />
@@ -275,6 +284,67 @@ const attenteTransactions = historique.filter(
         //   </CardActions>
         // </MainCard>
       )}
+      
+      <Modal open={open} onClose={handleClosePopup}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '90%',
+            maxWidth: 500,
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            p: 2
+          }}
+        >
+          {selectedTransaction && (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+              <IconButton sx={{ position: 'absolute', top: 8, right: 8 }} onClick={handleClosePopup}>
+                <Close />
+              </IconButton>
+              <Typography variant="h4" component="h2" gutterBottom>
+                Détails de la transaction
+              </Typography>
+              <Typography variant="body1">ID : {selectedTransaction.id}</Typography>
+              <Typography variant="body1">Type de transaction: {selectedTransaction.type}</Typography>
+              <Typography variant="body1">Date : {formatDate(selectedTransaction.date)}</Typography>
+              <Typography variant="body1">Montant : {selectedTransaction.montant}€</Typography>
+              {selectedTransaction.type === 'recharge' && (
+              <Typography variant="body1">Methode: {selectedTransaction.methode}</Typography>
+              )}              
+              {selectedTransaction.type === 'Envoi' && (
+                <>
+                  <Typography variant="body1">Pays : {selectedTransaction.pays}</Typography>
+                  {/* <Typography variant="body1">Opérateur : {selectedTransaction.operator}</Typography> */}
+                  <Typography variant="body1">Numéro : {selectedTransaction.destinataire}</Typography>
+                </>
+              )}
+              <Typography style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+                Statut :
+                <Typography
+                  style={{
+                    color:
+                      selectedTransaction.status === 'réussi'
+                        ? theme.palette.success.main
+                        : selectedTransaction.status === 'attente'
+                        ? theme.palette.warning.main
+                        : theme.palette.error.main
+                  }}
+                  variant="body1"
+                >
+                  {selectedTransaction.status}
+                </Typography>
+              </Typography>
+              {
+                selectedTransaction.commentaire &&
+              <Typography variant="body1">Commentaire : {selectedTransaction.commentaire}</Typography>
+              }
+            </div>
+          )}
+        </Box>
+      </Modal>
     </>
   );
 };

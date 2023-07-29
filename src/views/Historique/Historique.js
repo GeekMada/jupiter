@@ -90,7 +90,7 @@ const [selectedTransaction, setSelectedTransaction] = useState(null);
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'réussis':
+      case 'réussi':
         return <CheckCircleOutline sx={{ color: theme.palette.success.main }} />;
       case 'échec':
         return <ErrorOutline sx={{ color: theme.palette.error.main }} />;
@@ -183,7 +183,6 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
              <StyledTableCell>Transaction</StyledTableCell>
              <StyledTableCell>Date</StyledTableCell>
              <StyledTableCell>Montant</StyledTableCell>
-             {/* <StyledTableCell>Pays</StyledTableCell> */}
              {/* <StyledTableCell>Opérateur</StyledTableCell> */}
              <StyledTableCell>Numéro</StyledTableCell>
              <StyledTableCell>Statut</StyledTableCell>
@@ -195,7 +194,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
                {/* <TableCell>{transaction.id}</TableCell> */}
                <TableCell>{transaction.type}</TableCell>
                <TableCell>{formatDate(transaction.date)}</TableCell>
-               <TableCell>{transaction.montant}Ar</TableCell>
+               <TableCell>{transaction.montant}€</TableCell>
                {/* <TableCell>{transaction.country}</TableCell> */}
                {/* <TableCell>{transaction.operator}</TableCell> */}
                <TableCell>{transaction.destinataire}</TableCell>
@@ -205,7 +204,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
                    gap: '5px',
                    alignItems: 'center',
                    color:
-                     transaction.status === 'réussis'
+                     transaction.status === 'réussi'
                        ? theme.palette.success.main
                        : transaction.status === 'attente'
                        ? theme.palette.warning.main
@@ -258,8 +257,10 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
               <Typography variant="body1">ID : {selectedTransaction.id}</Typography>
               <Typography variant="body1">Type de transaction: {selectedTransaction.type}</Typography>
               <Typography variant="body1">Date : {formatDate(selectedTransaction.date)}</Typography>
-              <Typography variant="body1">Montant : {selectedTransaction.montant}Ar</Typography>
-              
+              <Typography variant="body1">Montant : {selectedTransaction.montant}€</Typography>
+              {selectedTransaction.type === 'recharge' && (
+              <Typography variant="body1">Methode: {selectedTransaction.methode}</Typography>
+              )}  
               {selectedTransaction.type === 'Envoi' && (
                 <>
                   <Typography variant="body1">Pays : {selectedTransaction.pays}</Typography>
@@ -272,7 +273,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
                 <Typography
                   style={{
                     color:
-                      selectedTransaction.status === 'réussis'
+                      selectedTransaction.status === 'réussi'
                         ? theme.palette.success.main
                         : selectedTransaction.status === 'attente'
                         ? theme.palette.warning.main

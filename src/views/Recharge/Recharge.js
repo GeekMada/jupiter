@@ -54,10 +54,11 @@ function Recharge() {
   const handleRecharge = async () => {
     setLoading(true);
     const ipAddress = await getLocalIpAddress();
-    api.post(`/solde/recharge/${UserData.id}`, { somme: amount, ip: ipAddress })
+    api
+      .post(`/solde/recharge/${UserData.id}`, { somme: amount, ip: ipAddress, methode: rechargeType })
       .then((response) => {
         setLoading(false);
-        Toast.success(`La demande de rechargé de ${amount}Ar est envoyé, Veuillez patienter`);
+        Toast.success(`La demande de rechargé de ${amount}€ est envoyé, Veuillez patienter`);
         setActiveStep(0);
         setAmount('');
         setRechargeTypeError(false);

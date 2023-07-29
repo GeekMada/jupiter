@@ -11,6 +11,8 @@ import api from 'requests/api';
 import { useLocation, useNavigate } from 'react-router';
 import { useAuthContext } from 'context/auth-context';
 import { stringify } from 'flatted';
+import { ToastContainer } from 'react-toastify';
+import Toast from 'ui-component/Toast';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -74,9 +76,25 @@ const ConfirmationScreen = () => {
         }, 1000);
     };
 
-    const handleResendCode = () => {
+    const handleResendCode = async () => {
         // Mettre à jour l'état pour désactiver le bouton de renvoi et définir le temps actuel comme le temps du dernier renvoi
         setResendDisabled(true);
+
+        await api.post('/auth/renvoye', { email: localStorage.getItem('email') })
+            .then((resp) => {
+                setLoading(false);
+                console.log(resp.data);
+                Toast.success(resp.data.message);
+                // const userId = resp.data.id
+                // dispatch({ type: 'LOGIN_SUCCESS', payload: resp.data.user });
+                // navigate(`/authCode/${userId}`);
+            })
+            .catch((err) => {
+                setLoading(false);
+                console.log(err);
+                Toast.error(err.response.data.message);
+            });
+
         setResendTime(Date.now());
         setShowAlert(true);
 
@@ -148,6 +166,7 @@ const ConfirmationScreen = () => {
                                 <AnimateButton>
                                     <Button
                                         onClick={() => {
+                                            setLoading(true),
                                             api
                                                 .post('/auth/verification', {
                                                     code: values.code,
@@ -155,9 +174,10 @@ const ConfirmationScreen = () => {
                                                 })
                                                 .then((response) => {
                                                     console.log(response.data);
+                                                    setLoading(false);
                                                         // dispatch({ type: 'REGISTER_SUCCESS', payload: response.data.user });
                                                     Auth.login(stringify(response.data.user));
-                                                    navigate('/pages/dashboard/default');
+                                                    navigate('/');
                                                 })
                                                 .catch((error) => {
                                                     console.error('Error confirmation code:', error);
@@ -212,6 +232,7 @@ const ConfirmationScreen = () => {
                     </Formik>
                 </Grid>
             </Grid>
+            <ToastContainer />
         </Container>
     );
 };

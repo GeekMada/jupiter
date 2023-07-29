@@ -248,7 +248,7 @@ const handleOpenDialogwithip = async () => {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} color="primary">
+          <Button onClick={() =>{ setOpenDialog(false), setIpAddress(''); setIpError(''); setPassword('');}} color="primary">
             Annuler
           </Button>
           {activeStep === 0 && (
