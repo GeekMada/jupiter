@@ -183,7 +183,6 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
              <StyledTableCell>Transaction</StyledTableCell>
              <StyledTableCell>Date</StyledTableCell>
              <StyledTableCell>Montant</StyledTableCell>
-             {/* <StyledTableCell>Pays</StyledTableCell> */}
              {/* <StyledTableCell>Opérateur</StyledTableCell> */}
              <StyledTableCell>Numéro</StyledTableCell>
              <StyledTableCell>Statut</StyledTableCell>
@@ -259,7 +258,9 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
               <Typography variant="body1">Type de transaction: {selectedTransaction.type}</Typography>
               <Typography variant="body1">Date : {formatDate(selectedTransaction.date)}</Typography>
               <Typography variant="body1">Montant : {selectedTransaction.montant}€</Typography>
-              
+              {selectedTransaction.type === 'recharge' && (
+              <Typography variant="body1">Methode: {selectedTransaction.methode}</Typography>
+              )}  
               {selectedTransaction.type === 'Envoi' && (
                 <>
                   <Typography variant="body1">Pays : {selectedTransaction.pays}</Typography>

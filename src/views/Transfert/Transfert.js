@@ -44,20 +44,29 @@ const TransferScreen = () => {
   const [loading, setLoading] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState('EUR'); // La devise par défaut est l'euro (EUR)
   const [convertedAmount, setConvertedAmount] = useState(0);
-  const totalAmount = amount * 1.2; // Montant + 20%
-  const totalConvertedAmount = convertedAmount * 1.2; // Montant converti + 20%
+  const [country_code, setcountry_code] = useState('');
+  const [SelectedOperateur, setSelectedOperateur] = useState({});
+  const [Frais, setFrais] = useState(10);
+  const totalAmount = amount * 1.2; 
+  const totalConvertedAmount = convertedAmount * 1.2; 
+  const calculatePriceWithFees = (price, fees) => {
+    return (price + (price * fees) / 100).toFixed(2);
+  };
   const UserData = parse(sessionStorage.getItem('user'));
   const theme = useTheme();
   const location = useLocation();
   useEffect(() => {
     if (location.search) setPhoneNumber(location.search.split('=')[1]);
   }, [location.search]);
-  const handleNext = () => {
+  const handleNext = async () => {
     if (validateStep(activeStep)) {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
       setErrors({});
     } else {
       setErrors({ [activeStep]: true });
+    }
+    if(activeStep===0){
+     fetchOperateur()
     }
   };
 
@@ -87,6 +96,7 @@ const TransferScreen = () => {
 
   const handlePhoneNumberChange = async (value, countryData) => {
     setPhoneNumber(value);
+    setcountry_code(countryData.countryCode);
     const countryDataResponse = await fetchCountryData(countryData.countryCode);
     const countryFr = countries.getName(countryData.countryCode, 'fr');
     const currency = Object.values(countryDataResponse[0].currencies);
@@ -104,13 +114,42 @@ const TransferScreen = () => {
       return null;
     }
   };
+  const fetchOperateur = () => {
+     axios.get(`http://apilayer.net/api/validate?access_key=92d54c75262b1a3bcfcb072429871e49&number=${phoneNumber.slice(3)}&country_code=${country_code}&format=1`)
+    .then((response) => {
+      setSelectedOperateur(response.data);
+       getAllOperatores()
+    }).catch((error) => {
+      console.error('Error fetching Operateur data:', error);
+    })
+  };  
+const getAllOperatores = async () => {
+  await api.get(`/operateurs`)
+  .then((response) => {
+        setFrais(findMatchingOperator(response.data));
+      })
+      .catch((error) => {
+        console.error('Error fetching Operateur data:', error);
+      });
+  };
+  const findMatchingOperator = (operatorData) => {
+    const phoneNumberCarrier = SelectedOperateur.carrier;
+    const phoneNumberCountry = SelectedOperateur.country_name;
+
+    // Find the operator with a matching name and country in the operatorData
+    const matchedOperator = operatorData.find(
+      (operator) => phoneNumberCarrier.includes(operator.name) && phoneNumberCountry.includes(operator.pays)
+    );
+
+    return matchedOperator.frais;
+  };
 
   const handleTransfer = async () => {
     setLoading(true);
     const ipAddress = await getLocalIpAddress();
     api.post(`/solde/transfert/${UserData.id}`, {
         numero: '0' + phoneNumber.slice(3),
-        credit_amount: totalAmount,
+        credit_amount: totalConvertedAmount,
         pays: selectedCountry,
         ip: ipAddress
       })
@@ -122,7 +161,6 @@ const TransferScreen = () => {
         setActiveStep(0);
         setPhoneNumber('');
         setAmount('');
-        console.log(res.data);
       })
       .catch((err) => {
         setLoading(false);
@@ -142,7 +180,6 @@ const TransferScreen = () => {
         return true;
     }
   };
- 
   const steps = [
     {
       title: 'Numéro',
@@ -154,7 +191,6 @@ const TransferScreen = () => {
             placeholder=""
             localization={fr}
             value={phoneNumber}
-            
             onChange={handlePhoneNumberChange}
           />
         </Grid>
@@ -165,7 +201,7 @@ const TransferScreen = () => {
       component: (
         <Grid justifyContent={'center'} display={'flex'} alignItems={'center'} flexDirection={'column'}>
           <FormControl error={errors[1]} sx={{ marginBottom: '1rem' }}>
-            <TextField label={`Montant en €`} value={amount}  onChange={handleAmountChange} type="number" />
+            <TextField label={`Montant en €`} value={amount} onChange={handleAmountChange} type="number" />
             {errors[1] && <FormHelperText>Veuillez saisir un montant</FormHelperText>}
           </FormControl>
           <FormControl sx={{ marginBottom: '1rem' }}>
@@ -176,7 +212,7 @@ const TransferScreen = () => {
                 readOnly: true
               }}
             />
-          </FormControl>  
+          </FormControl>
           <Typography variant="subtitle1">Solde : {parseInt(UserData.soldePrincipal.toFixed(2))}€</Typography>
         </Grid>
       )
@@ -185,16 +221,14 @@ const TransferScreen = () => {
       title: 'Récapitulatif',
       component: (
         <div>
-          <Typography variant="subtitle1">Numéro de téléphone : {phoneNumber}</Typography>
+          <Typography variant="subtitle1">Numéro : +{phoneNumber}</Typography>
           <Typography variant="subtitle1">Pays : {selectedCountry}</Typography>
+          <Typography variant="subtitle1">Operateur : {SelectedOperateur.carrier}</Typography>
           <Typography variant="subtitle1">
-            Montant à transférer : {amount}€ / {convertedAmount}
+            Crédit à transférer : {amount}€ / {convertedAmount}
             {currencySymbol}
           </Typography>
-          <Typography variant="subtitle1">
-            Montant total (avec frais 20%) : {totalAmount.toFixed(2)}€ / {totalConvertedAmount.toFixed(2)}
-            {currencySymbol}
-          </Typography>
+          <Typography variant="subtitle1">Total: {calculatePriceWithFees(totalAmount, Frais)}€</Typography>
         </div>
       )
     }
