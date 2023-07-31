@@ -34,22 +34,25 @@ const Historique = () => {
   const [historique, setHistorique] = useState([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-const [selectedTransaction, setSelectedTransaction] = useState(null);
-  const getHistorique =  () => {
-    setLoading(true)
-    api.get(`/history/${UserData.id}`).then((response) => {
-      setLoading(false)
-      console.log(response.data);
-      setHistorique(response.data);
-    }).catch((error) => {
-      setLoading(false)
-      console.error('Error fetching user data:', error);
-    })
-  }
-    useEffect(() => {
-       getHistorique();
-       UserData.historique=historique
-    },[])
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const getHistorique = () => {
+    setLoading(true);
+    api
+      .get(`/history/${UserData.id}`)
+      .then((response) => {
+        setLoading(false);
+        console.log(response.data);
+        setHistorique(response.data);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error('Error fetching user data:', error);
+      });
+  };
+  useEffect(() => {
+    getHistorique();
+    UserData.historique = historique;
+  }, []);
   const handleSortChange = (event) => {
     setSortBy(event.target.value);
   };
@@ -61,9 +64,8 @@ const [selectedTransaction, setSelectedTransaction] = useState(null);
   const handleTypeFilterChange = (event) => {
     setFilterByType(event.target.value);
   };
-  
   const formatDate = (date) => {
-    moment.locale('fr')
+    moment.locale('fr');
     return moment(date).format('DD MMM [à] HH[h]mm');
   };
 
@@ -121,19 +123,17 @@ const [selectedTransaction, setSelectedTransaction] = useState(null);
     setSelectedTransaction(transaction);
     setOpen(true);
   };
-  
   const handleClosePopup = () => {
     setOpen(false);
   };
-  
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  fontWeight: 'bold',
-  backgroundColor: theme.palette.primary.main,
-  color: theme.palette.primary.contrastText,
-}));
+  const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    fontWeight: 'bold',
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.primary.contrastText
+  }));
 
   return (
-      <div>
+    <div>
       <Typography variant="h6" component="h2" gutterBottom>
         Historique des Transactions
       </Typography>
@@ -168,56 +168,59 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
           </Select>
         </FormControl>
       </div>
-      {
-         loading ? 
-         <SkeletonPopularCard />
-         :
-         historique.length === 0 ?
-         <Typography variant="h6" component="h2" gutterBottom>Aucune transaction enregistrée</Typography>
-         :
-         <TableContainer component={Paper}>
-       <Table>
-         <TableHead>
-           <TableRow>
-             {/* <TableCell>ID</TableCell> */}
-             <StyledTableCell>Transaction</StyledTableCell>
-             <StyledTableCell>Date</StyledTableCell>
-             <StyledTableCell>Montant</StyledTableCell>
-             {/* <StyledTableCell>Opérateur</StyledTableCell> */}
-             <StyledTableCell>Numéro</StyledTableCell>
-             <StyledTableCell>Statut</StyledTableCell>
-           </TableRow>
-         </TableHead>
-         <TableBody>
-           {sortedTransactions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((transaction) => (
-             <RowContainer key={transaction.id} className="row" onClick={() => handleOpenPopup(transaction)} style={{ cursor: 'pointer' }}>
-               {/* <TableCell>{transaction.id}</TableCell> */}
-               <TableCell>{transaction.type}</TableCell>
-               <TableCell>{formatDate(transaction.date)}</TableCell>
-               <TableCell>{transaction.montant}€</TableCell>
-               {/* <TableCell>{transaction.country}</TableCell> */}
-               {/* <TableCell>{transaction.operator}</TableCell> */}
-               <TableCell>{transaction.destinataire}</TableCell>
-               <TableCell
-                 style={{
-                   display: 'flex',
-                   gap: '5px',
-                   alignItems: 'center',
-                   color:
-                     transaction.status === 'réussi'
-                       ? theme.palette.success.main
-                       : transaction.status === 'attente'
-                       ? theme.palette.warning.main
-                       : theme.palette.error.main
-                 }}
-               >
-                 {getStatusIcon(transaction.status)} {transaction.status}
-               </TableCell>
-             </RowContainer>
-           ))}
-         </TableBody>
-       </Table>
-     </TableContainer>
+      {loading ? <SkeletonPopularCard /> : historique.length === 0 ?
+        <Typography variant="h6" component="h2" gutterBottom>
+          Aucune transaction enregistrée
+        </Typography>
+      :
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                {/* <TableCell>ID</TableCell> */}
+                <StyledTableCell>Transaction</StyledTableCell>
+                <StyledTableCell>Date</StyledTableCell>
+                <StyledTableCell>Montant</StyledTableCell>
+                {/* <StyledTableCell>Opérateur</StyledTableCell> */}
+                <StyledTableCell>Numéro</StyledTableCell>
+                <StyledTableCell>Statut</StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {sortedTransactions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((transaction) => (
+                <RowContainer
+                  key={transaction.id}
+                  className="row"
+                  onClick={() => handleOpenPopup(transaction)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  {/* <TableCell>{transaction.id}</TableCell> */}
+                  <TableCell>{transaction.type}</TableCell>
+                  <TableCell>{formatDate(transaction.date)}</TableCell>
+                  <TableCell>{transaction.montant}€</TableCell>
+                  {/* <TableCell>{transaction.country}</TableCell> */}
+                  {/* <TableCell>{transaction.operator}</TableCell> */}
+                  <TableCell>{transaction.destinataire}</TableCell>
+                  <TableCell
+                    style={{
+                      display: 'flex',
+                      gap: '5px',
+                      alignItems: 'center',
+                      color:
+                        transaction.status === 'réussi'
+                          ? theme.palette.success.main
+                          : transaction.status === 'attente'
+                          ? theme.palette.warning.main
+                          : theme.palette.error.main
+                    }}
+                  >
+                    {getStatusIcon(transaction.status)} {transaction.status}
+                  </TableCell>
+                </RowContainer>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       }
       <TablePagination
         labelRowsPerPage="Afficher par"
@@ -258,9 +261,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
               <Typography variant="body1">Type de transaction: {selectedTransaction.type}</Typography>
               <Typography variant="body1">Date : {formatDate(selectedTransaction.date)}</Typography>
               <Typography variant="body1">Montant : {selectedTransaction.montant}€</Typography>
-              {selectedTransaction.type === 'recharge' && (
-              <Typography variant="body1">Methode: {selectedTransaction.methode}</Typography>
-              )}  
+              {selectedTransaction.type === 'recharge' && <Typography variant="body1">Methode: {selectedTransaction.methode}</Typography>}
               {selectedTransaction.type === 'Envoi' && (
                 <>
                   <Typography variant="body1">Pays : {selectedTransaction.pays}</Typography>
@@ -284,17 +285,13 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
                   {selectedTransaction.status}
                 </Typography>
               </Typography>
-              {
-                selectedTransaction.commentaire &&
-              <Typography variant="body1">Commentaire : {selectedTransaction.commentaire}</Typography>
-              }
+              {selectedTransaction.commentaire && <Typography variant="body1">Commentaire : {selectedTransaction.commentaire}</Typography>}
             </div>
           )}
         </Box>
       </Modal>
     </div>
-    )
-  
+  );
 };
 
 export default Historique;

@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 // material-ui
 import { styled, useTheme } from '@mui/material/styles';
-import { Avatar, Box, Grid, Menu, MenuItem, Typography } from '@mui/material';
+import { Avatar, Box, Grid, Typography } from '@mui/material';
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
@@ -11,12 +11,10 @@ import SkeletonEarningCard from 'ui-component/cards/Skeleton/EarningCard';
 
 // assets
 import EarningIcon from 'assets/images/icons/earning.svg';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import FileCopyTwoToneIcon from '@mui/icons-material/FileCopyOutlined';
-import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfOutlined';
 import { parse } from 'flatted';
 import { useEffect } from 'react';
 import api from 'requests/api';
+import { ToastContainer, toast } from 'react-toastify';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
   backgroundColor: theme.palette.secondary.dark,
@@ -59,17 +57,8 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 const EarningCard = ({ isLoading }) => {
   const theme = useTheme();
 
-  const [anchorEl, setAnchorEl] = useState(null);
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
   const userData = parse(sessionStorage.getItem('user'));
-  const [solde, setsolde] = useState([]);
+  const [solde, setsolde] = useState('');
   const getSolde = () => {
     api
       .get(`/solde/${userData.id}`)
@@ -78,12 +67,19 @@ const EarningCard = ({ isLoading }) => {
       })
       .catch((error) => {
         console.error('Error fetching user data:', error);
+        if (error.response.data.message === 'Adresse IP non autorisée')
+        {toast.error("Toutes les Adresse IP doivent etre dans la liste autorisée dans l'onglet Sécurité, Pour acceder a certaines informations.", {
+            autoClose: false,
+            position: toast.POSITION.TOP_CENTER
+          });
+          setsolde('bloqué');
+        }
       });
   };
   useEffect(() => {
     getSolde();
     userData.soldePrincipal = solde;
-  });
+  },[]);
   return (
     <>
       {isLoading ? (
@@ -107,52 +103,12 @@ const EarningCard = ({ isLoading }) => {
                       <img src={EarningIcon} alt="Notification" />
                     </Avatar>
                   </Grid>
-                  <Grid item>
-                    <Avatar
-                      variant="rounded"
-                      sx={{
-                        ...theme.typography.commonAvatar,
-                        ...theme.typography.mediumAvatar,
-                        backgroundColor: theme.palette.secondary.dark,
-                        color: theme.palette.secondary[200],
-                        zIndex: 1
-                      }}
-                      aria-controls="menu-earning-card"
-                      aria-haspopup="true"
-                      onClick={handleClick}
-                    >
-                      <MoreHorizIcon fontSize="inherit" />
-                    </Avatar>
-                    <Menu
-                      id="menu-earning-card"
-                      anchorEl={anchorEl}
-                      keepMounted
-                      open={Boolean(anchorEl)}
-                      onClose={handleClose}
-                      variant="selectedMenu"
-                      anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'right'
-                      }}
-                      transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right'
-                      }}
-                    >
-                      <MenuItem onClick={handleClose}>
-                        <FileCopyTwoToneIcon sx={{ mr: 1.75 }} /> Copier
-                      </MenuItem>
-                      <MenuItem onClick={handleClose}>
-                        <PictureAsPdfTwoToneIcon sx={{ mr: 1.75 }} /> Exporter
-                      </MenuItem>
-                    </Menu>
-                  </Grid>
                 </Grid>
               </Grid>
               <Grid item>
                 <Grid container alignItems="center" justifyContent="center">
                   <Grid item>
-                    <Typography sx={{ fontSize: '2rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>{parseInt(solde).toFixed(2)}€</Typography>
+                    <Typography sx={{ fontSize: '2rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>{solde == 'bloqué'? solde :`${parseInt(solde).toFixed(2)}€`}</Typography>
                   </Grid>
                 </Grid>
               </Grid>
@@ -171,6 +127,7 @@ const EarningCard = ({ isLoading }) => {
           </Box>
         </CardWrapper>
       )}
+      <ToastContainer/>
     </>
   );
 };

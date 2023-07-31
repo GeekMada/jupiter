@@ -21,7 +21,7 @@ import 'react-phone-input-2/lib/material.css';
 import { useEffect } from 'react';
 import ProductPlaceholder from 'ui-component/cards/Skeleton/ProductPlaceholder';
 import api from '../../requests/api';
-import countryCodesJSON from 'react-phone-input-2/lang/fr.json'
+import countryCodesJSON from 'react-phone-input-2/lang/fr.json';
 import { parse } from 'flatted';
 import { publicIpv4 } from 'public-ip';
 import Toast from 'ui-component/Toast';
@@ -64,17 +64,16 @@ const OfferCard = ({ offer, onSelectOffer }) => {
             </Button>
           )}
           <Typography variant="h6" color="primary" sx={{ mt: 2 }}>
-          {calculatePriceWithFees(parseInt(offer.prix), parseInt(offer.frais))}€
+            {calculatePriceWithFees(parseInt(offer.prix), parseInt(offer.frais))}€
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-          {offer.pays}/{offer.operateur}
+            {offer.pays}/{offer.operateur}
           </Typography>
         </CardContent>
       </CardActionArea>
     </Card>
   );
 };
-
 
 const OfferScreen = () => {
   const [expanded, setExpanded] = useState(false);
