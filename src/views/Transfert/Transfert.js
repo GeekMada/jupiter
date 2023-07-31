@@ -149,7 +149,7 @@ const getAllOperatores = async () => {
     const ipAddress = await getLocalIpAddress();
     api.post(`/solde/transfert/${UserData.id}`, {
         numero: '0' + phoneNumber.slice(3),
-        credit_amount: totalConvertedAmount,
+        credit_amount: convertedAmount,
         pays: selectedCountry,
         ip: ipAddress
       })
