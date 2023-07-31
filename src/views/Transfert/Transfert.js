@@ -81,7 +81,7 @@ const TransferScreen = () => {
 
   const handleAmountChange = (event) => {
     setAmount(event.target.value);
-    Convert(event.target.value).from("EUR").to(selectedCurrency).then((res) => { setConvertedAmount(res.toFixed(2)) })
+    Convert(event.target.value).from(selectedCurrency).to("EUR").then((res) => { setConvertedAmount(res.toFixed(2)) })
   };
   
   const getLocalIpAddress = async () => {
@@ -149,14 +149,15 @@ const getAllOperatores = async () => {
     const ipAddress = await getLocalIpAddress();
     api.post(`/solde/transfert/${UserData.id}`, {
         numero: '0' + phoneNumber.slice(3),
-        credit_amount: convertedAmount,
+        credit_amount: amount,
         pays: selectedCountry,
-        ip: ipAddress
+        ip: ipAddress,
+        totalConvertedAmount
       })
       .then( (res) => {
         getuserInfo();
-        Toast.success(`Transfert de ${amount}€ envoyé avec succès au numéro ${phoneNumber}`);
-        Toast.success(`Votre solde actuel est de ${res.data.soldePrincipal}€`);
+        Toast.success(`Transfert de ${amount}${currencySymbol} envoyé avec succès au numéro ${phoneNumber}`);
+        Toast.success(`Votre solde actuel est de ${parseInt(res.data.soldePrincipal).toFixed(2)} ${currencySymbol}`);
         setLoading(false);
         setActiveStep(0);
         setPhoneNumber('');
@@ -201,12 +202,12 @@ const getAllOperatores = async () => {
       component: (
         <Grid justifyContent={'center'} display={'flex'} alignItems={'center'} flexDirection={'column'}>
           <FormControl error={errors[1]} sx={{ marginBottom: '1rem' }}>
-            <TextField label={`Montant en €`} value={amount} onChange={handleAmountChange} type="number" />
+            <TextField label={`Montant en  ${currencySymbol}`} value={amount} onChange={handleAmountChange} type="number" />
             {errors[1] && <FormHelperText>Veuillez saisir un montant</FormHelperText>}
           </FormControl>
           <FormControl sx={{ marginBottom: '1rem' }}>
             <TextField
-              label={`Montant en ${currencySymbol}`}
+              label={`Montant en €`}
               value={convertedAmount} // Affichez le montant converti avec deux décimales
               InputProps={{
                 readOnly: true
@@ -225,10 +226,9 @@ const getAllOperatores = async () => {
           <Typography variant="subtitle1">Pays : {selectedCountry}</Typography>
           <Typography variant="subtitle1">Operateur : {SelectedOperateur.carrier}</Typography>
           <Typography variant="subtitle1">
-            Crédit à transférer : {amount}€ / {convertedAmount}
-            {currencySymbol}
+            Crédit à transférer : {amount}{currencySymbol} / {convertedAmount}€
           </Typography>
-          <Typography variant="subtitle1">Total: {calculatePriceWithFees(totalAmount, Frais)}€</Typography>
+          <Typography variant="subtitle1">Total: {calculatePriceWithFees(totalAmount, Frais)}{currencySymbol}</Typography>
         </div>
       )
     }

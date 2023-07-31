@@ -121,7 +121,7 @@ console.log(attenteTransactions)
                     <TableRow >
                       <TableCell>{transaction.type}</TableCell>
                       <TableCell>{formatDate(transaction.date)}</TableCell>
-                      <TableCell>{transaction.montant}€</TableCell>
+                      <TableCell>{transaction.montant}Ar</TableCell>
                       <TableCell>{transaction.destinataire}</TableCell>
                       <TableCell style={{ display: 'flex',gap: '5px',alignItems: 'center', color:theme.palette.warning.main}}>{getStatusIcon(transaction.status)}  {transaction.status}</TableCell>
                     </TableRow>
@@ -162,7 +162,7 @@ console.log(attenteTransactions)
                 {/* <TableCell>{transaction.id}</TableCell> */}
                 <TableCell>{transaction.type}</TableCell>
                 <TableCell>{formatDate(transaction.date)}</TableCell>
-                <TableCell>{transaction.montant}€</TableCell>
+                <TableCell>{transaction.montant}Ar</TableCell>
                 {/* <TableCell>{transaction.country}</TableCell> */}
                 {/* <TableCell>{transaction.operator}</TableCell> */}
                 <TableCell>{transaction.destinataire}</TableCell>
@@ -310,7 +310,7 @@ console.log(attenteTransactions)
               <Typography variant="body1">ID : {selectedTransaction.id}</Typography>
               <Typography variant="body1">Type de transaction: {selectedTransaction.type}</Typography>
               <Typography variant="body1">Date : {formatDate(selectedTransaction.date)}</Typography>
-              <Typography variant="body1">Montant : {selectedTransaction.montant}€</Typography>
+              <Typography variant="body1">Montant : {selectedTransaction.montant}Ar</Typography>
               {selectedTransaction.type === 'recharge' && (
               <Typography variant="body1">Methode: {selectedTransaction.methode}</Typography>
               )}              

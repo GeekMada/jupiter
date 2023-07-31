@@ -77,12 +77,14 @@ const handleOpenDialogwithip = async () => {
   };
 
   const handleNextStep = () => {
-    if (validateIPAddress(ipAddress)) {
-      setActiveStep((prevStep) => prevStep + 1);
+    setActiveStep((prevStep) => prevStep + 1);
       setIpError('');
-    } else {
-      setIpError('Adresse IP invalide');
-    }
+    // if (validateIPAddress(ipAddress)) {
+    //   setActiveStep((prevStep) => prevStep + 1);
+    //   setIpError('');
+    // } else {
+    //   setIpError('Adresse IP invalide');
+    // }
   };
   const handlePrevStep = () => {
     setActiveStep((prevStep) => prevStep - 1);
@@ -154,10 +156,10 @@ const handleOpenDialogwithip = async () => {
       });
   };
 
-  const validateIPAddress = (ip) => {
-    const ipRegex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/;
-    return ipRegex.test(ip);
-  };
+  // const validateIPAddress = (ip) => {
+  //   const ipRegex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/;
+  //   return ipRegex.test(ip);
+  // };
 
   return (
     <div>
