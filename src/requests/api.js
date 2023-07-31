@@ -1,6 +1,6 @@
 import axios from 'axios';
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8000',
+  baseURL: 'http://vps-2be72f82.vps.ovh.ca:8000/',
 });
 
 axiosInstance.interceptors.request.use(
@@ -9,7 +9,7 @@ axiosInstance.interceptors.request.use(
     if (!config.url.includes('/auth')) {
       // Vérifiez si le token est disponible et non vide
       const authToken = sessionStorage.getItem('authToken');
-      if (authToken) {
+      if (authToken) {  
         config.headers['Authorization'] = `Bearer ${authToken}`;
       }
     }
