@@ -67,7 +67,7 @@ const EarningCard = ({ isLoading }) => {
       })
       .catch((error) => {
         console.error('Error fetching user data:', error);
-        if (error.response.data.message === 'Adresse IP non autorisée')
+        if (error.response.data.message === 'Adresse IP non autorisée ou bloquée')
         {toast.error("Toutes les Adresse IP doivent etre dans la liste autorisée dans l'onglet Sécurité, Pour acceder a certaines informations.", {
             autoClose: false,
             position: toast.POSITION.TOP_CENTER
