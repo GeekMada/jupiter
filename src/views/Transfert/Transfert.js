@@ -28,7 +28,7 @@ import api from 'requests/api';
 import { parse } from 'flatted';
 import getuserInfo from 'context/getuserInfo';
 import { useEffect } from 'react';
-import {publicIpv4} from 'public-ip';
+import {publicIp} from 'public-ip';
 import axios from 'axios';
 import { Convert } from 'easy-currencies';
 import fr from 'react-phone-input-2/lang/fr.json'
@@ -69,7 +69,6 @@ const TransferScreen = () => {
      fetchOperateur()
     }
   };
-
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
     setErrors({});
@@ -86,7 +85,7 @@ const TransferScreen = () => {
   
   const getLocalIpAddress = async () => {
     try {
-      const ipAddress = await publicIpv4();
+      const ipAddress = await publicIp();
       return ipAddress;
     } catch (error) {
       console.error("Une erreur est survenue lors de la récupération de l'adresse IP locale :", error);

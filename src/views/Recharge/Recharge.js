@@ -24,7 +24,7 @@ import Toast from 'ui-component/Toast';
 import api from 'requests/api';
 import { parse } from 'flatted';
 import getUserInfo from 'context/getuserInfo';
-import { publicIpv4 } from 'public-ip';
+import { publicIp } from 'public-ip';
 function Recharge() {
   const UserData = parse(sessionStorage.getItem('user'));
   const [rechargeType, setRechargeType] = useState('');
@@ -40,7 +40,7 @@ function Recharge() {
   };
   const getLocalIpAddress = async () => {
     try {
-      const ipAddress = await publicIpv4();
+      const ipAddress = await publicIp();
       return ipAddress;
     } catch (error) {
       console.error('Une erreur est survenue lors de la récupération de l\'adresse IP locale :', error);

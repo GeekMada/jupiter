@@ -23,7 +23,7 @@ import ProductPlaceholder from 'ui-component/cards/Skeleton/ProductPlaceholder';
 import api from '../../requests/api';
 import countryCodesJSON from 'react-phone-input-2/lang/fr.json';
 import { parse } from 'flatted';
-import { publicIpv4 } from 'public-ip';
+import { publicIp } from 'public-ip';
 import Toast from 'ui-component/Toast';
 import { ToastContainer } from 'react-toastify';
 const OfferCard = ({ offer, onSelectOffer }) => {
@@ -123,7 +123,7 @@ const OfferScreen = () => {
 
   const handleSendOffer = async () => {
     setLoading(true);
-    const ipAddress = await publicIpv4();
+    const ipAddress = await publicIp();
     api
       .post(`/offres/transfert/${userData.id}`,
         { numero: phoneNumber, pays: selectedOffer.pays, operateur: selectedOffer.operateur, nomOffre: selectedOffer.nom, ip: ipAddress },
