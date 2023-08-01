@@ -27,14 +27,14 @@ const dashboard = {
       icon: icons.IconRecharging,
       breadcrumbs: false
     },
-    {
-      id: 'tarif',
-      title: 'Tarification',
-      type: 'item',
-      url: '/pages/tarif',
-      icon: icons.IconTag,
-      breadcrumbs: false
-    },
+    // {
+    //   id: 'tarif',
+    //   title: 'Tarification',
+    //   type: 'item',
+    //   url: '/pages/tarif',
+    //   icon: icons.IconTag,
+    //   breadcrumbs: false
+    // },
     {
       id: 'transfert',
       title: 'Transferer Credit',

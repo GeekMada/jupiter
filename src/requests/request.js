@@ -24,3 +24,11 @@ export const loginUser = (userData) => async (dispatch) => {
     dispatch({ type: 'LOGIN_FAILURE', payload: error.message });
   }
 };
+
+export const getHistorique = async () => {
+ return await api.get('/historique').then((response) => {
+     console.log(response.data);
+   }).catch((error) => {
+     console.error('Error fetching user data:', error);
+   })
+ }

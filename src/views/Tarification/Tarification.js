@@ -32,7 +32,7 @@ const countries = [
       { id: 4, name: 'Orange', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Orange_logo.svg/2048px-Orange_logo.svg.png', tariff: '0.18', balance: 6 },
       { id: 5, name: 'Airtel', logo: 'https://logos-marques.com/wp-content/uploads/2022/04/Airtel-Logo.png', tariff: '0.18', balance: 5 },      
     ],
-    currency:'Ar'
+    currency:'€'
   },
   {
     id: 4,

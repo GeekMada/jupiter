@@ -24,7 +24,7 @@ import Toast from 'ui-component/Toast';
 import api from 'requests/api';
 import { parse } from 'flatted';
 import getUserInfo from 'context/getuserInfo';
-
+import { publicIp } from 'public-ip';
 function Recharge() {
   const UserData = parse(sessionStorage.getItem('user'));
   const [rechargeType, setRechargeType] = useState('');
@@ -38,17 +38,27 @@ function Recharge() {
   const handleRechargeTypeChange = (event) => {
     setRechargeType(event.target.value);
   };
-
+  const getLocalIpAddress = async () => {
+    try {
+      const ipAddress = await publicIp();
+      return ipAddress;
+    } catch (error) {
+      console.error('Une erreur est survenue lors de la récupération de l\'adresse IP locale :', error);
+      return null;
+    }
+  };
   const handleAmountChange = (event) => {
     setAmount(event.target.value);
   };
 
-  const handleRecharge = () => {
+  const handleRecharge = async () => {
     setLoading(true);
-    api.put(`/solde/recharge/${UserData.id}`, { somme: amount, ip: '1.1.1.1' })
+    const ipAddress = await getLocalIpAddress();
+    api
+      .post(`/solde/recharge/${UserData.id}`, { somme: amount, ip: ipAddress, methode: rechargeType })
       .then((response) => {
         setLoading(false);
-        Toast.success(`Compte rechargé de ${amount}Ar  Solde Principal ${response.data.soldePrincipal}Ar`);
+        Toast.success(`La demande de rechargé de ${amount}€ est envoyé, Veuillez patienter`);
         setActiveStep(0);
         setAmount('');
         setRechargeTypeError(false);

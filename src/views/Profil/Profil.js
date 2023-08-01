@@ -19,29 +19,48 @@ import { Box } from '@mui/system';
 import { parse } from 'flatted';
 import axios from 'axios';
 import api from 'requests/api';
-
+import Toast from 'ui-component/Toast';
+import { ToastContainer } from 'react-toastify';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 const UserInfoScreen = () => {
   const UserData = parse(sessionStorage.getItem('user'));
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [uploading, setUploading] = useState(false);
-  // eslint-disable-next-line no-unused-vars
+  const [userInfo, setUserInfo] = useState({ ...UserData });
   const [newPhoto, setNewPhoto] = useState(null);
-
+  const [password, setpassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const handleToggleEditMode = () => {
     setEditMode(!editMode);
   };
 
-  const handleSaveChanges = () => {
+  const handleSaveChanges = async () => {
+    const allowedProperties = ['nom', 'prenom', 'entreprise', 'email', 'tel'];
+    const filteredUserInfo = Object.keys(userInfo)
+      .filter(key => allowedProperties.includes(key))
+      .reduce((obj, key) => {
+        obj[key] = userInfo[key];
+        return obj;
+      }, {});
     setLoading(true);
-    // Perform API call to save changes
-    setTimeout(() => {
-      setEditMode(false);
-      setOpenDialog(false);
-      setLoading(false);
-      // ...
-    }, 2000);
+    console.log(filteredUserInfo);
+    // Enregistrement des modifications via l'API ici...
+    await api.put(`/user/update/${UserData.id}`, {...filteredUserInfo,photoUrl: newPhoto, password})
+      .then((res) => {
+        console.log(res.data);
+        setEditMode(false);
+        setOpenDialog(false);
+        Toast.success('Les modifications ont été enregistrées');
+      })
+      .catch((error) => {
+        console.log('errorInfo: ', error.response);
+        Toast.error("Une erreur s'est produite");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handleOpenDialog = () => {
@@ -51,6 +70,7 @@ const UserInfoScreen = () => {
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
+
   const handlePhotoUpload = (event) => {
     setUploading(true);
     const file = event.target.files[0];
@@ -59,17 +79,16 @@ const UserInfoScreen = () => {
     formData.append('upload_preset', 'jupiter_preset');
     axios.post(`https://api.cloudinary.com/v1_1/dloyqaucz/image/upload`, formData)
       .then((response) => {
-        // const imageUrl = response.data.secure_url;
-        api.put(`/user/update/${UserData.id}`, { photoUrl: response.data.secure_url })
-       .then((res) => {
-            setUploading(false);
+        // api.put(`/user/update/${UserData.id}`, { photoUrl: response.data.secure_url })
+        //   .then((res) => {
+        //     setUploading(false);
             setNewPhoto(response.data.secure_url);
             console.log(res.data);
-          })
-          .catch((error) => {
-            setUploading(false);
-            console.log('errorupdatePhoto: ', error.response);
-          });
+          // })
+          // .catch((error) => {
+          //   setUploading(false);
+          //   console.log('errorupdatePhoto: ', error.response);
+          // });
       })
       .catch((err) => {
         setUploading(false);
@@ -93,41 +112,41 @@ const UserInfoScreen = () => {
       <Paper elevation={3} sx={{ padding: '2rem', width: '100 %' }}>
         <Grid container spacing={2}>
           <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-          {uploading ? ( // Conditionally show the loader while uploading is in progress
+            {uploading ? (
               <CircularProgress style={{ width: 120, height: 120 }} />
-        ) : (
-          <label htmlFor="photo-upload">
-            <input
-              accept="image/*"
-              id="photo-upload"
-              type="file"
-              style={{ display: 'none' }}
-              onChange={handlePhotoUpload}
-            />
-            <IconButton component="span" disabled={!editMode}>
-              <Badge
-                overlap="circular"
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'right'
-                }}
-                badgeContent={<PhotoCamera />}
-              >
-                <Avatar
-                  alt="User Photo"
-                  src={newPhoto ? newPhoto: UserData.photoUrl}
-                  sx={{ width: 120, height: 120 }}
+            ) : (
+              <label htmlFor="photo-upload">
+                <input
+                  accept="image/*"
+                  id="photo-upload"
+                  type="file"
+                  style={{ display: 'none' }}
+                  onChange={handlePhotoUpload}
                 />
-              </Badge>
-            </IconButton>
-          </label>
-        )}
+                <IconButton component="span" disabled={!editMode}>
+                  <Badge
+                    overlap="circular"
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'right'
+                    }}
+                    badgeContent={<PhotoCamera />}
+                  >
+                    <Avatar
+                      alt="User Photo"
+                      src={newPhoto ? newPhoto : UserData.photoUrl}
+                      sx={{ width: 120, height: 120 }}
+                    />
+                  </Badge>
+                </IconButton>
+              </label>
+            )}
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
               label="Prénom"
-              name="firstName"
-              value={UserData.prenom}
+              name="prenom"
+              value={userInfo.prenom}
               disabled={!editMode}
               onChange={handleFieldChange}
               fullWidth
@@ -137,8 +156,8 @@ const UserInfoScreen = () => {
           <Grid item xs={12} sm={6}>
             <TextField
               label="Nom"
-              name="lastName"
-              value={UserData.nom}
+              name="nom"
+              value={userInfo.nom}
               disabled={!editMode}
               onChange={handleFieldChange}
               fullWidth
@@ -148,8 +167,8 @@ const UserInfoScreen = () => {
           <Grid item xs={12} sm={6}>
             <TextField
               label="Téléphone"
-              name="phone"
-              value={UserData.tel}
+              name="tel"
+              value={userInfo.tel}
               disabled={!editMode}
               onChange={handleFieldChange}
               fullWidth
@@ -159,8 +178,8 @@ const UserInfoScreen = () => {
           <Grid item xs={12} sm={6}>
             <TextField
               label="Nom de l'entreprise"
-              name="companyName"
-              value={UserData.entreprise}
+              name="entreprise"
+              value={userInfo.entreprise}
               disabled={!editMode}
               onChange={handleFieldChange}
               fullWidth
@@ -171,7 +190,7 @@ const UserInfoScreen = () => {
             <TextField
               label="Email"
               name="email"
-              value={UserData.email}
+              value={userInfo.email}
               disabled={!editMode}
               onChange={handleFieldChange}
               fullWidth
@@ -180,7 +199,7 @@ const UserInfoScreen = () => {
           </Grid>
         </Grid>
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-         <Button
+          <Button
             variant="outlined"
             onClick={editMode ? handleOpenDialog : handleToggleEditMode}
             startIcon={editMode ? <Save /> : <Edit />}
@@ -198,8 +217,26 @@ const UserInfoScreen = () => {
           <Typography variant="body1" gutterBottom>
             Veuillez entrer votre mot de passe pour confirmer les modifications.
           </Typography>
-          <TextField autoFocus margin="dense" label="Mot de passe" type="password" fullWidth />
-        </DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Mot de passe"
+            type={showPassword ? 'text' : 'password'}
+            fullWidth
+            onChange={(event) => setpassword(event.target.value)}
+            value={password}
+            InputProps={{
+              endAdornment: (
+                <IconButton
+                  onClick={() => setShowPassword(!showPassword)}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              ),
+            }}
+          />
+          </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="primary">
             Annuler
@@ -209,6 +246,7 @@ const UserInfoScreen = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <ToastContainer />
     </div>
   );
 };

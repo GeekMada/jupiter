@@ -110,13 +110,15 @@ const FirebaseLogin = ({ ...others }) => {
                                     onClick={() => {
                                         setLoading(true);
                                         api
-                                            .post('/auth/find-user-id', values)
+                                            .post('/auth/find', values)
                                             .then((resp) => {
                                                 setLoading(false);
                                                 console.log(resp.data)
                                                 const userId = resp.data.id
+
+                                                localStorage.setItem('email', values.email);
                                                 // dispatch({ type: 'LOGIN_SUCCESS', payload: resp.data.user });
-                                                navigate(`/new-password/${userId}`);
+                                                navigate(`/authCode/${userId}`);
                                             })
                                             .catch((err) => {
                                                 setLoading(false);

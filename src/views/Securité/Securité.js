@@ -25,6 +25,9 @@ import api from 'requests/api';
 import { parse } from 'flatted';
 import Toast from 'ui-component/Toast';
 import { ToastContainer } from 'react-toastify';
+import {publicIpv4} from 'public-ip';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import { useEffect } from 'react';
 
 const SecurityScreen = () => {
   const UserData = parse(sessionStorage.getItem('user'));
@@ -40,10 +43,35 @@ const SecurityScreen = () => {
   const [loading, setLoading] = useState(false);
   const [togglingIpId, setTogglingIpId] = useState(null); // Store the IP ID that is currently being toggled (blocked/unblocked)
   const [deletingIpId, setDeletingIpId] = useState(null);
+  const getAllIp = () => {
+    api
+      .get(`/ip/${UserData.id}`)
+      .then((res) => {
+      console.log(res.data);
+    }).catch((err) => {
+        console.log(err);
+      });
+  };
+  useEffect(() => {
+    getAllIp();
+  }, []);
+  const getLocalIpAddress = async () => {
+    try {
+      const ipAddress = await publicIpv4();
+      return ipAddress;
+    } catch (error) {
+      console.error("Une erreur est survenue lors de la récupération de l'adresse IP locale :", error);
+      return null;
+    }
+  };
   const handleOpenDialog = () => {
     setOpenDialog(true);
   };
-
+const handleOpenDialogwithip = async () => {
+  const ipAddress = await getLocalIpAddress();
+  setOpenDialog(true);
+  setIpAddress(ipAddress);
+}
   const handleCloseDialog = () => {
     setOpenDialog(false);
     setActiveStep(0);
@@ -53,14 +81,15 @@ const SecurityScreen = () => {
   };
 
   const handleNextStep = () => {
-    if (validateIPAddress(ipAddress)) {
-      setActiveStep((prevStep) => prevStep + 1);
+    setActiveStep((prevStep) => prevStep + 1);
       setIpError('');
-    } else {
-      setIpError('Adresse IP invalide');
-    }
+    // if (validateIPAddress(ipAddress)) {
+    //   setActiveStep((prevStep) => prevStep + 1);
+    //   setIpError('');
+    // } else {
+    //   setIpError('Adresse IP invalide');
+    // }
   };
-
   const handlePrevStep = () => {
     setActiveStep((prevStep) => prevStep - 1);
     setIpError('');
@@ -112,7 +141,7 @@ const SecurityScreen = () => {
       });
   };
 
-    const handleDeleteIp = (id) => {
+  const handleDeleteIp = (id) => {
     setDeletingIpId(id);
     // Call the API to delete the IP
     api
@@ -131,10 +160,10 @@ const SecurityScreen = () => {
       });
   };
 
-  const validateIPAddress = (ip) => {
-    const ipRegex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/;
-    return ipRegex.test(ip);
-  };
+  // const validateIPAddress = (ip) => {
+  //   const ipRegex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/;
+  //   return ipRegex.test(ip);
+  // };
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -146,7 +175,7 @@ const SecurityScreen = () => {
 
   return (
     <div>
-      <Typography variant="h6" component="h2" gutterBottom>
+      <Typography variant="h4" gutterBottom>
         Écran de sécurité
       </Typography>
       <Typography variant="caption" color="textSecondary">
@@ -157,6 +186,9 @@ const SecurityScreen = () => {
         sx={{ padding: '2rem', width: '100%' }}
         style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}
       >
+        <Typography variant="subtitle1">
+          <strong>{ipList.length}</strong>  adresses IP autorisées
+        </Typography>
         <Typography variant="subtitle1" gutterBottom>
           Liste des adresses IP autorisées :
         </Typography>
@@ -165,28 +197,35 @@ const SecurityScreen = () => {
             <ListItem key={item.id}>
               <ListItemText primary={item.adresse} />
               <ListItemSecondaryAction>
-                {togglingIpId === item.id ? (
+                {togglingIpId === item.adresse ? (
                   <CircularProgress size={24} style={{ color: 'blue' }} />
                 ) : item.is_blocked ? (
-                  <Button variant="outlined" startIcon={<LockOpen />} color="primary" onClick={() => handleToggleBlock(item.id)}>
+                  <Button variant="outlined" startIcon={<LockOpen />} color="primary" onClick={() => handleToggleBlock(item.adresse)}>
                     Débloquer
                   </Button>
                 ) : (
-                  <Button variant="outlined" startIcon={<Lock />} color="secondary" onClick={() => handleToggleBlock(item.id)}>
+                  <Button variant="outlined" startIcon={<Lock />} color="secondary" onClick={() => handleToggleBlock(item.adresse)}>
                     Bloquer
                   </Button>
                 )}
-                <IconButton edge="end" onClick={() => handleDeleteIp(item.id)}>
-                  {deletingIpId===item.id ? <CircularProgress size={24} style={{ color: 'gray' }} /> : <Delete />}
+                <IconButton edge="end" onClick={() => handleDeleteIp(item.adresse)}>
+                  {deletingIpId===item.adresse ? <CircularProgress size={24} style={{ color: 'gray' }} /> : <Delete />}
                 </IconButton>
               </ListItemSecondaryAction>
             </ListItem>
           ))}
         </List>
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Button variant="contained" onClick={handleOpenDialog} startIcon={<AddCircleOutline />} color="primary">
-            Ajouter
-          </Button>
+        <Box sx={{ display: 'flex', justifyContent: 'center',flexDirection: 'column' , alignItems: 'center'}} gap={'1rem'}>
+          <AnimateButton>
+            <Button variant="contained" onClick={handleOpenDialog} startIcon={<AddCircleOutline />} color="primary">
+              Ajouter
+            </Button>
+          </AnimateButton>
+          <AnimateButton>
+            <Button variant="contained" onClick={handleOpenDialogwithip} startIcon={<AddCircleOutline />} color="primary">
+              Ajouter cet appareil
+            </Button>
+          </AnimateButton>
         </Box>
       </Paper>
 
@@ -246,7 +285,7 @@ const SecurityScreen = () => {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} color="primary">
+          <Button onClick={() =>{ setOpenDialog(false), setIpAddress(''); setIpError(''); setPassword('');}} color="primary">
             Annuler
           </Button>
           {activeStep === 0 && (

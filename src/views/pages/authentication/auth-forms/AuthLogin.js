@@ -1,6 +1,6 @@
 import { useState } from 'react';
-
-// material-ui
+import * as Yup from 'yup';
+import { Formik } from 'formik';
 import { useTheme } from '@mui/material/styles';
 import {
   Box,
@@ -17,40 +17,25 @@ import {
   Stack,
   Typography
 } from '@mui/material';
-
-// third party
-import * as Yup from 'yup';
-import { Formik } from 'formik';
-
-// project imports
-import useScriptRef from 'hooks/useScriptRef';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-
-// assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { ToastContainer } from 'react-toastify';
-
+import { useNavigate } from 'react-router-dom';
 import api from 'requests/api';
-// import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router';
 import Toast from 'ui-component/Toast';
 import { useAuthContext } from 'context/auth-context';
 import { stringify } from 'flatted';
 import { Link } from 'react-router-dom';
-
-// ============================|| FIREBASE - LOGIN ||============================ //
+import AnimateButton from 'ui-component/extended/AnimateButton';
 
 const FirebaseLogin = ({ ...others }) => {
   const navigate = useNavigate();
   const theme = useTheme();
   const Auth = useAuthContext();
-  // const dispatch = useDispatch();
-  const scriptedRef = useScriptRef();
   const [checked, setChecked] = useState(true);
-
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -67,26 +52,29 @@ const FirebaseLogin = ({ ...others }) => {
           password: ''
         }}
         validationSchema={Yup.object().shape({
-          email: Yup.string().email('Doit etre un email valide').max(255).required('Email obligatoire'),
+          email: Yup.string().email('Doit être un email valide').max(255).required('Email obligatoire'),
           password: Yup.string().max(255).required('Mot de passe obligatoire')
         })}
-        onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-          try {
-            if (scriptedRef.current) {
-              setStatus({ success: true });
-              setSubmitting(false);
-            }
-          } catch (err) {
-            console.error(err);
-            if (scriptedRef.current) {
-              setStatus({ success: false });
-              setErrors({ submit: err.message });
-              setSubmitting(false);
-            }
-          }
+        onSubmit={async (values) => {
+          setLoading(true);
+          api
+            .post('/auth/login', values)
+            .then((resp) => {
+              setLoading(false);
+              console.log(resp.data);
+              Auth.login(stringify(resp.data.user));
+              sessionStorage.setItem('authToken', resp.data.token);
+              // dispatch({ type: 'LOGIN_SUCCESS', payload: resp.data.user });
+              navigate('/pages/dashboard/default');
+            })
+            .catch((err) => {
+              setLoading(false);
+              console.log(err);
+              Toast.error(err.response.data.message);
+            });
         }}
       >
-        {({ errors, handleBlur, handleChange, handleSubmit, touched, values }) => (
+        {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit} {...others}>
             <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
               <InputLabel htmlFor="outlined-adornment-email-login">Email </InputLabel>
@@ -129,7 +117,7 @@ const FirebaseLogin = ({ ...others }) => {
                     </IconButton>
                   </InputAdornment>
                 }
-                label="Password"
+                label="Mot de passe"
                 inputProps={{}}
               />
               {touched.password && errors.password && (
@@ -143,9 +131,15 @@ const FirebaseLogin = ({ ...others }) => {
                 control={
                   <Checkbox checked={checked} onChange={(event) => setChecked(event.target.checked)} name="checked" color="primary" />
                 }
-                label="se souvenir de moi"
+                label="Se souvenir de moi"
               />
-              <Typography component={Link} to="/reset-password" variant="subtitle1" color="secondary" sx={{ textDecoration: 'none', cursor: 'pointer' }}>
+              <Typography
+                component={Link}
+                to="/resetPassword"
+                variant="subtitle1"
+                color="secondary"
+                sx={{ textDecoration: 'none', cursor: 'pointer' }}
+              >
                 Mot de passe oublié?
               </Typography>
             </Stack>
@@ -159,30 +153,12 @@ const FirebaseLogin = ({ ...others }) => {
               <AnimateButton>
                 <Button
                   disableElevation
-                  disabled={loading}
-                  // to="/pages/dashboard/default"
-                  // LinkComponent={Link}
+                  disabled={loading || isSubmitting} // Désactiver le bouton lorsque le formulaire est soumis ou en cours de soumission
                   fullWidth
                   size="large"
                   type="submit"
                   variant="contained"
                   color="secondary"
-                  onClick={() => {
-                    setLoading(true);
-                    api
-                      .post('/auth/login', values)
-                      .then((resp) => {
-                        setLoading(false);
-                        Auth.login(stringify(resp.data.user));
-                        // dispatch({ type: 'LOGIN_SUCCESS', payload: resp.data.user });
-                        navigate('/pages/dashboard/default');
-                      })
-                      .catch((err) => {
-                        setLoading(false);
-                        console.log(err);
-                        Toast.error(err.response.data.message);
-                      });
-                  }}
                 >
                   {loading ? <CircularProgress style={{ color: 'white' }} /> : 'Se connecter'}
                 </Button>

@@ -73,7 +73,6 @@ const ProfileSection = () => {
   };
 
   const handleListItemClick = (event, index) => {
-    console.log(UserData);
     setSelectedIndex(index);
     handleClose(event);
     navigate('/pages/Profil');
