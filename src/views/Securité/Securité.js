@@ -18,7 +18,6 @@ import {
   StepLabel,
   CircularProgress,
   InputAdornment,
-  IconButton
 } from '@mui/material';
 import { AddCircleOutline, Delete, Lock, LockOpen, Visibility, VisibilityOff } from '@mui/icons-material';
 import { Box } from '@mui/system';
@@ -141,6 +140,10 @@ const SecurityScreen = () => {
     setShowPassword(!showPassword);
   };
 
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
   return (
     <div>
       <Typography variant="h6" component="h2" gutterBottom>
@@ -221,22 +224,24 @@ const SecurityScreen = () => {
             <TextField 
               margin="dense" 
               label="Mot de passe" 
-              type="password" 
+              type={showPassword ? 'text' : 'password'} 
               fullWidth 
               value={password} 
               onChange={handlePasswordChange}
-              endAdornment={
-                <InputAdornment>
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      edge="end"
-                      size="large"
-                    >
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
+              InputProps={{
+                endAdornment:(
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                    size="large"
+                  >
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
                 </InputAdornment>
-              } />
+              )}}/>
           )}
         </DialogContent>
 
