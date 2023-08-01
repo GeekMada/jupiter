@@ -174,6 +174,9 @@ const handleOpenDialogwithip = async () => {
         sx={{ padding: '2rem', width: '100%' }}
         style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}
       >
+        <Typography variant="subtitle1">
+          <strong>{ipList.length}</strong>  adresses IP autorisées
+        </Typography>
         <Typography variant="subtitle1" gutterBottom>
           Liste des adresses IP autorisées :
         </Typography>
@@ -182,19 +185,19 @@ const handleOpenDialogwithip = async () => {
             <ListItem key={item.id}>
               <ListItemText primary={item.adresse} />
               <ListItemSecondaryAction>
-                {togglingIpId === item.id ? (
+                {togglingIpId === item.adresse ? (
                   <CircularProgress size={24} style={{ color: 'blue' }} />
                 ) : item.is_blocked ? (
-                  <Button variant="outlined" startIcon={<LockOpen />} color="primary" onClick={() => handleToggleBlock(item.id)}>
+                  <Button variant="outlined" startIcon={<LockOpen />} color="primary" onClick={() => handleToggleBlock(item.adresse)}>
                     Débloquer
                   </Button>
                 ) : (
-                  <Button variant="outlined" startIcon={<Lock />} color="secondary" onClick={() => handleToggleBlock(item.id)}>
+                  <Button variant="outlined" startIcon={<Lock />} color="secondary" onClick={() => handleToggleBlock(item.adresse)}>
                     Bloquer
                   </Button>
                 )}
-                <IconButton edge="end" onClick={() => handleDeleteIp(item.id)}>
-                  {deletingIpId===item.id ? <CircularProgress size={24} style={{ color: 'gray' }} /> : <Delete />}
+                <IconButton edge="end" onClick={() => handleDeleteIp(item.adresse)}>
+                  {deletingIpId===item.adresse ? <CircularProgress size={24} style={{ color: 'gray' }} /> : <Delete />}
                 </IconButton>
               </ListItemSecondaryAction>
             </ListItem>

@@ -15,6 +15,7 @@ import { parse } from 'flatted';
 import { useEffect } from 'react';
 import api from 'requests/api';
 import { ToastContainer, toast } from 'react-toastify';
+import {publicIp} from 'public-ip';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
   backgroundColor: theme.palette.secondary.dark,
@@ -54,28 +55,28 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 
 // ===========================|| DASHBOARD DEFAULT - EARNING CARD ||=========================== //
 
-const EarningCard = ({ isLoading }) => {
+const EarningCard =  ({ isLoading }) => {
   const theme = useTheme();
-
   const userData = parse(sessionStorage.getItem('user'));
   const [solde, setsolde] = useState('');
-  const getSolde = () => {
-    api
-      .get(`/solde/${userData.id}`)
-      .then((response) => {
-        setsolde(response.data.soldePrincipal);
-      })
-      .catch((error) => {
-        console.error('Error fetching user data:', error);
-        if (error.response.data.message === 'Adresse IP non autorisée ou bloquée')
-        {toast.error("Toutes les Adresse IP doivent etre dans la liste autorisée dans l'onglet Sécurité, Pour acceder a certaines informations.", {
-            autoClose: false,
-            position: toast.POSITION.TOP_CENTER
-          });
-          setsolde('bloqué');
-        }
-      });
+  const getSolde = async () => {
+    const ip = await publicIp();
+    try {
+      const userResponse = await api.get(`/solde/${userData.id}`,ip);
+      const userSolde = userResponse.data.soldePrincipal;
+      setsolde(userSolde);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      if (error.response.data.message === 'Adresse IP non autorisée ou bloquée') {
+        toast.error("Toutes les Adresse IP doivent être dans la liste autorisée dans l'onglet Sécurité, Pour accéder à certaines informations.", {
+          autoClose: false,
+          position: toast.POSITION.TOP_CENTER
+        });
+        setsolde('bloqué');
+      }
+    }
   };
+  
   useEffect(() => {
     getSolde();
     userData.soldePrincipal = solde;
