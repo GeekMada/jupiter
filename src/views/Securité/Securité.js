@@ -16,9 +16,11 @@ import {
   Stepper,
   Step,
   StepLabel,
-  CircularProgress
+  CircularProgress,
+  InputAdornment,
+  IconButton
 } from '@mui/material';
-import { AddCircleOutline, Delete, Lock, LockOpen } from '@mui/icons-material';
+import { AddCircleOutline, Delete, Lock, LockOpen, Visibility, VisibilityOff } from '@mui/icons-material';
 import { Box } from '@mui/system';
 import api from 'requests/api';
 import { parse } from 'flatted';
@@ -28,6 +30,8 @@ import { ToastContainer } from 'react-toastify';
 const SecurityScreen = () => {
   const UserData = parse(sessionStorage.getItem('user'));
   const [ipList, setIpList] = useState(UserData.ips);
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const [openDialog, setOpenDialog] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
@@ -133,6 +137,10 @@ const SecurityScreen = () => {
     return ipRegex.test(ip);
   };
 
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div>
       <Typography variant="h6" component="h2" gutterBottom>
@@ -210,7 +218,25 @@ const SecurityScreen = () => {
           )}
 
           {activeStep === 1 && (
-            <TextField margin="dense" label="Mot de passe" type="password" fullWidth value={password} onChange={handlePasswordChange} />
+            <TextField 
+              margin="dense" 
+              label="Mot de passe" 
+              type="password" 
+              fullWidth 
+              value={password} 
+              onChange={handlePasswordChange}
+              endAdornment={
+                <InputAdornment>
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      edge="end"
+                      size="large"
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                </InputAdornment>
+              } />
           )}
         </DialogContent>
 
