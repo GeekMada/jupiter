@@ -19,6 +19,12 @@ import {
   CircularProgress
 } from '@mui/material';
 import { AddCircleOutline, Delete, Lock, LockOpen } from '@mui/icons-material';
+=======
+  CircularProgress,
+  InputAdornment,
+} from '@mui/material';
+import { AddCircleOutline, Delete, Lock, LockOpen, Visibility, VisibilityOff } from '@mui/icons-material';
+>>>>>>> hermann
 import { Box } from '@mui/system';
 import api from 'requests/api';
 import { parse } from 'flatted';
@@ -31,6 +37,7 @@ import { useEffect } from 'react';
 const SecurityScreen = () => {
   const UserData = parse(sessionStorage.getItem('user'));
   const [ipList, setIpList] = useState(UserData.ips);
+  const [showPassword, setShowPassword] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [ipAddress, setIpAddress] = useState('');
@@ -161,6 +168,15 @@ const handleOpenDialogwithip = async () => {
   //   return ipRegex.test(ip);
   // };
 
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
+
   return (
     <div>
       <Typography variant="h4" gutterBottom>
@@ -248,7 +264,31 @@ const handleOpenDialogwithip = async () => {
           )}
 
           {activeStep === 1 && (
+<<<<<<< HEAD
             <TextField margin="dense" label="Mot de passe" type="password" fullWidth value={password} onChange={handlePasswordChange} />
+=======
+            <TextField 
+              margin="dense" 
+              label="Mot de passe" 
+              type={showPassword ? 'text' : 'password'} 
+              fullWidth 
+              value={password} 
+              onChange={handlePasswordChange}
+              InputProps={{
+                endAdornment:(
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                    size="large"
+                  >
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              )}}/>
+>>>>>>> hermann
           )}
         </DialogContent>
 
