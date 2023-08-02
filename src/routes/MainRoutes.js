@@ -13,6 +13,8 @@ import Transfert from 'views/Transfert/Transfert';
 import Documenation from 'views/api/Documenation';
 import ParamettreApi from 'views/api/ParamettreApi';
 import Offre from 'views/Offre/Offre';
+import Facture from 'views/Facture/Facture';
+import Bouquet from 'views/Bouquet/Bouquet';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -71,6 +73,14 @@ const MainRoutes = {
     {
       path: '/pages/Offres',
       element: <Offre />
+    },
+    {
+      path: '/pages/facture',
+      element: <Facture />
+    },
+    {
+      path: '/pagesbouquet/',
+      element: <Bouquet />
     }
   ]
 };

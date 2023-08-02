@@ -1,8 +1,8 @@
 // assets
-import { IconDashboard, IconHistory, IconShield, IconRecharging, IconTag, IconSend, IconApiApp ,IconGiftCard} from '@tabler/icons';
+import { IconDashboard, IconHistory, IconShield, IconRecharging, IconTag, IconSend, IconApiApp ,IconGiftCard,IconReceipt, IconDeviceTv} from '@tabler/icons';
 
 // constant
-const icons = { IconDashboard, IconHistory, IconShield, IconRecharging, IconTag, IconSend, IconApiApp ,IconGiftCard};
+const icons = { IconDashboard, IconHistory, IconShield, IconRecharging, IconTag, IconSend, IconApiApp ,IconGiftCard,IconReceipt,IconDeviceTv};
 
 // ==============================|| DASHBOARD MENU ITEMS ||============================== //
 
@@ -51,6 +51,21 @@ const dashboard = {
       icon: icons.IconGiftCard,
       breadcrumbs: false
     },
+    // {
+    //   id: 'facture',
+    //   title: 'Payer Facture',
+    //   type: 'item',
+    //   url: '/pages/facture',
+    //   icon: icons.IconReceipt,
+    //   breadcrumbs: false
+    // },{
+    //   id: 'bouquets',
+    //   title: 'Payer Bouquets',
+    //   type: 'item',
+    //   url: '/pages/bouquet',
+    //   icon: icons.IconDeviceTv,
+    //   breadcrumbs: false
+    // },
     {
       id: 'histroque',
       title: 'Historique',
