@@ -1,8 +1,8 @@
 // assets
-import { IconDashboard, IconHistory, IconShield, IconRecharging, IconTag, IconSend, IconApiApp ,IconGiftCard,IconReceipt, IconDeviceTv} from '@tabler/icons';
+import { IconDashboard, IconHistory, IconShield, IconRecharging, IconTag, IconSend, IconApiApp ,IconGiftCard,IconReceipt, IconPigMoney} from '@tabler/icons';
 
 // constant
-const icons = { IconDashboard, IconHistory, IconShield, IconRecharging, IconTag, IconSend, IconApiApp ,IconGiftCard,IconReceipt,IconDeviceTv};
+const icons = { IconDashboard, IconHistory, IconShield, IconRecharging, IconTag, IconSend, IconApiApp ,IconGiftCard,IconReceipt,IconPigMoney};
 
 // ==============================|| DASHBOARD MENU ITEMS ||============================== //
 
@@ -27,14 +27,6 @@ const dashboard = {
       icon: icons.IconRecharging,
       breadcrumbs: false
     },
-    // {
-    //   id: 'tarif',
-    //   title: 'Tarification',
-    //   type: 'item',
-    //   url: '/pages/tarif',
-    //   icon: icons.IconTag,
-    //   breadcrumbs: false
-    // },
     {
       id: 'transfert',
       title: 'Transferer Credit',
@@ -51,21 +43,34 @@ const dashboard = {
       icon: icons.IconGiftCard,
       breadcrumbs: false
     },
-    // {
-    //   id: 'facture',
-    //   title: 'Payer Facture',
-    //   type: 'item',
-    //   url: '/pages/facture',
-    //   icon: icons.IconReceipt,
-    //   breadcrumbs: false
-    // },{
-    //   id: 'bouquets',
-    //   title: 'Payer Bouquets',
-    //   type: 'item',
-    //   url: '/pages/bouquet',
-    //   icon: icons.IconDeviceTv,
-    //   breadcrumbs: false
-    // },
+    {
+      id: 'facture',
+      title: 'Facture & T.V',
+      type: 'collapse',
+      // url: '/pages/facture',
+      icon: icons.IconReceipt,
+      children: [
+        {
+          id: 'electricite',
+          title: 'Eau & Electricité',
+          type: 'item',
+          url: '/pages/facture/electricite',
+        },
+        {
+          id: 'bouquet',
+          title: 'Bouquets',
+          type: 'item',
+          url: '/pages/facture/bouquet',
+        }
+      ]
+    },{
+      id: 'bouquets',
+      title: 'Mobile Money',
+      type: 'item',
+      url: '/pages/bouquet',
+      icon: icons.IconPigMoney,
+      breadcrumbs: false
+    },
     {
       id: 'histroque',
       title: 'Historique',
