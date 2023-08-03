@@ -157,9 +157,6 @@ const getAllOperatores = async () => {
   const handleTransfer = async () => {
     setLoading(true);
     const ipAddress = await getLocalIpAddress();
-
-    console.log(totalConvertedAmount)
-
     api.post(`/solde/transfert/${UserData.id}`, {
         numero: '0' + phoneNumber.slice(3),
         credit_amount: amount,

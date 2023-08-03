@@ -43,6 +43,21 @@ const dashboard = {
       icon: icons.IconGiftCard,
       breadcrumbs: false
     },
+    // {
+    //   id: 'facture',
+    //   title: 'Payer Facture',
+    //   type: 'item',
+    //   url: '/pages/facture',
+    //   icon: icons.IconReceipt,
+    //   breadcrumbs: false
+    // },{
+    //   id: 'bouquets',
+    //   title: 'Payer Bouquets',
+    //   type: 'item',
+    //   url: '/pages/bouquet',
+    //   icon: icons.IconDeviceTv,
+    //   breadcrumbs: false
+    // },
     {
       id: 'facture',
       title: 'Facture & T.V',
