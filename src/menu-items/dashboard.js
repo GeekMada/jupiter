@@ -1,8 +1,8 @@
 // assets
-import { IconDashboard, IconHistory, IconShield, IconRecharging, IconTag, IconSend, IconApiApp ,IconGiftCard,IconReceipt, IconPigMoney} from '@tabler/icons';
+import { IconDashboard, IconHistory, IconShield, IconRecharging, IconTag, IconSend, IconApiApp ,IconGiftCard,IconReceipt, IconMoneybag} from '@tabler/icons';
 
 // constant
-const icons = { IconDashboard, IconHistory, IconShield, IconRecharging, IconTag, IconSend, IconApiApp ,IconGiftCard,IconReceipt,IconPigMoney};
+const icons = { IconDashboard, IconHistory, IconShield, IconRecharging, IconTag, IconSend, IconApiApp ,IconGiftCard,IconReceipt,IconMoneybag};
 
 // ==============================|| DASHBOARD MENU ITEMS ||============================== //
 
@@ -43,6 +43,21 @@ const dashboard = {
       icon: icons.IconGiftCard,
       breadcrumbs: false
     },
+    // {
+    //   id: 'facture',
+    //   title: 'Payer Facture',
+    //   type: 'item',
+    //   url: '/pages/facture',
+    //   icon: icons.IconReceipt,
+    //   breadcrumbs: false
+    // },{
+    //   id: 'bouquets',
+    //   title: 'Payer Bouquets',
+    //   type: 'item',
+    //   url: '/pages/bouquet',
+    //   icon: icons.IconDeviceTv,
+    //   breadcrumbs: false
+    // },
     {
       id: 'facture',
       title: 'Facture & T.V',
@@ -67,8 +82,8 @@ const dashboard = {
       id: 'bouquets',
       title: 'Mobile Money',
       type: 'item',
-      url: '/pages/bouquet',
-      icon: icons.IconPigMoney,
+      url: '/pages/money',
+      icon: icons.IconMoneybag,
       breadcrumbs: false
     },
     {

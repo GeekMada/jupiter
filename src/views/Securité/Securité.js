@@ -16,8 +16,7 @@ import {
   Stepper,
   Step,
   StepLabel,
-  CircularProgress,
-  InputAdornment,
+  CircularProgress,  InputAdornment,
 } from '@mui/material';
 import { AddCircleOutline, Delete, Lock, LockOpen, Visibility, VisibilityOff } from '@mui/icons-material';
 import { Box } from '@mui/system';
@@ -32,9 +31,7 @@ import { useEffect } from 'react';
 const SecurityScreen = () => {
   const UserData = parse(sessionStorage.getItem('user'));
   const [ipList, setIpList] = useState(UserData.ips);
-
   const [showPassword, setShowPassword] = useState(false);
-
   const [openDialog, setOpenDialog] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [ipAddress, setIpAddress] = useState('');
@@ -173,6 +170,7 @@ const handleOpenDialogwithip = async () => {
     event.preventDefault();
   };
 
+
   return (
     <div>
       <Typography variant="h4" gutterBottom>
@@ -258,7 +256,6 @@ const handleOpenDialogwithip = async () => {
               </Typography>
             </>
           )}
-
           {activeStep === 1 && (
             <TextField 
               margin="dense" 
