@@ -80,8 +80,19 @@ const TransferScreen = () => {
 
   const handleAmountChange = (event) => {
     setAmount(event.target.value);
-    Convert(event.target.value).from(selectedCurrency).to("EUR").then((res) => { setConvertedAmount(res.toFixed(2)) })
+    Convert(event.target.value)
+      .from(selectedCurrency)
+      .to("EUR")
+      .then((res) => { setConvertedAmount(res.toFixed(2)) });
   };
+
+  const handleConvertAmountChange = (event) => {
+    setConvertedAmount(event.target.value);
+    Convert(event.target.value)
+      .from("EUR")
+      .to(selectedCurrency)
+      .then((res) => { setAmount(res.toFixed(2)) });
+  }
   
   const getLocalIpAddress = async () => {
     try {
@@ -146,6 +157,9 @@ const getAllOperatores = async () => {
   const handleTransfer = async () => {
     setLoading(true);
     const ipAddress = await getLocalIpAddress();
+
+    console.log(totalConvertedAmount)
+
     api.post(`/solde/transfert/${UserData.id}`, {
         numero: '0' + phoneNumber.slice(3),
         credit_amount: amount,
@@ -201,16 +215,18 @@ const getAllOperatores = async () => {
       component: (
         <Grid justifyContent={'center'} display={'flex'} alignItems={'center'} flexDirection={'column'}>
           <FormControl error={errors[1]} sx={{ marginBottom: '1rem' }}>
-            <TextField label={`Montant en  ${currencySymbol}`} value={amount} onChange={handleAmountChange} type="number" />
+            <TextField 
+              label={`Montant en  ${currencySymbol}`} 
+              value={amount} 
+              onChange={handleAmountChange} 
+              type="number" />
             {errors[1] && <FormHelperText>Veuillez saisir un montant</FormHelperText>}
           </FormControl>
           <FormControl sx={{ marginBottom: '1rem' }}>
             <TextField
               label={`Montant en €`}
               value={convertedAmount} // Affichez le montant converti avec deux décimales
-              InputProps={{
-                readOnly: true
-              }}
+              onChange={handleConvertAmountChange}
             />
           </FormControl>
           <Typography variant="subtitle1">Solde : {parseInt(UserData.soldePrincipal.toFixed(2))}€</Typography>
