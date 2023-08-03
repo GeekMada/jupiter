@@ -16,15 +16,9 @@ import {
   Stepper,
   Step,
   StepLabel,
-  CircularProgress
-} from '@mui/material';
-import { AddCircleOutline, Delete, Lock, LockOpen } from '@mui/icons-material';
-=======
-  CircularProgress,
-  InputAdornment,
+  CircularProgress,  InputAdornment,
 } from '@mui/material';
 import { AddCircleOutline, Delete, Lock, LockOpen, Visibility, VisibilityOff } from '@mui/icons-material';
->>>>>>> hermann
 import { Box } from '@mui/system';
 import api from 'requests/api';
 import { parse } from 'flatted';
@@ -262,11 +256,7 @@ const handleOpenDialogwithip = async () => {
               </Typography>
             </>
           )}
-
           {activeStep === 1 && (
-<<<<<<< HEAD
-            <TextField margin="dense" label="Mot de passe" type="password" fullWidth value={password} onChange={handlePasswordChange} />
-=======
             <TextField 
               margin="dense" 
               label="Mot de passe" 
@@ -288,7 +278,6 @@ const handleOpenDialogwithip = async () => {
                   </IconButton>
                 </InputAdornment>
               )}}/>
->>>>>>> hermann
           )}
         </DialogContent>
 
