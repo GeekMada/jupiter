@@ -262,13 +262,13 @@ const Historique = () => {
               <Typography variant="body1">Date : {formatDate(selectedTransaction.date)}</Typography>
               <Typography variant="body1">Montant : {selectedTransaction.montant}€</Typography>
               {selectedTransaction.type === 'recharge' && <Typography variant="body1">Methode: {selectedTransaction.methode}</Typography>}
-              {selectedTransaction.type === 'Envoi' && (
+              {selectedTransaction.type != 'recharge'? (
                 <>
                   <Typography variant="body1">Pays : {selectedTransaction.pays}</Typography>
                   {/* <Typography variant="body1">Opérateur : {selectedTransaction.operator}</Typography> */}
                   <Typography variant="body1">Numéro : {selectedTransaction.destinataire}</Typography>
                 </>
-              )}
+              ):null}
               <Typography style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
                 Statut :
                 <Typography

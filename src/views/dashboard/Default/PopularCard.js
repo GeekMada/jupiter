@@ -196,93 +196,6 @@ console.log(attenteTransactions)
       
       </MainCard>
       </Grid>
-      
-        // <MainCard content={false} style={{ marginTop: '10px' }}>
-        //   <CardContent sx={{ width: '100%' }}>
-        //     <Grid container spacing={gridSpacing}>
-        //       <Grid item xs={12}>
-        //         <Grid container alignContent="center" justifyContent="space-between">
-        //           <Grid item>
-        //             <Typography variant="h4">Dernières Transactions</Typography>
-        //           </Grid>
-        //         </Grid>
-        //       </Grid>
-        //       {historique.length == 0 ?
-        //           <Grid item xs={12} justifyContent={'center'} alignItems={'center'} display={'flex'}>
-        //             <Typography>Aucune transaction</Typography>
-        //           </Grid>
-        //           :
-        //           <Grid item xs={12}>
-        //           {cinqPlusRecentes.map((item,i) => (
-        //             <div key={i}>
-        //               <Grid container direction="column" >
-        //                 <Grid item>
-        //                   <Grid container alignItems="center" justifyContent="space-between">
-        //                     <Grid item>
-        //                       <Typography variant="subtitle1" color="inherit">
-        //                         {item.type}
-        //                       </Typography>
-        //                     </Grid>
-        //                     <Grid item>
-        //                       <Typography variant="subtitle1" color="inherit">
-        //                         {item.destinataire}
-        //                       </Typography>
-        //                     </Grid> 
-        //                     <Grid item>
-        //                       <Typography variant="subtitle1">{formatDate(item.date)}</Typography>
-        //                     </Grid>
-        //                     <Grid item>
-        //                       <Grid container alignItems="center" justifyContent="space-between">
-        //                         <Grid item>
-        //                           <Typography variant="subtitle1" color="inherit">
-        //                             {item.montant}€
-        //                           </Typography>
-        //                         </Grid>
-        //                         <Grid item>
-        //                           <Avatar
-        //                             variant="rounded"
-        //                             sx={{
-        //                               width: 16,
-        //                               height: 16,
-        //                               borderRadius: '5px',
-        //                               backgroundColor: 'white',
-        //                               color:
-        //                                 item.status === 'réussi'
-        //                                   ? theme.palette.success.main
-        //                                   : item.status === 'attente'
-        //                                   ? theme.palette.warning.main
-        //                                   : theme.palette.error.main,
-        //                               ml: 2
-        //                             }}
-        //                           >
-        //                             {item.status === 'réussi' ? (
-        //                               <Check fontSize="small" color="inherit" />
-        //                             ) : item.status === 'attente' ? (
-        //                               <Warning fontSize="small" color="inherit" />
-        //                             ) : (
-        //                               <Error fontSize="small" color="inherit" />
-        //                             )}
-        //                           </Avatar>
-        //                         </Grid>
-        //                       </Grid>
-        //                     </Grid>
-        //                   </Grid>
-        //                 </Grid>
-        //               </Grid>
-        //               <Divider sx={{ my: 1.5 }} />
-        //             </div>
-        //           ))}
-        //         </Grid>
-        //         }
-        //     </Grid>
-        //   </CardContent>
-        //   <CardActions sx={{ p: 1.25, pt: 0, justifyContent: 'center' }}>
-        //     <Button size="small" disableElevation to="/pages/Historique" component={Link}>
-        //       Voir Tout
-        //       <ChevronRightOutlinedIcon />
-        //     </Button>
-        //   </CardActions>
-        // </MainCard>
       )}
       
       <Modal open={open} onClose={handleClosePopup}>
@@ -313,8 +226,8 @@ console.log(attenteTransactions)
               <Typography variant="body1">Montant : {selectedTransaction.montant}</Typography>
               {selectedTransaction.type === 'recharge' && (
               <Typography variant="body1">Methode: {selectedTransaction.methode}</Typography>
-              )}              
-              {selectedTransaction.type === 'transfert' || selectedTransaction.type === 'transfert offre'? (
+              )}          
+              {selectedTransaction.type != 'recharge'? (
                 <>
                   <Typography variant="body1">Pays : {selectedTransaction.pays}</Typography>
                   {/* <Typography variant="body1">Opérateur : {selectedTransaction.operator}</Typography> */}

@@ -47,8 +47,8 @@ const TransferScreen = () => {
   const [country_code, setcountry_code] = useState('');
   const [SelectedOperateur, setSelectedOperateur] = useState({});
   const [Frais, setFrais] = useState(10);
-  const totalAmount = amount * 1.2; 
-  const totalConvertedAmount = convertedAmount * 1.2; 
+  const totalAmount = amount * Frais;
+  const totalConvertedAmount = convertedAmount * Frais;
   const calculatePriceWithFees = (price, fees) => {
     return (price + (price * fees) / 100).toFixed(2);
   };
