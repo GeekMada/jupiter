@@ -42,18 +42,22 @@ const MobileMoneyTransferScreen = () => {
   const [convertedAmount, setConvertedAmount] = useState(0);
   const userData = parse(sessionStorage.getItem('user'));
   const maxSteps = 3; // Total number of steps
-  const montantTotal = Number(transferAmount) *(Frais/100)
+  const montantTotal = Number(transferAmount) * (Frais/100);
+
   const handlePhoneNumberChange = async (value, countryData) => {
     setpays(countryData.name)
     setRecipientPhoneNumber(value);
     setcountry_code(countryData.countryCode);
+
     const countryDataResponse = await fetchCountryData(countryData.countryCode);
+
     const countryFr = countries.getName(countryData.countryCode, 'fr');
     const currency = Object.values(countryDataResponse[0].currencies);
     setSelectedCountry(countryFr);
     setCurrencySymbol(currency[0].symbol);
     setSelectedCurrency(Object.keys(countryDataResponse[0].currencies)[0]);
   };
+
   const fetchCountryData = async (countryCode) => {
     try {
       const response = await axios.get(`https://restcountries.com/v3.1/alpha/${countryCode}`);
@@ -63,6 +67,7 @@ const MobileMoneyTransferScreen = () => {
       return null;
     }
   };
+
   const findMatchingOperator = (operatorData) => {
     const phoneNumberCarrier = SelectedOperateur.carrier;
     const phoneNumberCountry = SelectedOperateur.country_name;
@@ -84,6 +89,7 @@ const MobileMoneyTransferScreen = () => {
           console.error('Error fetching Operateur data:', error);
         });
     };
+
   const fetchOperateur = () => {
     axios.get(`http://apilayer.net/api/validate?access_key=92d54c75262b1a3bcfcb072429871e49&number=${recipientPhoneNumber.slice(3)}&country_code=${country_code}&format=1`)
    .then((response) => {
@@ -93,6 +99,7 @@ const MobileMoneyTransferScreen = () => {
      console.error('Error fetching Operateur data:', error);
    })
  }; 
+
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     if(activeStep===0){
@@ -113,9 +120,14 @@ const MobileMoneyTransferScreen = () => {
     }
     return true;
   };
-  const handleTransfert =()=>{
+
+  const handleTransfert = async ()=>{
     setloading(true)
-     api.post(`/mobile_money/transfert/${userData.id}`,{numero:recipientPhoneNumber,pays,montant:transferAmount,montantTotal})
+     await api.post(`/mobile_money/transfert/${userData.id}`,{
+      numero:recipientPhoneNumber,
+      pays,
+      montant:transferAmount,
+      montantTotal})
      .then((response)=>{
       console.log(response.data)
       Toast.success(`${transferAmount} bien transferé au ${recipientPhoneNumber}`)
@@ -129,7 +141,16 @@ const MobileMoneyTransferScreen = () => {
   const handleAmountChange = (event) => {
     setTransferAmount(event.target.value);
     Convert(event.target.value).from(selectedCurrency).to("EUR").then((res) => { setConvertedAmount(res.toFixed(2)) })
-  };
+  }
+
+  const handleConvertAmountChange = (event) => {
+    setConvertedAmount(event.target.value);
+    Convert(event.target.value)
+      .from("EUR")
+      .to(selectedCurrency)
+      .then((res) => { setTransferAmount(res.toFixed(2)) });
+  }
+
   return (
     <Card sx={{ height: '100%', margin: 'auto', padding: '1rem', borderRadius: '1rem' }}>
       <CardContent>
@@ -159,15 +180,26 @@ const MobileMoneyTransferScreen = () => {
           />
         )}
         {activeStep === 1 && (
-          <TextField
-            label="Montant du transfert"
-            type="number"
-            value={transferAmount}
-            onChange={handleAmountChange}
-            fullWidth
-            required
-            sx={{ marginBottom: '1rem' }}
-          />
+          <Box>
+            <TextField
+              label={`Montant du transfert en ${currencySymbol}`}
+              type="number"
+              value={transferAmount}
+              onChange={handleAmountChange}
+              fullWidth
+              required
+              sx={{ marginBottom: '1rem' }}
+            />
+            <TextField
+              label={`Montant en €`}
+              type="number"
+              value={convertedAmount}
+              onChange={handleConvertAmountChange}
+              fullWidth
+              required
+              sx={{ marginBottom: '1rem' }}
+            />
+          </Box>
         )}
         {activeStep === 2 && (
           <Grid container>

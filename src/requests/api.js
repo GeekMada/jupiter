@@ -1,7 +1,7 @@
 import axios from 'axios';
 const axiosInstance = axios.create({
-  // baseURL: 'http://localhost:8000/'
-  baseURL: 'http://api.jupiter-data.fr'
+  baseURL: 'http://localhost:8000/'
+  // baseURL: 'http://api.jupiter-data.fr'
 });
 
 axiosInstance.interceptors.request.use(
