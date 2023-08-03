@@ -103,7 +103,7 @@ const DocumentationAPI = () => {
       ]
     }
   ];
-  const baseUrl = 'http://localhost:8000';
+  const baseUrl = 'http://api.jupiter-data.fr';
   const apiKey = 'VOTRE_CLE_API';
   return (
     <Container className={classes.container}>

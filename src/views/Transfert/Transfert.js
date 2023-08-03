@@ -70,7 +70,6 @@ const TransferScreen = () => {
      fetchOperateur()
     }
   };
-
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
     setErrors({});
