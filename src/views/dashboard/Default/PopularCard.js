@@ -223,7 +223,7 @@ console.log(attenteTransactions)
               <Typography variant="body1">ID : {selectedTransaction.id}</Typography>
               <Typography variant="body1">Type de transaction: {selectedTransaction.type}</Typography>
               <Typography variant="body1">Date : {formatDate(selectedTransaction.date)}</Typography>
-              <Typography variant="body1">Montant : {selectedTransaction.montant}</Typography>
+              <Typography variant="body1">Montant : {selectedTransaction.montant} €</Typography>
               {selectedTransaction.type === 'recharge' && (
               <Typography variant="body1">Methode: {selectedTransaction.methode}</Typography>
               )}          
@@ -232,6 +232,7 @@ console.log(attenteTransactions)
                   <Typography variant="body1">Pays : {selectedTransaction.pays}</Typography>
                   {/* <Typography variant="body1">Opérateur : {selectedTransaction.operator}</Typography> */}
                   <Typography variant="body1">Numéro : {selectedTransaction.destinataire}</Typography>
+                  <Typography variant="body1">Frais : {parseFloat(selectedTransaction.frais).toFixed(2)} €</Typography>
                 </>
               ):null}
               <Typography style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>

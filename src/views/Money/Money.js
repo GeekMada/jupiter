@@ -38,11 +38,12 @@ const MobileMoneyTransferScreen = () => {
   const [selectedCountry, setSelectedCountry] = useState('');
   const [currencySymbol, setCurrencySymbol] = useState('');
   const [selectedCurrency, setSelectedCurrency] = useState('EUR');
-  const [Frais, setFrais] = useState(10);
+  const [pourcentage, setPourcentage] = useState(10);
   const [convertedAmount, setConvertedAmount] = useState(0);
   const userData = parse(sessionStorage.getItem('user'));
   const maxSteps = 3; // Total number of steps
-  const montantTotal = Number(transferAmount) * (Frais/100);
+  const montantFrais = Number(convertedAmount) * (pourcentage/100)
+  const montantTotal = Number(convertedAmount) + montantFrais;
 
   const handlePhoneNumberChange = async (value, countryData) => {
     setpays(countryData.name)
@@ -83,7 +84,7 @@ const MobileMoneyTransferScreen = () => {
     await api.get(`/operateurs`)
     .then(async (response) => {
       const frais = await findMatchingOperator(response.data);
-          setFrais(frais);
+          setPourcentage(frais);
         })
         .catch((error) => {
           console.error('Error fetching Operateur data:', error);
@@ -127,10 +128,11 @@ const MobileMoneyTransferScreen = () => {
       numero:recipientPhoneNumber,
       pays,
       montant:transferAmount,
-      montantTotal})
+      montantTotal,
+      montantFrais})
      .then((response)=>{
       console.log(response.data)
-      Toast.success(`${transferAmount} bien transferé au ${recipientPhoneNumber}`)
+      Toast.success(`${transferAmount} ${currencySymbol} bien transferé au ${recipientPhoneNumber}`)
 
      }).catch((err)=>{
       console.log(err.response)
@@ -205,7 +207,10 @@ const MobileMoneyTransferScreen = () => {
           <Grid container>
             <Grid item xs={12} sx={{ marginBottom: '1rem'}}> 
               <Typography variant="body1" sx={{ textAlign: 'center' }}>
-                Transfert de: {transferAmount}€.
+                Transfert de: {transferAmount}{currencySymbol} / {convertedAmount}€.
+              </Typography>
+              <Typography varian='body2' sx={{textAlign: "center"}}>
+                Montant total: {parseFloat(montantTotal).toFixed(2)} € 
               </Typography>
               <Typography variant="body1" sx={{ textAlign: 'center' }}>
                 Vers le numéro: {recipientPhoneNumber}.

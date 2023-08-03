@@ -47,11 +47,15 @@ const TransferScreen = () => {
   const [country_code, setcountry_code] = useState('');
   const [SelectedOperateur, setSelectedOperateur] = useState({});
   const [Frais, setFrais] = useState(10);
-  const totalAmount = amount * Frais;
-  const totalConvertedAmount = convertedAmount * Frais;
+
+  // const totalAmount = amount + (amount * (frais/100))
+  const montantFrais = convertedAmount * (Frais/100);
+  const totalConvertedAmount = convertedAmount + (convertedAmount * (Frais/100));
+
   const calculatePriceWithFees = (price, fees) => {
     return (price + (price * fees) / 100).toFixed(2);
   };
+
   const UserData = parse(sessionStorage.getItem('user'));
   const theme = useTheme();
   const location = useLocation();
@@ -162,7 +166,8 @@ const getAllOperatores = async () => {
         credit_amount: amount,
         pays: selectedCountry,
         ip: ipAddress,
-        totalConvertedAmount
+        totalConvertedAmount,
+        frais: montantFrais
       })
       .then( (res) => {
         getuserInfo();
@@ -240,7 +245,7 @@ const getAllOperatores = async () => {
           <Typography variant="subtitle1">
             Crédit à transférer : {amount}{currencySymbol} / {convertedAmount}€
           </Typography>
-          <Typography variant="subtitle1">Total: {calculatePriceWithFees(totalAmount, Frais)}{currencySymbol}</Typography>
+          <Typography variant="subtitle1">Total: {calculatePriceWithFees(parseFloat(amount), Frais)}{currencySymbol}</Typography>
         </div>
       )
     }

@@ -41,7 +41,7 @@ import { useAuthContext } from 'context/auth-context';
 // ==============================|| PROFILE MENU ||============================== //
 
 const ProfileSection = () => {
-  const UserData = parse(sessionStorage.getItem('user'));
+  const UserData = parse(window.sessionStorage.getItem('user'));
   const Auth = useAuthContext()
   const theme = useTheme();
   const customization = useSelector((state) => state.customization);
