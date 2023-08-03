@@ -117,7 +117,7 @@ const MobileMoneyTransferScreen = () => {
       return recipientPhoneNumber !== '';
     } else if (step === 1) {
       return transferAmount !== '';
-    }
+    } 
     return true;
   };
 
