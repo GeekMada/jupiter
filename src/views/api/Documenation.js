@@ -103,7 +103,6 @@ const DocumentationAPI = () => {
       ]
     }
   ];
-
   const baseUrl = 'http://api.jupiter-data.fr';
 
   //const baseUrl = 'http://localhost:8000';

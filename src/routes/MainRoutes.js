@@ -75,11 +75,11 @@ const MainRoutes = {
       element: <Offre />
     },
     {
-      path: '/pages/facture',
+      path: '/pages/facture/electricite',
       element: <Facture />
     },
     {
-      path: '/pagesbouquet/',
+      path: '/pages/facture/bouquet',
       element: <Bouquet />
     }
   ]
