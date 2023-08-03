@@ -137,28 +137,32 @@ const SubscriptionScreen = () => {
     };
     return(
       <Card sx={{ maxWidth: 345}}>
-      <CardActionArea>
-        <CardMedia component="img" height="140" image={catalog.image} alt={catalog.name} sx={{ objectFit: 'fill' }} />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
-            {catalog.name}
-          </Typography>
-          <Typography variant="h6" color="primary" sx={{ mt: 2 }}>
-          {catalog.price} €
-          </Typography>
-        </CardContent>
-        <CardActions sx={{ display: 'flex', justifyContent: 'center' , alignItems: 'center'}}>
-                <Button
-                  variant={selectedCatalog?.name == catalog.name? 'contained' : 'outlined'}
-                  color="primary"
-                  onClick={() => handleCatalogSelect(catalog)}
-                  sx={{width: '100px'}}
-                >
+        <CardActionArea>
+          <CardMedia 
+            component="img" 
+            height="140" 
+            image={catalog.image} 
+            alt={catalog.name} 
+            sx={{ objectFit: 'fill' }} />
+          <CardContent>
+            <Typography gutterBottom variant="h5" component="div">
+              {catalog.name}
+            </Typography>
+            <Typography variant="h6" color="primary" sx={{ mt: 2 }}>
+            {catalog.price} €
+            </Typography>
+          </CardContent>
+          <CardActions sx={{ display: 'flex', justifyContent: 'center' , alignItems: 'center'}}>
+              <Button
+                variant={selectedCatalog?.name == catalog.name? 'contained' : 'outlined'}
+                color="primary"
+                onClick={() => handleCatalogSelect(catalog)}
+                sx={{width: '100px'}} >
                   {selectedCatalog?.name == catalog.name ? <Check /> : 'Sélectionner'}
-                </Button>
-        </CardActions>
-      </CardActionArea>
-            </Card>
+              </Button>
+          </CardActions>
+        </CardActionArea>
+      </Card>
     )
   }
 
@@ -180,13 +184,13 @@ const SubscriptionScreen = () => {
     { title: 'Pays', component: (
       // <CountrySelect setSelectedCountry={setSelectedCountry} />
       <Autocomplete
-      id="country-select"
-      sx={{ width: 300 }}
-      options={countries} 
-      onChange={handleCountryChange }
-      autoHighlight
-      getOptionLabel={(option) => option.name}
-      renderInput={(params) => (
+        id="country-select"
+        sx={{ width: 300 }}
+        options={countries} 
+        onChange={handleCountryChange }
+        autoHighlight
+        getOptionLabel={(option) => option.name}
+        renderInput={(params) => (
         <TextField
           {...params}
           label="Choissez un pays"
@@ -199,13 +203,13 @@ const SubscriptionScreen = () => {
     )},
     { title: 'Fournisseur', component: (
       <Autocomplete
-      id="provider-select"
-      sx={{ width: 300 }}
-      options={providers} 
-      onChange={handleProviderChange}
-      autoHighlight
-      getOptionLabel={(option) => option.name}
-      renderInput={(params) => (
+        id="provider-select"
+        sx={{ width: 300 }}
+        options={providers} 
+        onChange={handleProviderChange}
+        autoHighlight
+        getOptionLabel={(option) => option.name}
+        renderInput={(params) => (
         <TextField
           {...params}
           label="Choissez un fournisseur"
@@ -228,23 +232,21 @@ const SubscriptionScreen = () => {
     { title: 'Informations personnelles', component: (
       <div>
           <TextField
-  label="Numéro de carte"
-  name="carte"
-  value={personalInfo.carte}
-  onChange={handlePersonalInfoChange}
-  fullWidth
-  required
-/>
-<TextField
-  label="Numéro d'Abonnement"
-  name="numeroAbonné"
-  value={personalInfo.numeroAbonné}
-  onChange={handlePersonalInfoChange}
-  fullWidth
-  required
-/>
-
-
+            label="Numéro de carte"
+            name="carte"
+            value={personalInfo.carte}
+            onChange={handlePersonalInfoChange}
+            fullWidth
+            required
+          />
+          <TextField
+            label="Numéro d'Abonnement"
+            name="numeroAbonné"
+            value={personalInfo.numeroAbonné}
+            onChange={handlePersonalInfoChange}
+            fullWidth
+            required
+          />
       </div>
     )},
     { title: 'Récapitulation', component: renderRecap() },
